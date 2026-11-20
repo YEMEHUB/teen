@@ -1,1054 +1,1864 @@
-
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>마인드풀 푸드 - 청소년 건강 식단 가이드</title>
-  <!-- Tailwind CSS CDN -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>골고루 한 끼 — 청소년 편식 극복 식단 설계 (실시간 식품영양 DB)</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- FontAwesome Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <!-- Google Fonts: Noto Sans KR -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap">
-
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Noto Sans KR', 'Inter', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#f2f7f4',
+              100: '#dfece4',
+              200: '#c0d9ca',
+              500: '#2f6f4e',
+              600: '#23573c',
+              700: '#1c4430',
+            },
+            accent: {
+              50: '#eff6ff',
+              100: '#dbeafe',
+              600: '#2563eb',
+              700: '#1d4ed8',
+            }
+          }
+        }
+      }
+    };
+  </script>
   <style>
     body {
-      font-family: 'Noto Sans KR', sans-serif;
-      background: linear-gradient(135deg, #f0fdf4 0%, #e0f2fe 50%, #fef3c7 100%);
-      background-attachment: fixed;
+      font-family: 'Noto Sans KR', 'Inter', sans-serif;
+      background-color: #f8f9fa;
       color: #1e293b;
+      overflow-x: hidden;
     }
-
-    .card-anime {
-      background: rgba(255, 255, 255, 0.92);
-      backdrop-filter: blur(12px);
-      border: 2px solid #a7f3d0;
-      box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
-      border-radius: 28px;
-    }
-
-    .card-sage {
-      background: linear-gradient(135deg, #ffffff 0%, #ecfdf5 100%);
-      border: 2px solid #6ee7b7;
-      box-shadow: 0 12px 30px -5px rgba(16, 185, 129, 0.2);
-      border-radius: 32px;
-    }
-
-    /* Custom Scrollbar */
-    .custom-scrollbar::-webkit-scrollbar {
+    ::-webkit-scrollbar {
       width: 6px;
+      height: 6px;
     }
-    .custom-scrollbar::-webkit-scrollbar-track {
-      background: #f1f5f9;
-      border-radius: 10px;
-    }
-    .custom-scrollbar::-webkit-scrollbar-thumb {
-      background: #a7f3d0;
-      border-radius: 10px;
-    }
-    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-      background: #34d399;
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 9999px;
     }
   </style>
 </head>
-<body class="min-h-screen flex flex-col antialiased selection:bg-emerald-200 selection:text-emerald-900">
-
-  <!-- Aesthetic Header -->
-  <header class="bg-white/80 border-b-2 border-emerald-200/80 sticky top-0 z-30 backdrop-blur-md shadow-sm">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-      <div class="flex items-center space-x-3">
-        <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-emerald-400 to-teal-300 text-white flex items-center justify-center font-bold text-xl shadow-md border border-white">
-          ✨
+<body class="min-h-screen antialiased selection:bg-brand-100 selection:text-brand-700">
+  <!-- 상단 헤더 -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-20">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-3.5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2.5">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-brand-500 text-white flex items-center justify-center font-bold text-base shrink-0">
+          한끼
         </div>
         <div>
-          <h1 class="text-base sm:text-lg font-extrabold text-slate-800 tracking-tight flex items-center gap-2">
-            <span>마인드풀 푸드</span>
-            <span class="text-[11px] bg-emerald-100 text-emerald-800 font-bold px-2.5 py-0.5 rounded-full border border-emerald-300">식단 가이드</span>
-          </h1>
-          <p class="text-[11px] text-slate-500 font-medium">식약처 영양성분 DB 연동 청소년 건강 식단</p>
+          <h1 class="text-lg sm:text-xl font-bold text-slate-900 tracking-tight">골고루 한 끼</h1>
+          <p class="text-xs text-slate-500">청소년 편식 극복 · 실시간 식품영양성분DB 식단 플래너</p>
         </div>
       </div>
-
-      <button id="btn-show-guide" class="text-xs text-emerald-900 bg-emerald-100 hover:bg-emerald-200 px-3.5 py-2 rounded-2xl border-2 border-emerald-300 transition-all font-bold flex items-center gap-1.5 shadow-sm active:scale-95">
-        <i class="fa-solid fa-wand-magic-sparkles text-emerald-600"></i>
-        <span>사용 방법</span>
-      </button>
+      <div class="flex items-center gap-2">
+        <button
+          type="button"
+          id="btnResetAll"
+          class="min-h-[44px] px-4 py-2 text-xs sm:text-sm font-medium rounded-xl border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 active:scale-[0.99] transition"
+        >
+          식단·편식 전체 초기화
+        </button>
+      </div>
     </div>
   </header>
 
-  <!-- Main Content -->
-  <main class="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 py-8 flex flex-col gap-6">
+  <!-- 메인 컨테이너 -->
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 py-5 sm:py-8 space-y-6">
+    <!-- 상태 알림 토스트 (alert() 대체용, textContent 안전 출력) -->
+    <div id="statusToast" class="hidden rounded-xl border px-4 py-3 text-sm font-medium transition" role="status"></div>
 
-    <!-- 1. CALORIE SUMMARY & EVALUATION CARD -->
-    <section class="card-sage p-6 sm:p-8 relative overflow-hidden">
-      <div class="flex flex-col lg:flex-row items-center justify-between gap-6">
-        
-        <!-- Target Settings -->
-        <div class="flex items-center gap-4 w-full lg:w-auto">
-          <div class="w-12 h-12 rounded-2xl bg-white/90 border border-emerald-200 flex items-center justify-center text-emerald-800 text-xl font-bold shadow-sm shrink-0">
-            🎯
+    <!-- 입력 영역: ① 먹은 음식 실시간 API 검색 & ② 싫어하는 음식 등록 -->
+    <section class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <!-- ① 먹은 음식 실시간 API 검색 및 선택 (7컬럼) -->
+      <div class="lg:col-span-7 bg-white rounded-2xl border border-slate-200 p-4 sm:p-6 shadow-xs flex flex-col justify-between space-y-4">
+        <div>
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-1">
+            <h2 class="text-base sm:text-lg font-bold text-slate-900">1. 오늘 먹은 음식 검색 및 식단 추가</h2>
+            <span class="text-[11px] font-medium px-2.5 py-0.5 rounded-full bg-accent-50 text-accent-700 border border-accent-100">
+              식약처 중계 API 실시간 연동
+            </span>
           </div>
-          <div class="space-y-1">
-            <div class="text-xs font-semibold text-emerald-800 tracking-wide uppercase">오늘의 목표 식단</div>
-            <div class="flex items-center gap-2">
-              <label for="input-target-kcal" class="text-xs font-medium text-slate-600">권장 기준:</label>
-              <input type="number" id="input-target-kcal" value="2000" min="1000" max="4000" step="50" class="w-20 text-center font-bold text-slate-800 bg-white border border-slate-300 rounded-lg py-1 text-sm outline-none focus:ring-2 focus:ring-emerald-500/30">
-              <span class="text-xs text-slate-500">kcal</span>
+          <p class="text-xs text-slate-500 mb-4 leading-relaxed">
+            식품명을 검색해 실제 영양성분을 조회하세요. <strong>식단 추가 1회는 표시된 기준량 1개 분량</strong>입니다.
+          </p>
+
+          <!-- 검색 폼 -->
+          <form id="apiSearchForm" class="space-y-3" novalidate>
+            <div class="flex flex-col sm:flex-row gap-2">
+              <label for="searchFoodName" class="sr-only">식품명 검색</label>
+              <input
+                type="text"
+                id="searchFoodName"
+                placeholder="식품명 입력 (예: 김밥, 시금치나물, 닭가슴살, 우유)"
+                class="flex-1 min-w-0 min-h-[44px] px-3.5 py-2.5 text-sm rounded-xl border border-slate-300 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/15 transition"
+              />
+              <button
+                type="submit"
+                id="btnSearchApi"
+                class="min-h-[44px] px-5 py-2.5 text-sm font-semibold rounded-xl bg-brand-500 text-white hover:bg-brand-600 disabled:opacity-60 disabled:cursor-not-allowed active:scale-[0.99] transition shrink-0"
+              >
+                DB 검색
+              </button>
             </div>
-            <p class="text-[11px] text-slate-500">청소년 평균 권장 칼로리 기준</p>
-          </div>
-        </div>
 
-        <!-- Dynamic Evaluation Card -->
-        <div class="w-full lg:flex-1 max-w-xl">
-          <div id="status-evaluation-card" class="p-4 sm:p-5 rounded-2xl bg-white border border-emerald-200 shadow-sm flex items-center justify-between gap-4 transition-all">
-            <div class="flex items-center gap-3.5">
-              <span id="eval-emoji" class="text-3xl sm:text-4xl shrink-0">🥣</span>
+            <!-- 빠른 추천 검색어 & 상세 검색조건 토글 -->
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <button
+                type="button"
+                id="btnToggleFilters"
+                aria-expanded="false"
+                class="min-h-[40px] px-2.5 py-1.5 rounded-lg text-xs font-medium text-slate-600 hover:bg-slate-100 hover:text-brand-700 flex items-center gap-1 transition"
+              >
+                <span id="filterToggleArrow">▸</span>
+                <span>상세 검색조건 (제조사·분류·품목번호 등)</span>
+              </button>
+              <div class="flex flex-wrap gap-1.5" id="quickSearchChips"></div>
+            </div>
+
+            <!-- 선택적 상세 검색조건 (빈 값은 URLSearchParams에서 완전 생략) -->
+            <div id="optionalFiltersBox" class="hidden grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5 pt-2 border-t border-slate-100">
               <div>
-                <div class="text-[11px] text-slate-400 font-medium">영양 섭취 상태</div>
-                <h3 id="eval-main-text" class="text-lg sm:text-xl font-bold tracking-tight text-sky-700 mt-0.5">식사량을 늘리세요</h3>
-                <p id="eval-sub-text" class="text-xs text-slate-500 mt-1">목표 에너지에 미달합니다. 신선한 식단으로 균형 있게 보충하세요.</p>
+                <label for="filterFoodCat1" class="block text-[11px] font-medium text-slate-500 mb-1">식품대분류명 (FOOD_CAT1_NM)</label>
+                <input
+                  type="text"
+                  id="filterFoodCat1"
+                  placeholder="예: 밥류, 구이류"
+                  class="w-full min-h-[40px] px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:border-brand-500"
+                />
+              </div>
+              <div>
+                <label for="filterMakerNm" class="block text-[11px] font-medium text-slate-500 mb-1">업체/제조사명 (MAKER_NM)</label>
+                <input
+                  type="text"
+                  id="filterMakerNm"
+                  placeholder="예: 풀무원, CJ"
+                  class="w-full min-h-[40px] px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:border-brand-500"
+                />
+              </div>
+              <div>
+                <label for="filterDbClass" class="block text-[11px] font-medium text-slate-500 mb-1">데이터구분 (DB_CLASS_NM)</label>
+                <select
+                  id="filterDbClass"
+                  class="w-full min-h-[40px] px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:border-brand-500 text-slate-700"
+                >
+                  <option value="">전체 (미지정)</option>
+                  <option value="품목대표">품목대표</option>
+                  <option value="상용제품">상용제품</option>
+                </select>
+              </div>
+              <div>
+                <label for="filterItemReportNo" class="block text-[11px] font-medium text-slate-500 mb-1">품목제조보고번호 (ITEM_REPORT_NO)</label>
+                <input
+                  type="text"
+                  id="filterItemReportNo"
+                  placeholder="선택 입력"
+                  class="w-full min-h-[40px] px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:border-brand-500"
+                />
+              </div>
+              <div>
+                <label for="filterResearchYmd" class="block text-[11px] font-medium text-slate-500 mb-1">조사일자 (RESEARCH_YMD)</label>
+                <input
+                  type="text"
+                  id="filterResearchYmd"
+                  placeholder="예: 20230101"
+                  class="w-full min-h-[40px] px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:border-brand-500"
+                />
+              </div>
+              <div>
+                <label for="filterUpdateDate" class="block text-[11px] font-medium text-slate-500 mb-1">데이터수정일자 (UPDATE_DATE)</label>
+                <input
+                  type="text"
+                  id="filterUpdateDate"
+                  placeholder="예: 20240101"
+                  class="w-full min-h-[40px] px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:border-brand-500"
+                />
               </div>
             </div>
-            <div class="text-right shrink-0">
-              <div class="text-[10px] text-slate-400 font-medium">달성률</div>
-              <div id="eval-percentage" class="text-xl sm:text-2xl font-bold text-emerald-700">0%</div>
-            </div>
-          </div>
+          </form>
 
-          <!-- Progress Bar -->
-          <div class="mt-3 space-y-1">
-            <div class="flex justify-between text-xs text-slate-600 font-medium px-1">
-              <span>섭취 칼로리: <strong id="progress-current-text" class="text-emerald-800">0</strong> / <span id="progress-target-text">2000</span> kcal</span>
-              <span id="progress-status-badge" class="text-slate-500">충전 필요</span>
+          <!-- API 검색 결과 영역 -->
+          <div class="mt-4">
+            <div class="flex flex-wrap items-center justify-between gap-1 mb-2">
+              <span id="apiResultStatusText" class="text-xs font-medium text-slate-600">
+                검색어를 입력하고 'DB 검색'을 눌러 주세요.
+              </span>
+              <span class="text-[11px] text-slate-400">영양값은 표시된 기준량 1개 분량</span>
             </div>
-            <div class="w-full bg-white/80 rounded-full h-3 p-0.5 border border-emerald-200/80 shadow-inner">
-              <div id="progress-bar-fill" class="bg-emerald-500 h-full rounded-full transition-all duration-500" style="width: 0%"></div>
+
+            <div id="apiSearchResultContainer" class="border border-slate-200 rounded-xl overflow-hidden bg-slate-50/50">
+              <div class="p-5 text-center text-xs text-slate-400">
+                검색된 식품 목록이 이곳에 표시됩니다.
+              </div>
             </div>
           </div>
         </div>
 
+        <div class="pt-2 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-400">
+          <span>데이터 출처: 식품의약품안전처 식품영양성분DB정보</span>
+          <span>※ 빈 영양값은 0이 아닌 '정보 없음'으로 표시</span>
+        </div>
       </div>
 
-      <!-- Nutrients Stat Grid -->
-      <div class="grid grid-cols-2 sm:grid-cols-5 gap-2.5 mt-5 pt-4 border-t-2 border-emerald-200/60">
-        <!-- Calorie -->
-        <div class="bg-white/90 border-2 border-emerald-100 p-2.5 rounded-2xl shadow-sm">
-          <div class="text-[11px] font-bold text-slate-500 flex items-center justify-between">
-            <span>🔥 총 열량</span>
-            <span id="flag-kcal" class="text-[9px] text-amber-600 font-bold"></span>
-          </div>
-          <div class="text-base font-extrabold text-slate-800 mt-0.5"><span id="total-kcal">0</span> <span class="text-xs font-normal text-slate-500">kcal</span></div>
-        </div>
-
-        <!-- Carbohydrates -->
-        <div class="bg-white/90 border-2 border-emerald-100 p-2.5 rounded-2xl shadow-sm">
-          <div class="text-[11px] font-bold text-slate-500 flex items-center justify-between">
-            <span>🌾 탄수화물</span>
-            <span id="flag-carbs" class="text-[9px] text-amber-600 font-bold"></span>
-          </div>
-          <div class="text-base font-extrabold text-slate-800 mt-0.5"><span id="total-carbs">0</span> <span class="text-xs font-normal text-slate-500">g</span></div>
-        </div>
-
-        <!-- Protein -->
-        <div class="bg-white/90 border-2 border-emerald-100 p-2.5 rounded-2xl shadow-sm">
-          <div class="text-[11px] font-bold text-slate-500 flex items-center justify-between">
-            <span>🍗 단백질</span>
-            <span id="flag-protein" class="text-[9px] text-amber-600 font-bold"></span>
-          </div>
-          <div class="text-base font-extrabold text-slate-800 mt-0.5"><span id="total-protein">0</span> <span class="text-xs font-normal text-slate-500">g</span></div>
-        </div>
-
-        <!-- Fat -->
-        <div class="bg-white/90 border-2 border-emerald-100 p-2.5 rounded-2xl shadow-sm">
-          <div class="text-[11px] font-bold text-slate-500 flex items-center justify-between">
-            <span>🥑 지방</span>
-            <span id="flag-fat" class="text-[9px] text-amber-600 font-bold"></span>
-          </div>
-          <div class="text-base font-extrabold text-slate-800 mt-0.5"><span id="total-fat">0</span> <span class="text-xs font-normal text-slate-500">g</span></div>
-        </div>
-
-        <!-- Sodium -->
-        <div class="bg-white/90 border-2 border-emerald-100 p-2.5 rounded-2xl shadow-sm col-span-2 sm:col-span-1">
-          <div class="text-[11px] font-bold text-slate-500 flex items-center justify-between">
-            <span>🧂 나트륨</span>
-            <span id="flag-sodium" class="text-[9px] text-amber-600 font-bold"></span>
-          </div>
-          <div class="text-base font-extrabold text-slate-800 mt-0.5"><span id="total-sodium">0</span> <span class="text-xs font-normal text-slate-500">mg</span></div>
-        </div>
-      </div>
-    </section>
-
-    <!-- KEY FEATURE: Recommended Healthy Foods -->
-    <section class="card-anime p-4 sm:p-5 space-y-3">
-      <div class="flex items-center justify-between">
+      <!-- ② 싫어하는 음식 입력 카드 (5컬럼) -->
+      <div class="lg:col-span-5 bg-white rounded-2xl border border-slate-200 p-4 sm:p-6 shadow-xs flex flex-col justify-between">
         <div>
-          <h2 class="text-sm font-extrabold text-slate-800 flex items-center gap-1.5">
-            <span class="text-emerald-600 text-base">🍱</span> 추천 다이어트 스낵
-          </h2>
-          <p class="text-xs text-slate-500 font-medium">원클릭으로 영양 성분을 빠르게 검색하세요!</p>
+          <div class="flex items-center justify-between mb-1">
+            <h2 class="text-base sm:text-lg font-bold text-slate-900">2. 싫어하는 음식 (편식 대상)</h2>
+            <span id="dislikedCountBadge" class="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-700">
+              0개 등록됨
+            </span>
+          </div>
+          <p class="text-xs text-slate-500 mb-4 leading-relaxed">
+            식감이나 향 때문에 피하게 되는 식재료를 등록하면 3단계 도전 미션과 맞춤 레시피가 생성됩니다.
+          </p>
+
+          <!-- 싫어하는 음식 직접 입력 -->
+          <div class="flex gap-2 mb-4">
+            <label for="dislikedInput" class="sr-only">싫어하는 음식 입력</label>
+            <input
+              type="text"
+              id="dislikedInput"
+              placeholder="예: 브로콜리, 당근, 버섯, 생선..."
+              class="flex-1 min-w-0 min-h-[44px] px-3.5 py-2.5 text-sm rounded-xl border border-slate-300 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/15 transition"
+            />
+            <button
+              type="button"
+              id="btnAddDisliked"
+              class="min-h-[44px] px-4 py-2.5 text-sm font-semibold rounded-xl bg-slate-800 text-white hover:bg-slate-900 active:scale-[0.99] transition shrink-0"
+            >
+              등록
+            </button>
+          </div>
+
+          <!-- 청소년 다빈도 편식 식재료 빠른 등록 태그 -->
+          <div class="mb-4">
+            <p class="text-xs font-medium text-slate-500 mb-2">자주 피하는 식재료 빠른 등록</p>
+            <div id="quickDislikedChips" class="flex flex-wrap gap-1.5"></div>
+          </div>
+        </div>
+
+        <!-- 등록된 싫어하는 음식 목록 -->
+        <div class="pt-3 border-t border-slate-100">
+          <p class="text-xs font-medium text-slate-500 mb-2">등록된 편식 대상 음식 (클릭 시 삭제)</p>
+          <div id="dislikedList" class="flex flex-wrap gap-2 min-h-[44px]"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 영양 정보 누락 / 불균형 경고 배너 (필수 안내 문구 표시) -->
+    <div
+      id="imbalanceAlertBox"
+      class="hidden rounded-2xl border-2 border-amber-400 bg-amber-50 p-4 sm:p-5 text-amber-950 shadow-xs"
+      role="alert"
+    >
+      <div class="flex items-start gap-3">
+        <span class="mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-amber-400 text-amber-950 text-xs font-bold">
+          !
+        </span>
+        <div class="space-y-1">
+          <p class="text-sm sm:text-base font-bold text-amber-950">
+            영양 정보를 다시 확인하거나 다양한 음식을 골고루 선택해 보세요
+          </p>
+          <p id="imbalanceReasonText" class="text-xs sm:text-sm text-amber-900 leading-relaxed"></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 선택한 먹은 음식 식단표 및 열량·주요 영양소 합계 -->
+    <section class="bg-white rounded-2xl border border-slate-200 p-4 sm:p-6 shadow-xs space-y-5">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+        <div>
+          <div class="flex flex-wrap items-center gap-2">
+            <h2 class="text-base sm:text-lg font-bold text-slate-900">선택한 먹은 음식 식단표 및 영양소 합계</h2>
+            <span id="eatenCountBadge" class="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-brand-50 text-brand-700">
+              0개 선택됨
+            </span>
+            <span id="confirmedOnlyGlobalBadge" class="hidden text-xs font-semibold px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-300">
+              확인된 값만 합산
+            </span>
+          </div>
+          <p class="text-xs text-slate-500 mt-1">
+            각 행은 <strong>표시된 기준량(SERVING_SIZE) 1개 분량</strong>입니다. 같은 음식을 두 번 추가하면 각각의 분량으로 합산되며 개별 삭제할 수 있습니다.
+          </p>
+        </div>
+        <span class="text-[11px] text-slate-400 shrink-0">데이터 출처: 식품의약품안전처 식품영양성분DB정보</span>
+      </div>
+
+      <!-- 영양소 합계 요약 카드 5종 -->
+      <div class="grid grid-cols-2 sm:grid-cols-5 gap-3">
+        <div class="rounded-xl border border-slate-200 bg-slate-50/70 p-3.5">
+          <div class="flex items-center justify-between gap-1">
+            <p class="text-xs font-medium text-slate-500">총 열량 합계</p>
+            <span id="badgeKcalPartial" class="hidden text-[10px] font-semibold px-1.5 py-0.5 rounded bg-amber-100 text-amber-900">확인된 값만 합산</span>
+          </div>
+          <p id="sumKcal" class="text-lg sm:text-xl font-bold text-slate-900 mt-1">0 kcal</p>
+          <p class="text-[11px] text-slate-400 mt-0.5">선택 기준량 합산</p>
+        </div>
+        <div class="rounded-xl border border-slate-200 bg-slate-50/70 p-3.5">
+          <div class="flex items-center justify-between gap-1">
+            <p class="text-xs font-medium text-slate-500">탄수화물 합계</p>
+            <span id="badgeCarbsPartial" class="hidden text-[10px] font-semibold px-1.5 py-0.5 rounded bg-amber-100 text-amber-900">확인된 값만 합산</span>
+          </div>
+          <p id="sumCarbs" class="text-lg sm:text-xl font-bold text-slate-900 mt-1">0.0 g</p>
+          <p id="ratioCarbsText" class="text-[11px] text-slate-500 mt-0.5">열량 비중 0%</p>
+        </div>
+        <div class="rounded-xl border border-slate-200 bg-slate-50/70 p-3.5">
+          <div class="flex items-center justify-between gap-1">
+            <p class="text-xs font-medium text-slate-500">단백질 합계</p>
+            <span id="badgeProteinPartial" class="hidden text-[10px] font-semibold px-1.5 py-0.5 rounded bg-amber-100 text-amber-900">확인된 값만 합산</span>
+          </div>
+          <p id="sumProtein" class="text-lg sm:text-xl font-bold text-slate-900 mt-1">0.0 g</p>
+          <p id="ratioProteinText" class="text-[11px] text-slate-500 mt-0.5">열량 비중 0%</p>
+        </div>
+        <div class="rounded-xl border border-slate-200 bg-slate-50/70 p-3.5">
+          <div class="flex items-center justify-between gap-1">
+            <p class="text-xs font-medium text-slate-500">지방 합계</p>
+            <span id="badgeFatPartial" class="hidden text-[10px] font-semibold px-1.5 py-0.5 rounded bg-amber-100 text-amber-900">확인된 값만 합산</span>
+          </div>
+          <p id="sumFat" class="text-lg sm:text-xl font-bold text-slate-900 mt-1">0.0 g</p>
+          <p id="ratioFatText" class="text-[11px] text-slate-500 mt-0.5">열량 비중 0%</p>
+        </div>
+        <div class="col-span-2 sm:col-span-1 rounded-xl border border-slate-200 bg-slate-50/70 p-3.5">
+          <div class="flex items-center justify-between gap-1">
+            <p class="text-xs font-medium text-slate-500">나트륨 합계</p>
+            <span id="badgeSodiumPartial" class="hidden text-[10px] font-semibold px-1.5 py-0.5 rounded bg-amber-100 text-amber-900">확인된 값만 합산</span>
+          </div>
+          <p id="sumSodium" class="text-lg sm:text-xl font-bold text-slate-900 mt-1">0 mg</p>
+          <p class="text-[11px] text-slate-400 mt-0.5">1일 기준 2,000mg 미만</p>
         </div>
       </div>
 
-      <div class="flex flex-wrap gap-2">
-        <button class="btn-quick-recommend px-3.5 py-2 rounded-2xl bg-emerald-50 hover:bg-emerald-100 border-2 border-emerald-200 text-emerald-900 text-xs font-bold transition-all shadow-sm active:scale-95 flex items-center gap-1.5" data-keyword="닭가슴살">
-          <span>🍗</span> 닭가슴살
+      <!-- 모바일 카드 뷰 (sm 미만 화면에서 터치하기 쉬운 카드형 리스트) -->
+      <div id="eatenMobileCardList" class="sm:hidden space-y-2.5"></div>
+
+      <!-- 데스크톱·태블릿 정리 표 (sm 이상 화면) -->
+      <div class="hidden sm:block overflow-x-auto border border-slate-200 rounded-xl">
+        <table class="w-full text-left border-collapse text-sm">
+          <thead>
+            <tr class="border-b border-slate-200 bg-slate-50 text-slate-600 text-xs">
+              <th class="py-3 px-3 font-semibold">순번</th>
+              <th class="py-3 px-3 font-semibold">식품명 (FOOD_NM_KR)</th>
+              <th class="py-3 px-3 font-semibold">분류 / 제조사</th>
+              <th class="py-3 px-3 font-semibold">기준량 (1회)</th>
+              <th class="py-3 px-3 font-semibold text-right">열량(kcal)</th>
+              <th class="py-3 px-3 font-semibold text-right">탄수화물(g)</th>
+              <th class="py-3 px-3 font-semibold text-right">단백질(g)</th>
+              <th class="py-3 px-3 font-semibold text-right">지방(g)</th>
+              <th class="py-3 px-3 font-semibold text-right">나트륨(mg)</th>
+              <th class="py-3 px-3 font-semibold text-center">상세 / 개별 삭제</th>
+            </tr>
+          </thead>
+          <tbody id="eatenNutritionTableBody" class="divide-y divide-slate-100"></tbody>
+          <tfoot id="eatenNutritionTableFoot" class="border-t-2 border-slate-200 bg-brand-50/40 font-bold text-slate-900"></tfoot>
+        </table>
+      </div>
+
+      <!-- 선택 음식 세부 영양소 패널 -->
+      <div id="foodDetailDrawer" class="hidden rounded-xl border border-slate-200 bg-slate-50 p-4 text-xs space-y-2">
+        <div class="flex items-center justify-between gap-2">
+          <h3 id="drawerFoodTitle" class="font-bold text-slate-900 text-sm">세부 영양성분 정보</h3>
+          <button
+            type="button"
+            id="btnCloseDrawer"
+            class="min-h-[36px] px-3 py-1 rounded-lg bg-white border border-slate-200 text-slate-600 hover:text-slate-900 font-semibold"
+          >
+            닫기 ×
+          </button>
+        </div>
+        <div id="drawerFoodContent" class="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1"></div>
+      </div>
+    </section>
+
+    <!-- 핵심 3대 기능 탭 내비게이션 -->
+    <section class="bg-white rounded-2xl border border-slate-200 p-2 shadow-xs">
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-2" role="tablist">
+        <button
+          type="button"
+          data-tab="challenge"
+          class="tab-btn min-h-[44px] w-full py-3 px-4 rounded-xl text-sm font-semibold transition flex items-center justify-center gap-2 bg-brand-500 text-white"
+        >
+          <span>① 음식 도전 (편식 극복 미션)</span>
         </button>
-        <button class="btn-quick-recommend px-3.5 py-2 rounded-2xl bg-rose-50 hover:bg-rose-100 border-2 border-rose-200 text-rose-900 text-xs font-bold transition-all shadow-sm active:scale-95 flex items-center gap-1.5" data-keyword="방울토마토">
-          <span>🍅</span> 방울토마토
+        <button
+          type="button"
+          data-tab="analysis"
+          class="tab-btn min-h-[44px] w-full py-3 px-4 rounded-xl text-sm font-semibold transition flex items-center justify-center gap-2 text-slate-600 hover:bg-slate-50"
+        >
+          <span>② 식습관 분석 및 맞춤 추천</span>
         </button>
-        <button class="btn-quick-recommend px-3.5 py-2 rounded-2xl bg-amber-50 hover:bg-amber-100 border-2 border-amber-200 text-amber-900 text-xs font-bold transition-all shadow-sm active:scale-95 flex items-center gap-1.5" data-keyword="두부">
-          <span>🧊</span> 두부
-        </button>
-        <button class="btn-quick-recommend px-3.5 py-2 rounded-2xl bg-yellow-50 hover:bg-yellow-100 border-2 border-yellow-200 text-yellow-900 text-xs font-bold transition-all shadow-sm active:scale-95 flex items-center gap-1.5" data-keyword="계란">
-          <span>🥚</span> 삶은 계란
-        </button>
-        <button class="btn-quick-recommend px-3.5 py-2 rounded-2xl bg-blue-50 hover:bg-blue-100 border-2 border-blue-200 text-blue-900 text-xs font-bold transition-all shadow-sm active:scale-95 flex items-center gap-1.5" data-keyword="요거트">
-          <span>🥛</span> 플레인 요거트
-        </button>
-        <button class="btn-quick-recommend px-3.5 py-2 rounded-2xl bg-teal-50 hover:bg-teal-100 border-2 border-teal-200 text-teal-900 text-xs font-bold transition-all shadow-sm active:scale-95 flex items-center gap-1.5" data-keyword="오이">
-          <span>🥒</span> 오이
+        <button
+          type="button"
+          data-tab="recipe"
+          class="tab-btn min-h-[44px] w-full py-3 px-4 rounded-xl text-sm font-semibold transition flex items-center justify-center gap-2 text-slate-600 hover:bg-slate-50"
+        >
+          <span>③ 음식 레시피 추천</span>
         </button>
       </div>
     </section>
 
-    <!-- Main Content Split: Search & Meal Deck -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-
-      <!-- Left Column: Search & Food API Results (7 cols) -->
-      <section class="lg:col-span-7 card-anime p-5 flex flex-col gap-4">
-        
-        <div class="flex items-center justify-between border-b-2 border-slate-100 pb-3">
-          <h2 class="text-sm font-extrabold text-slate-800 flex items-center gap-2">
-            <i class="fa-solid fa-magnifying-glass text-emerald-600"></i>
-            <span>음식 검색 (식약처 DB)</span>
-          </h2>
-          <button id="btn-toggle-filters" class="text-xs text-slate-600 hover:text-slate-900 px-2.5 py-1 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors font-bold">
-            <i class="fa-solid fa-sliders mr-1"></i>상세 필터
-          </button>
-        </div>
-
-        <!-- Search Form -->
-        <form id="search-form" class="flex flex-col gap-3">
-          <div class="flex gap-2">
-            <div class="relative flex-1">
-              <input type="text" id="input-keyword" placeholder="음식명을 입력하세요 (예: 김밥, 닭가슴살, 라면)" class="w-full pl-10 pr-4 py-2.5 bg-white border-2 border-emerald-200 rounded-2xl focus:border-emerald-500 text-sm outline-none font-medium text-slate-800 placeholder-slate-400 shadow-inner transition-all">
-              <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-emerald-500 text-sm"></i>
-            </div>
-            <button type="submit" id="btn-search" class="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold px-5 py-2.5 rounded-2xl text-sm transition-all shadow-md active:scale-95 shrink-0 flex items-center gap-1.5">
-              <span>검색</span>
-            </button>
+    <!-- 핵심 기능 패널 ①: 음식 도전 -->
+    <section id="panel-challenge" class="tab-panel space-y-6">
+      <div class="bg-white rounded-2xl border border-slate-200 p-4 sm:p-6 shadow-xs space-y-5">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div>
+            <h2 class="text-base sm:text-lg font-bold text-slate-900">① 3단계 점진적 음식 도전 미션</h2>
+            <p class="text-xs sm:text-sm text-slate-500 mt-0.5">
+              싫어하는 음식도 부담 없는 3단계 순서대로 도전하면 뇌와 입맛이 천천히 익숙해집니다.
+            </p>
           </div>
-
-          <!-- Advanced Filters -->
-          <div id="advanced-filters" class="hidden bg-emerald-50/60 p-3.5 rounded-2xl border-2 border-emerald-200 grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-            <div>
-              <label for="input-maker" class="block font-bold text-slate-600 mb-1">제조사 (MAKER_NM)</label>
-              <input type="text" id="input-maker" placeholder="예: 농심" class="w-full px-3 py-1.5 bg-white border border-emerald-200 rounded-xl focus:border-emerald-500 outline-none">
+          <div class="min-w-[180px]">
+            <div class="flex items-center justify-between text-xs font-semibold mb-1">
+              <span class="text-slate-600">도전 달성률</span>
+              <span id="challengeProgressText" class="text-brand-700">0 / 0 (0%)</span>
             </div>
-            <div>
-              <label for="input-cat1" class="block font-bold text-slate-600 mb-1">식품대분류 (FOOD_CAT1_NM)</label>
-              <input type="text" id="input-cat1" placeholder="예: 조리식품" class="w-full px-3 py-1.5 bg-white border border-emerald-200 rounded-xl focus:border-emerald-500 outline-none">
+            <div class="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden">
+              <div id="challengeProgressBar" class="h-full bg-brand-500 transition-all duration-300" style="width: 0%"></div>
             </div>
-            <div>
-              <label for="input-dbclass" class="block font-bold text-slate-600 mb-1">DB구분 (DB_CLASS_NM)</label>
-              <input type="text" id="input-dbclass" placeholder="예: 가공식품" class="w-full px-3 py-1.5 bg-white border border-emerald-200 rounded-xl focus:border-emerald-500 outline-none">
-            </div>
-            <div>
-              <label for="select-rows" class="block font-bold text-slate-600 mb-1">페이지당 출력 건수</label>
-              <select id="select-rows" class="w-full px-3 py-1.5 bg-white border border-emerald-200 rounded-xl focus:border-emerald-500 outline-none font-medium">
-                <option value="10" selected>10개씩 보기</option>
-                <option value="20">20개씩 보기</option>
-                <option value="30">30개씩 보기</option>
-              </select>
-            </div>
-          </div>
-        </form>
-
-        <!-- Status / Error Banner Messages -->
-        <div id="status-container" class="hidden"></div>
-
-        <!-- Search Results Header & Pagination -->
-        <div id="results-header" class="hidden flex items-center justify-between pt-2 border-t-2 border-slate-100">
-          <span class="text-xs text-slate-600 font-bold" id="results-count-text">검색 결과 0건</span>
-          <div class="flex items-center space-x-2">
-            <button id="btn-prev-page" class="p-1.5 border-2 border-slate-200 rounded-xl text-slate-600 hover:bg-slate-100 disabled:opacity-30 disabled:cursor-not-allowed text-xs font-bold">
-              <i class="fa-solid fa-chevron-left"></i>
-            </button>
-            <span id="page-indicator" class="text-xs text-slate-700 px-1 font-bold">1 / 1</span>
-            <button id="btn-next-page" class="p-1.5 border-2 border-slate-200 rounded-xl text-slate-600 hover:bg-slate-100 disabled:opacity-30 disabled:cursor-not-allowed text-xs font-bold">
-              <i class="fa-solid fa-chevron-right"></i>
-            </button>
           </div>
         </div>
 
-        <!-- Search Results List -->
-        <div id="results-list" class="space-y-3 min-h-[200px]">
-          <div id="initial-placeholder" class="h-48 flex flex-col items-center justify-center text-slate-400 text-center p-6 border-2 border-dashed border-emerald-200 rounded-2xl bg-white/60">
-            <span class="text-4xl mb-2 animate-bounce">🔍</span>
-            <p class="text-xs font-bold text-slate-600">궁금한 음식을 검색하여 영양 정보를 확인해보세요!</p>
-            <p class="text-[11px] text-slate-400 mt-1">식품의약품안전처 DB 기반 정확한 영양성분을 안내합니다.</p>
+        <div id="challengeCardsContainer" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
+
+        <div class="pt-2">
+          <h3 class="text-sm font-bold text-slate-900 mb-2.5">편식 극복 도전 체크리스트 표</h3>
+          <div class="overflow-x-auto border border-slate-200 rounded-xl">
+            <table class="w-full text-left border-collapse text-sm">
+              <thead>
+                <tr class="border-b border-slate-200 bg-slate-50 text-slate-600 text-xs">
+                  <th class="py-3 px-3 font-semibold">도전 대상 음식</th>
+                  <th class="py-3 px-3 font-semibold">단계</th>
+                  <th class="py-3 px-3 font-semibold">실천 미션</th>
+                  <th class="py-3 px-3 font-semibold text-center">달성 체크</th>
+                </tr>
+              </thead>
+              <tbody id="challengeTableBody" class="divide-y divide-slate-100"></tbody>
+            </table>
           </div>
         </div>
-      </section>
+      </div>
+    </section>
 
-      <!-- Right Column: Food Inventory / Diet Deck (5 cols) -->
-      <section class="lg:col-span-5 card-anime p-5 flex flex-col gap-4">
-        
-        <div class="flex items-center justify-between border-b-2 border-slate-100 pb-3">
-          <div class="flex items-center gap-2">
-            <i class="fa-solid fa-utensils text-emerald-600"></i>
-            <h2 class="text-sm font-extrabold text-slate-800">내가 먹은 음식 목록</h2>
-          </div>
-          <button id="btn-clear-log" class="text-xs text-rose-600 hover:text-rose-700 bg-rose-50 hover:bg-rose-100 px-2.5 py-1 rounded-xl transition-colors font-bold border border-rose-200">
-            전체 삭제
-          </button>
+    <!-- 핵심 기능 패널 ②: 식습관 분석 및 맞춤 추천 -->
+    <section id="panel-analysis" class="tab-panel hidden space-y-6">
+      <div class="bg-white rounded-2xl border border-slate-200 p-4 sm:p-6 shadow-xs space-y-5">
+        <div>
+          <h2 class="text-base sm:text-lg font-bold text-slate-900">② 식습관 균형 분석 및 맞춤 대체 식품 추천</h2>
+          <p id="habitSummaryText" class="text-sm text-slate-700 mt-1.5 leading-relaxed"></p>
         </div>
 
-        <!-- Meal Items Scroll Container -->
-        <div id="log-list" class="space-y-2.5 min-h-[250px] max-h-[550px] overflow-y-auto custom-scrollbar pr-1">
-          <div id="log-empty-state" class="h-48 flex flex-col items-center justify-center text-slate-400 text-center p-6 border-2 border-dashed border-emerald-200 rounded-2xl bg-white/60">
-            <span class="text-4xl mb-2">🥗</span>
-            <p class="text-xs font-bold text-slate-600">아직 추가된 식단이 없어요</p>
-            <p class="text-[11px] text-slate-400 mt-1">검색 결과에서 <span class="text-emerald-700 font-bold">+ 식단 추가</span>를 누르면 여기에 기록됩니다.</p>
+        <div>
+          <h3 class="text-sm font-bold text-slate-900 mb-2.5">주요 영양소 균형 및 편식 공백 분석 표</h3>
+          <div class="overflow-x-auto border border-slate-200 rounded-xl">
+            <table class="w-full text-left border-collapse text-sm">
+              <thead>
+                <tr class="border-b border-slate-200 bg-slate-50 text-slate-600 text-xs">
+                  <th class="py-3 px-3 font-semibold">분석 항목</th>
+                  <th class="py-3 px-3 font-semibold text-right">현재 섭취 합계</th>
+                  <th class="py-3 px-3 font-semibold text-right">청소년 권장 기준/비율</th>
+                  <th class="py-3 px-3 font-semibold">진단 결과</th>
+                  <th class="py-3 px-3 font-semibold">개선 가이드</th>
+                </tr>
+              </thead>
+              <tbody id="nutrientBalanceTableBody" class="divide-y divide-slate-100"></tbody>
+            </table>
           </div>
         </div>
 
-      </section>
+        <div>
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 mb-2.5">
+            <h3 class="text-sm font-bold text-slate-900">맞춤 대체·보완 식품 추천 표</h3>
+            <span class="text-xs text-slate-500">추천 음식의 'API 검색' 버튼을 누르면 실제 영양 DB에서 조회합니다.</span>
+          </div>
+          <div class="overflow-x-auto border border-slate-200 rounded-xl">
+            <table class="w-full text-left border-collapse text-sm">
+              <thead>
+                <tr class="border-b border-slate-200 bg-slate-50 text-slate-600 text-xs">
+                  <th class="py-3 px-3 font-semibold">보완 목표</th>
+                  <th class="py-3 px-3 font-semibold">추천 식품 / 메뉴</th>
+                  <th class="py-3 px-3 font-semibold">추천 이유</th>
+                  <th class="py-3 px-3 font-semibold text-center">실시간 DB 조회</th>
+                </tr>
+              </thead>
+              <tbody id="recommendedMealTableBody" class="divide-y divide-slate-100"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
 
-    </div>
+    <!-- 핵심 기능 패널 ③: 음식 레시피 추천 -->
+    <section id="panel-recipe" class="tab-panel hidden space-y-6">
+      <div class="bg-white rounded-2xl border border-slate-200 p-4 sm:p-6 shadow-xs space-y-5">
+        <div>
+          <h2 class="text-base sm:text-lg font-bold text-slate-900">③ 청소년 친화 편식 극복 레시피 추천</h2>
+          <p class="text-xs sm:text-sm text-slate-500 mt-0.5">
+            싫어하는 식재료의 강한 향과 식감을 줄여주는 청소년 선호 조리법(볶음밥·그라탱·전·퀘사디아·카레) 레시피입니다.
+          </p>
+        </div>
+
+        <div class="overflow-x-auto border border-slate-200 rounded-xl">
+          <table class="w-full text-left border-collapse text-sm">
+            <thead>
+              <tr class="border-b border-slate-200 bg-slate-50 text-slate-600 text-xs">
+                <th class="py-3 px-3 font-semibold">레시피명</th>
+                <th class="py-3 px-3 font-semibold">활용 식재료</th>
+                <th class="py-3 px-3 font-semibold">조리 시간</th>
+                <th class="py-3 px-3 font-semibold">난이도</th>
+                <th class="py-3 px-3 font-semibold">편식 극복 조리 팁</th>
+              </tr>
+            </thead>
+            <tbody id="recipeComparisonTableBody" class="divide-y divide-slate-100"></tbody>
+          </table>
+        </div>
+
+        <div id="recipeCardsContainer" class="grid grid-cols-1 md:grid-cols-2 gap-5"></div>
+      </div>
+    </section>
   </main>
 
-  <!-- Modal: Raw JSON Inspector -->
-  <div id="json-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-    <div class="bg-white rounded-3xl shadow-2xl w-full max-w-2xl max-h-[85vh] flex flex-col overflow-hidden border-2 border-emerald-300">
-      <div class="px-5 py-3.5 border-b border-slate-100 flex items-center justify-between bg-emerald-50">
-        <div>
-          <h3 class="font-extrabold text-slate-800 text-sm">식품 원본 데이터 (raw body.item)</h3>
-          <p class="text-[11px] text-slate-500 font-medium">출처: 식품의약품안전처 식품영양성분DB정보</p>
-        </div>
-        <button id="btn-close-modal" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg">
-          <i class="fa-solid fa-xmark text-lg"></i>
-        </button>
-      </div>
-      <div class="p-4 overflow-y-auto flex-1 bg-slate-900 text-emerald-400 font-mono text-xs custom-scrollbar">
-        <pre id="json-modal-content" class="whitespace-pre-wrap break-all"></pre>
-      </div>
-      <div class="px-5 py-3 border-t border-slate-100 bg-slate-50 flex justify-end">
-        <button id="btn-modal-ok" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-xl text-xs font-bold transition-colors">
-          닫기
-        </button>
-      </div>
-    </div>
-  </div>
+  <!-- 푸터 -->
+  <footer class="max-w-6xl mx-auto px-4 sm:px-6 py-6 text-center text-xs text-slate-500 space-y-1">
+    <p class="font-medium text-slate-600">데이터 출처: 식품의약품안전처 식품영양성분DB정보</p>
+    <p class="text-slate-400">골고루 한 끼 · 청소년 편식 극복 및 균형 식단 설계 웹 애플리케이션</p>
+  </footer>
 
-  <!-- Modal: API & Usage Guide -->
-  <div id="guide-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-    <div class="bg-white rounded-3xl shadow-2xl w-full max-w-lg p-6 border-2 border-emerald-300 space-y-4">
-      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-        <h3 class="font-extrabold text-slate-800 text-sm flex items-center gap-2">
-          <i class="fa-solid fa-wand-magic-sparkles text-emerald-600"></i>
-          <span>수업용 식품영양 API 및 앱 가이드</span>
-        </h3>
-        <button id="btn-close-guide" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg">
-          <i class="fa-solid fa-xmark text-lg"></i>
-        </button>
-      </div>
-      <div class="text-xs text-slate-600 leading-relaxed space-y-2.5 font-medium">
-        <p>• <strong>API 중계 주소</strong>: Netlify 서버(<code class="bg-slate-100 px-1.5 py-0.5 rounded text-emerald-700 font-mono">glittery-dasik-3cb269.netlify.app</code>)를 통해 처리됩니다.</p>
-        <p>• <strong>인증키 보안</strong>: <code class="bg-slate-100 px-1.5 py-0.5 rounded text-amber-700 font-mono">serviceKey</code>는 서버에서 자동 처리되므로 전송하지 않습니다.</p>
-        <p>• <strong>누락값 처리</strong>: 영양 정보가 누락된 경우 <span class="text-amber-700 font-bold">[정보 없음]</span>으로 표시되며, 0으로 자동 변환하지 않습니다. 누락값이 포함된 합계는 <span class="text-amber-700 font-bold">(확인된 값만 합산)</span>으로 표기됩니다.</p>
-        <p>• <strong>1회 분량 기준</strong>: 식단 추가 1회는 제공된 기준량(1회 분량) 기준입니다.</p>
-        <p>• <strong>CORS 안내</strong>: 통신 및 CORS 문제가 발생할 경우 사용자에게 친절하게 안내하며 가상 성공 데이터로 대체하지 않습니다.</p>
-      </div>
-      <div class="pt-2 flex justify-end">
-        <button id="btn-guide-ok" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-2xl text-xs transition-colors shadow-sm">
-          확인했습니다!
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- App Script Logic -->
   <script>
-    const API_ENDPOINT = 'https://glittery-dasik-3cb269.netlify.app/api/food';
+    /**
+     * 수업용 식품영양 중계 API 주소
+     * - serviceKey는 서버에서 자동 처리하므로 클라이언트에 절대 포함/전송/저장하지 않음
+     */
+    const API_ENDPOINT = "https://glittery-dasik-3cb269.netlify.app/api/food";
+    const API_TIMEOUT_MS = 12000;
 
-    let currentState = {
-      keyword: '',
-      pageNo: 1,
-      numOfRows: 10,
-      targetKcal: 2000,
-      filters: {
-        MAKER_NM: '',
-        FOOD_CAT1_NM: '',
-        DB_CLASS_NM: ''
+    const QUICK_SEARCH_KEYWORDS = ["김밥", "시금치나물", "닭가슴살", "우유", "두부"];
+    const QUICK_DISLIKED_FOODS = ["브로콜리", "당근", "버섯", "생선", "가지", "시금치", "파프리카", "콩·두부"];
+
+    const CHALLENGE_STEPS = [
+      {
+        level: "1단계",
+        title: "익숙한 메뉴에 작게 섞어 맛보기",
+        mission: "볶음밥·카레·계란말이 등 좋아하는 음식 속에 잘게 다져 1~2조각 섞어 먹기",
+        tip: "향과 식감을 익숙한 음식과 함께 느끼면 거부감이 크게 줄어듭니다."
       },
-      searchResults: [],
-      totalCount: 0,
-      mealLogs: []
+      {
+        level: "2단계",
+        title: "선호하는 소스·조리법 활용하기",
+        mission: "치즈, 데리야끼 소스, 요거트 드레싱 또는 바삭하게 구운 조리법으로 3조각 맛보기",
+        tip: "익숙한 양념이나 고소한 풍미가 채소·생선 특유의 향을 부드럽게 감싸줍니다."
+      },
+      {
+        level: "3단계",
+        title: "반찬으로 한 입 이상 온전히 먹기",
+        mission: "원래 반찬 형태 그대로 한 입 이상 씹어 맛을 음미하고 도전 완료 체크하기",
+        tip: "작은 성공 경험을 기록하면 다음 편식 음식 도전도 훨씬 쉬워집니다."
+      }
+    ];
+
+    const RECIPES = [
+      {
+        id: "rec-1",
+        title: "치즈 듬뿍 브로콜리·당근 감자 그라탱",
+        targets: ["브로콜리", "당근", "채소"],
+        cookTime: "20분",
+        difficulty: "쉬움",
+        ingredients: ["브로콜리 5송이", "당근 1/4개", "삶은 감자 1개", "모차렐라 치즈 50g", "우유 3큰술"],
+        steps: [
+          "브로콜리와 당근은 잘게 다져 전자레인지에 1분 30초간 살짝 익힙니다.",
+          "으깬 감자에 우유와 다진 채소를 섞어 내열 용기에 담습니다.",
+          "위에 치즈를 넉넉히 올리고 전자레인지 또는 에어프라이어에서 치즈가 녹을 때까지 굽습니다."
+        ],
+        tip: "고소한 치즈와 부드러운 감자가 브로콜리·당근의 풋내와 씹는 부담을 줄여줍니다."
+      },
+      {
+        id: "rec-2",
+        title: "바삭 한입 버섯·가지 불고기 퀘사디아",
+        targets: ["버섯", "가지", "채소"],
+        cookTime: "15분",
+        difficulty: "쉬움",
+        ingredients: ["또띠아 1장", "새송이버섯 1/2개", "가지 1/4개", "불고기용 고기 60g", "슬라이스 치즈 1장"],
+        steps: [
+          "버섯과 가지는 얇게 채 썰어 불고기 양념한 고기와 함께 팬에서 수분 없이 볶습니다.",
+          "또띠아 반쪽에 치즈와 볶은 재료를 올리고 반으로 접습니다.",
+          "마른 팬에서 앞뒤로 노릇하고 바삭하게 구워 삼각형으로 자릅니다."
+        ],
+        tip: "가지의 물컹한 식감 대신 또띠아의 바삭함과 불고기 양념이 어우러져 간식처럼 즐기기 좋습니다."
+      },
+      {
+        id: "rec-3",
+        title: "달콤 순살 생선 데리야끼 볶음밥",
+        targets: ["생선", "고등어", "어류"],
+        cookTime: "15분",
+        difficulty: "보통",
+        ingredients: ["순살 생선 1토막", "밥 1공기", "달걀 1개", "간장 1큰술", "올리고당 1큰술"],
+        steps: [
+          "가시가 없는 순살 생선을 팬에 노릇하게 구운 뒤 한입 크기로 잘게 부숩니다.",
+          "간장과 올리고당을 1:1로 넣어 생선에 윤기 나게 양념을 입힙니다.",
+          "스크램블한 달걀과 밥을 넣고 함께 고슬고슬하게 볶아 완성합니다."
+        ],
+        tip: "가시 바르는 번거로움과 비린내를 없애고 달콤짭짤한 볶음밥 형태로 부담을 낮췄습니다."
+      },
+      {
+        id: "rec-4",
+        title: "황금빛 시금치·파프리카 미니 카레전",
+        targets: ["시금치", "파프리카", "콩·두부"],
+        cookTime: "15분",
+        difficulty: "쉬움",
+        ingredients: ["시금치 3줄기", "파프리카 1/4개", "두부 1/4모", "카레가루 1.5큰술", "부침가루 2큰술", "달걀 1개"],
+        steps: [
+          "시금치와 파프리카는 잘게 다지고 두부는 물기를 짜서 으깹니다.",
+          "볼에 손질한 재료와 달걀, 부침가루, 카레가루를 넣고 고루 반죽합니다.",
+          "기름을 두른 팬에 500원 동전 크기로 작게 부쳐 노릇하게 익힙니다."
+        ],
+        tip: "향긋한 카레 향과 미니 전의 바삭한 식감 덕분에 채소 반찬을 꺼리는 청소년도 쉽게 먹을 수 있습니다."
+      }
+    ];
+
+    /**
+     * 애플리케이션 상태
+     * - rawApiItems: 응답의 data.body.items 원본 배열을 변형이나 필드 삭제 없이 그대로 보관
+     * - mealEntries: 식단 추가 1회마다 고유 entryId와 원본 rawItem 참조를 보관 (같은 음식 중복 추가 및 개별 삭제 지원)
+     */
+    const state = {
+      rawApiItems: [],
+      mealEntries: [],
+      nextEntrySeq: 1,
+      dislikedFoods: ["브로콜리", "시금치"],
+      activeTab: "challenge",
+      completedChallenges: {},
+      isSearching: false
     };
 
-    // DOM Elements
-    const searchForm = document.getElementById('search-form');
-    const inputKeyword = document.getElementById('input-keyword');
-    const btnSearch = document.getElementById('btn-search');
-    const btnToggleFilters = document.getElementById('btn-toggle-filters');
-    const advancedFilters = document.getElementById('advanced-filters');
-    const inputTargetKcal = document.getElementById('input-target-kcal');
-
-    const inputMaker = document.getElementById('input-maker');
-    const inputCat1 = document.getElementById('input-cat1');
-    const inputDbClass = document.getElementById('input-dbclass');
-    const selectRows = document.getElementById('select-rows');
-
-    const statusContainer = document.getElementById('status-container');
-    const resultsHeader = document.getElementById('results-header');
-    const resultsCountText = document.getElementById('results-count-text');
-    const pageIndicator = document.getElementById('page-indicator');
-    const btnPrevPage = document.getElementById('btn-prev-page');
-    const btnNextPage = document.getElementById('btn-next-page');
-    const resultsList = document.getElementById('results-list');
-    const initialPlaceholder = document.getElementById('initial-placeholder');
-
-    const logList = document.getElementById('log-list');
-    const logEmptyState = document.getElementById('log-empty-state');
-    const btnClearLog = document.getElementById('btn-clear-log');
-
-    const statusEvaluationCard = document.getElementById('status-evaluation-card');
-    const evalEmoji = document.getElementById('eval-emoji');
-    const evalMainText = document.getElementById('eval-main-text');
-    const evalSubText = document.getElementById('eval-sub-text');
-    const evalPercentage = document.getElementById('eval-percentage');
-    const progressBarFill = document.getElementById('progress-bar-fill');
-    const progressCurrentText = document.getElementById('progress-current-text');
-    const progressTargetText = document.getElementById('progress-target-text');
-    const progressStatusBadge = document.getElementById('progress-status-badge');
-
-    // Nutrient Totals
-    const totalKcalEl = document.getElementById('total-kcal');
-    const totalCarbsEl = document.getElementById('total-carbs');
-    const totalProteinEl = document.getElementById('total-protein');
-    const totalFatEl = document.getElementById('total-fat');
-    const totalSodiumEl = document.getElementById('total-sodium');
-
-    const flagKcalEl = document.getElementById('flag-kcal');
-    const flagCarbsEl = document.getElementById('flag-carbs');
-    const flagProteinEl = document.getElementById('flag-protein');
-    const flagFatEl = document.getElementById('flag-fat');
-    const flagSodiumEl = document.getElementById('flag-sodium');
-
-    // Modals
-    const jsonModal = document.getElementById('json-modal');
-    const jsonModalContent = document.getElementById('json-modal-content');
-    const btnCloseModal = document.getElementById('btn-close-modal');
-    const btnModalOk = document.getElementById('btn-modal-ok');
-
-    const guideModal = document.getElementById('guide-modal');
-    const btnShowGuide = document.getElementById('btn-show-guide');
-    const btnCloseGuide = document.getElementById('btn-close-guide');
-    const btnGuideOk = document.getElementById('btn-guide-ok');
-
-    // Helper: Parse numerical values from string safely
-    function parseNutrientValue(val) {
-      if (val === null || val === undefined) return null;
-      const str = String(val).trim();
-      if (str === '' || str === 'N/A' || str === '-' || str === 'null') return null;
-      const cleanStr = str.replace(/,/g, '');
-      const num = parseFloat(cleanStr);
-      return isNaN(num) ? null : num;
-    }
-
-    // Helper: Format nutrient value display
-    function formatNutrientDisplay(val, unit = '') {
-      const parsed = parseNutrientValue(val);
-      if (parsed === null) {
-        return { text: '정보 없음', isMissing: true, value: null };
+    /**
+     * DOM 요소 생성 헬퍼 (모든 텍스트는 textContent로 안전하게 바인딩)
+     */
+    function createEl(tag, className = "", text = null) {
+      const el = document.createElement(tag);
+      if (className) el.className = className;
+      if (text !== null && text !== undefined) {
+        el.textContent = String(text);
       }
-      const formattedNum = Number.isInteger(parsed) ? parsed : parsed.toFixed(1);
-      return { text: `${formattedNum}${unit}`, value: parsed, isMissing: false };
+      return el;
     }
 
-    // Initialize Event Listeners
-    window.addEventListener('DOMContentLoaded', () => {
-      // Calorie Target Change
-      inputTargetKcal.addEventListener('change', (e) => {
-        const val = parseInt(e.target.value, 10);
-        if (val && val >= 500 && val <= 5000) {
-          currentState.targetKcal = val;
-          calculateTotals();
-        } else {
-          e.target.value = currentState.targetKcal;
-        }
-      });
-
-      // Toggle Filter
-      btnToggleFilters.addEventListener('click', () => {
-        advancedFilters.classList.toggle('hidden');
-      });
-
-      // Search Submit
-      searchForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const kw = inputKeyword.value.trim();
-        if (!kw) {
-          showStatusBanner('error', '검색어를 입력해주세요.');
-          return;
-        }
-        triggerSearch(kw);
-      });
-
-      // Quick Recommendations
-      document.querySelectorAll('.btn-quick-recommend').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const kw = btn.getAttribute('data-keyword');
-          inputKeyword.value = kw;
-          triggerSearch(kw);
-        });
-      });
-
-      // Pagination
-      btnPrevPage.addEventListener('click', () => {
-        if (currentState.pageNo > 1) {
-          currentState.pageNo--;
-          fetchFoodData();
-        }
-      });
-
-      btnNextPage.addEventListener('click', () => {
-        const maxPage = Math.ceil(currentState.totalCount / currentState.numOfRows) || 1;
-        if (currentState.pageNo < maxPage) {
-          currentState.pageNo++;
-          fetchFoodData();
-        }
-      });
-
-      // Clear Log
-      btnClearLog.addEventListener('click', () => {
-        if (currentState.mealLogs.length === 0) return;
-        currentState.mealLogs = [];
-        renderMealLogs();
-        calculateTotals();
-      });
-
-      // Modals
-      btnShowGuide.addEventListener('click', () => guideModal.classList.remove('hidden'));
-      btnCloseGuide.addEventListener('click', () => guideModal.classList.add('hidden'));
-      btnGuideOk.addEventListener('click', () => guideModal.classList.add('hidden'));
-
-      btnCloseModal.addEventListener('click', () => jsonModal.classList.add('hidden'));
-      btnModalOk.addEventListener('click', () => jsonModal.classList.add('hidden'));
-
-      calculateTotals();
-    });
-
-    function triggerSearch(kw) {
-      currentState.keyword = kw;
-      currentState.pageNo = 1;
-      currentState.numOfRows = parseInt(selectRows.value, 10) || 10;
-      currentState.filters.MAKER_NM = inputMaker.value.trim();
-      currentState.filters.FOOD_CAT1_NM = inputCat1.value.trim();
-      currentState.filters.DB_CLASS_NM = inputDbClass.value.trim();
-      fetchFoodData();
+    /**
+     * 문자열 숫자 안전 파싱 함수
+     * - 값 유무를 먼저 확인하고 빈 문자열/null/undefined는 null 반환 (절대 0이 아님)
+     * - 쉼표(,) 제거 후 Number 변환
+     */
+    function parseSafeNumber(rawVal) {
+      if (rawVal === null || rawVal === undefined) return null;
+      const str = String(rawVal).trim();
+      if (str === "" || str === "-" || str.toLowerCase() === "null" || str.toLowerCase() === "nan") {
+        return null;
+      }
+      const cleaned = str.replace(/,/g, "");
+      const num = Number(cleaned);
+      return Number.isFinite(num) ? num : null;
     }
 
-    // Status Banner Display
-    function showStatusBanner(type, message) {
-      statusContainer.classList.remove('hidden');
-      statusContainer.textContent = '';
+    /**
+     * 숫자 표시 문자열 반환 (null이면 "정보 없음")
+     */
+    function formatNutrientText(numVal, decimals = 1, unit = "") {
+      if (numVal === null || numVal === undefined) {
+        return "정보 없음";
+      }
+      const formatted = decimals === 0 ? Math.round(numVal).toLocaleString() : numVal.toFixed(decimals);
+      return unit ? `${formatted} ${unit}` : formatted;
+    }
 
-      const box = document.createElement('div');
-      box.className = 'p-3 rounded-2xl text-xs font-bold border-2 flex items-center gap-2.5 leading-relaxed shadow-sm ';
+    /**
+     * 상태 알림 토스트 표시 (alert() 미사용, textContent 사용)
+     */
+    function showToast(message, type = "info") {
+      const toast = document.getElementById("statusToast");
+      toast.className = "rounded-xl border px-4 py-3 text-sm font-medium transition";
+      if (type === "success") {
+        toast.classList.add("bg-brand-50", "border-brand-200", "text-brand-800");
+      } else if (type === "warn") {
+        toast.classList.add("bg-amber-50", "border-amber-300", "text-amber-950");
+      } else if (type === "error") {
+        toast.classList.add("bg-red-50", "border-red-300", "text-red-900");
+      } else {
+        toast.classList.add("bg-slate-100", "border-slate-300", "text-slate-800");
+      }
+      toast.textContent = message;
+      clearTimeout(showToast._timer);
+      showToast._timer = setTimeout(() => {
+        toast.classList.add("hidden");
+      }, 4200);
+    }
 
-      if (type === 'loading') {
-        box.className += 'bg-slate-50 text-slate-700 border-slate-200';
-        const spinner = document.createElement('i');
-        spinner.className = 'fa-solid fa-spinner fa-spin text-emerald-600 text-sm';
-        const span = document.createElement('span');
-        span.textContent = message;
-        box.appendChild(spinner);
-        box.appendChild(span);
-      } else if (type === 'error') {
-        box.className += 'bg-rose-50 text-rose-800 border-rose-300';
-        const icon = document.createElement('i');
-        icon.className = 'fa-solid fa-circle-exclamation text-rose-500 text-sm shrink-0';
-        const span = document.createElement('span');
-        span.textContent = message;
-        box.appendChild(icon);
-        box.appendChild(span);
-      } else if (type === 'info') {
-        box.className += 'bg-amber-50 text-amber-900 border-amber-300';
-        const icon = document.createElement('i');
-        icon.className = 'fa-solid fa-circle-info text-amber-600 text-sm shrink-0';
-        const span = document.createElement('span');
-        span.textContent = message;
-        box.appendChild(icon);
-        box.appendChild(span);
+    /**
+     * API 검색 결과 영역에 상태/안내/오류 메시지 렌더링 (가상 성공 데이터 대체 금지)
+     */
+    function renderApiMessageBox(titleText, detailText = "", variant = "info") {
+      const containerEl = document.getElementById("apiSearchResultContainer");
+      containerEl.innerHTML = "";
+
+      const box = createEl("div", "p-5 text-center space-y-1.5");
+      if (variant === "error") {
+        box.classList.add("bg-red-50/70");
+      } else if (variant === "warn") {
+        box.classList.add("bg-amber-50/70");
       }
 
-      statusContainer.appendChild(box);
+      const titleEl = createEl(
+        "p",
+        `text-xs sm:text-sm font-semibold ${
+          variant === "error" ? "text-red-800" : variant === "warn" ? "text-amber-900" : "text-slate-700"
+        }`,
+        titleText
+      );
+      box.appendChild(titleEl);
+
+      if (detailText) {
+        const detailEl = createEl("p", "text-xs text-slate-600 leading-relaxed", detailText);
+        box.appendChild(detailEl);
+      }
+
+      containerEl.appendChild(box);
     }
 
-    function hideStatusBanner() {
-      statusContainer.classList.add('hidden');
-      statusContainer.textContent = '';
-    }
+    /**
+     * 수업용 식품영양 중계 API 호출
+     * - 빈 검색어, 검색 중, 결과 없음(03), HTTP 오류, API 오류 코드, JSON 파싱 오류, 시간 초과, CORS/통신 실패 처리
+     */
+    async function searchFoodApi(explicitKeyword = null) {
+      if (state.isSearching) return;
 
-    // Fetch Food API
-    async function fetchFoodData() {
-      hideStatusBanner();
-      showStatusBanner('loading', `'${currentState.keyword}' 검색 결과를 불러오는 중입니다...`);
+      const keywordInput = document.getElementById("searchFoodName");
+      const keyword = (explicitKeyword !== null ? explicitKeyword : keywordInput.value).trim();
+
+      const cat1 = document.getElementById("filterFoodCat1").value.trim();
+      const maker = document.getElementById("filterMakerNm").value.trim();
+      const dbClass = document.getElementById("filterDbClass").value.trim();
+      const itemReportNo = document.getElementById("filterItemReportNo").value.trim();
+      const researchYmd = document.getElementById("filterResearchYmd").value.trim();
+      const updateDate = document.getElementById("filterUpdateDate").value.trim();
+
+      // 1) 빈 검색어 처리
+      if (!keyword && !cat1 && !maker && !itemReportNo && !researchYmd && !updateDate && !dbClass) {
+        document.getElementById("apiResultStatusText").textContent = "검색어를 입력해 주세요.";
+        renderApiMessageBox(
+          "검색할 식품명이 비어 있습니다.",
+          "김밥, 시금치나물, 닭가슴살 등 식품명을 입력하거나 상세 검색조건을 채운 뒤 검색해 주세요.",
+          "warn"
+        );
+        showToast("검색할 식품명을 입력해 주세요.", "warn");
+        keywordInput.focus();
+        return;
+      }
+
+      // 2) 검색 중 상태 표시
+      state.isSearching = true;
+      const btnSearch = document.getElementById("btnSearchApi");
+      const statusTextEl = document.getElementById("apiResultStatusText");
       btnSearch.disabled = true;
+      btnSearch.textContent = "검색 중...";
+      statusTextEl.textContent = "식약처 식품영양성분DB 중계 API에서 조회 중입니다...";
+      renderApiMessageBox("식품영양 정보를 검색하고 있습니다...", "잠시만 기다려 주세요.", "info");
 
-      const params = new URLSearchParams();
-      params.append('pageNo', String(currentState.pageNo));
-      params.append('numOfRows', String(currentState.numOfRows));
-      params.append('type', 'json');
-      params.append('FOOD_NM_KR', currentState.keyword);
-
-      if (currentState.filters.MAKER_NM) params.append('MAKER_NM', currentState.filters.MAKER_NM);
-      if (currentState.filters.FOOD_CAT1_NM) params.append('FOOD_CAT1_NM', currentState.filters.FOOD_CAT1_NM);
-      if (currentState.filters.DB_CLASS_NM) params.append('DB_CLASS_NM', currentState.filters.DB_CLASS_NM);
-
-      const requestUrl = `${API_ENDPOINT}?${params.toString()}`;
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 10000);
+      const timeoutId = setTimeout(() => controller.abort(), API_TIMEOUT_MS);
 
       try {
-        const response = await fetch(requestUrl, { signal: controller.signal });
-        clearTimeout(timeoutId);
+        // URLSearchParams 구성 (serviceKey 절대 미포함, 빈 선택 조건은 생략)
+        const params = new URLSearchParams({
+          pageNo: "1",
+          numOfRows: "10",
+          type: "json"
+        });
+        if (keyword) params.set("FOOD_NM_KR", keyword);
+        if (maker) params.set("MAKER_NM", maker);
+        if (cat1) params.set("FOOD_CAT1_NM", cat1);
+        if (itemReportNo) params.set("ITEM_REPORT_NO", itemReportNo);
+        if (researchYmd) params.set("RESEARCH_YMD", researchYmd);
+        if (updateDate) params.set("UPDATE_DATE", updateDate);
+        if (dbClass) params.set("DB_CLASS_NM", dbClass);
 
+        const url = new URL(API_ENDPOINT);
+        url.search = params.toString();
+
+        const response = await fetch(url.toString(), {
+          method: "GET",
+          signal: controller.signal
+        });
+
+        // 3) HTTP 오류 확인
         if (!response.ok) {
-          throw new Error(`HTTP 오류 발생 (${response.status})`);
+          state.rawApiItems = [];
+          statusTextEl.textContent = `HTTP 오류 (${response.status})`;
+          renderApiMessageBox(
+            `서버에서 HTTP 오류(${response.status})를 반환했습니다.`,
+            "중계 서버 상태 또는 요청 주소를 확인한 뒤 다시 시도해 주세요.",
+            "error"
+          );
+          return;
         }
 
+        // 4) JSON이 아닌 오류 응답 처리
+        const rawText = await response.text();
         let data;
         try {
-          data = await response.json();
-        } catch (jsonErr) {
-          throw new Error('응답을 JSON 형식으로 해석하지 못했습니다.');
-        }
-
-        const header = data?.header || data?.response?.header;
-        const body = data?.body || data?.response?.body;
-        const resultCode = header?.resultCode;
-        const resultMsg = header?.resultMsg || '오류';
-
-        if (resultCode === '03') {
-          currentState.searchResults = [];
-          currentState.totalCount = 0;
-          hideStatusBanner();
-          showStatusBanner('info', `'${currentState.keyword}'에 해당하는 검색 결과가 없습니다.`);
-          renderSearchResults();
+          data = JSON.parse(rawText);
+        } catch (parseErr) {
+          state.rawApiItems = [];
+          statusTextEl.textContent = "응답 형식 오류 (JSON 아님)";
+          renderApiMessageBox(
+            "서버 응답이 올바른 JSON 형식이 아닙니다.",
+            "중계 API 서버가 HTML 오류 페이지나 일반 텍스트를 반환했습니다. 잠시 후 다시 시도해 주세요.",
+            "error"
+          );
           return;
         }
 
-        if (resultCode !== '00') {
-          throw new Error(`API 오류: [코드 ${resultCode}] ${resultMsg}`);
-        }
+        // 5) header.resultCode 확인 (00: 정상, 03: 데이터 없음)
+        const resultCode = data?.header?.resultCode;
+        const resultMsg = data?.header?.resultMsg || "";
 
-        const rawItems = body?.items;
-        if (!rawItems || !Array.isArray(rawItems) || rawItems.length === 0) {
-          currentState.searchResults = [];
-          currentState.totalCount = 0;
-          hideStatusBanner();
-          showStatusBanner('info', `'${currentState.keyword}' 검색 결과가 없습니다.`);
-          renderSearchResults();
+        if (resultCode === "03") {
+          state.rawApiItems = [];
+          statusTextEl.textContent = "검색 결과 없음 (resultCode: 03)";
+          renderApiMessageBox(
+            "일치하는 식품 검색 결과가 없습니다.",
+            "식품명을 더 짧은 핵심 단어로 입력하거나 상세 검색조건을 비우고 다시 검색해 보세요.",
+            "info"
+          );
           return;
         }
 
-        currentState.searchResults = rawItems;
-        currentState.totalCount = body.totalCount ? parseInt(body.totalCount, 10) : rawItems.length;
+        if (resultCode && resultCode !== "00") {
+          state.rawApiItems = [];
+          statusTextEl.textContent = `API 오류 코드: ${resultCode}`;
+          renderApiMessageBox(
+            `API 오류 코드(${resultCode})가 반환되었습니다.`,
+            resultMsg ? `서버 메시지: ${resultMsg}` : "요청 조건을 확인한 뒤 다시 시도해 주세요.",
+            "error"
+          );
+          return;
+        }
 
-        hideStatusBanner();
-        renderSearchResults();
+        // 6) body.items 원본 배열을 변형하거나 필드를 삭제하지 않고 그대로 보관
+        const itemsRaw = data?.body?.items;
+        const itemsList = Array.isArray(itemsRaw) ? itemsRaw : itemsRaw ? [itemsRaw] : [];
+        state.rawApiItems = itemsList;
 
+        if (itemsList.length === 0) {
+          statusTextEl.textContent = "검색 결과 0건";
+          renderApiMessageBox(
+            "조회된 식품 데이터가 없습니다.",
+            "다른 식품명으로 다시 검색해 보세요.",
+            "info"
+          );
+          return;
+        }
+
+        statusTextEl.textContent = `총 ${itemsList.length}건 조회됨 (식단 추가 1회 = 표시된 기준량 1개 분량)`;
+        renderApiSearchResults();
       } catch (err) {
-        clearTimeout(timeoutId);
-        currentState.searchResults = [];
-        currentState.totalCount = 0;
-        renderSearchResults();
-
-        let friendlyMsg = '';
-        if (err.name === 'AbortError') {
-          friendlyMsg = '요청 시간이 초과되었습니다. 네트워크 연결을 확인해주세요.';
-        } else if (err.message && err.message.includes('Failed to fetch')) {
-          friendlyMsg = 'CORS 또는 통신 실패가 발생했습니다. 담당 선생님께 서버의 CORS 설정을 확인하도록 안내해주세요.';
+        state.rawApiItems = [];
+        // 7) 시간 초과 (AbortError) 및 CORS/통신 실패 처리 (가상 데이터 대체 금지)
+        if (err && err.name === "AbortError") {
+          statusTextEl.textContent = "요청 시간 초과";
+          renderApiMessageBox(
+            "서버 응답 시간이 초과되었습니다.",
+            "네트워크 연결 상태를 확인한 뒤 다시 'DB 검색'을 눌러 주세요.",
+            "error"
+          );
         } else {
-          friendlyMsg = err.message || '통신 오류가 발생했습니다.';
+          statusTextEl.textContent = "CORS 또는 네트워크 통신 실패";
+          renderApiMessageBox(
+            "네트워크 연결 또는 CORS 정책으로 인해 데이터를 불러오지 못했습니다.",
+            "인터넷 연결을 확인해 주세요. 만약 브라우저 콘솔에 CORS 오류가 표시된다면 선생님이 중계 서버의 CORS 허용 설정을 확인해 주셔야 합니다.",
+            "error"
+          );
         }
-
-        showStatusBanner('error', friendlyMsg);
       } finally {
+        clearTimeout(timeoutId);
+        state.isSearching = false;
         btnSearch.disabled = false;
+        btnSearch.textContent = "DB 검색";
       }
     }
 
-    // Render Search Results
-    function renderSearchResults() {
-      if (initialPlaceholder) initialPlaceholder.classList.add('hidden');
-      resultsList.textContent = '';
+    /**
+     * API 검색 결과 렌더링 (모바일 카드 + 데스크톱 표, textContent 안전 바인딩)
+     */
+    function renderApiSearchResults() {
+      const containerEl = document.getElementById("apiSearchResultContainer");
+      containerEl.innerHTML = "";
+      if (state.rawApiItems.length === 0) return;
 
-      if (currentState.searchResults.length === 0) {
-        resultsHeader.classList.add('hidden');
-        const noResDiv = document.createElement('div');
-        noResDiv.className = 'h-40 flex flex-col items-center justify-center text-slate-400 text-center p-6 bg-white/60 border-2 border-slate-200 rounded-2xl';
-        
-        const p = document.createElement('p');
-        p.className = 'text-xs font-bold text-slate-500';
-        p.textContent = '표시할 검색 결과가 없습니다.';
+      // 모바일용 터치 친화 카드 목록 (< sm)
+      const mobileWrapper = createEl("div", "sm:hidden divide-y divide-slate-200 bg-white");
+      state.rawApiItems.forEach((rawItem, idx) => {
+        const name = rawItem.FOOD_NM_KR || "식품명 미표기";
+        const serving = rawItem.SERVING_SIZE ? String(rawItem.SERVING_SIZE).trim() : "기준량 정보 없음";
+        const meta = [rawItem.FOOD_CAT1_NM, rawItem.MAKER_NM, rawItem.DB_CLASS_NM].filter(Boolean).join(" · ");
+        const kcal = parseSafeNumber(rawItem.AMT_NUM1);
+        const carbs = parseSafeNumber(rawItem.AMT_NUM6);
+        const protein = parseSafeNumber(rawItem.AMT_NUM3);
+        const fat = parseSafeNumber(rawItem.AMT_NUM4);
 
-        noResDiv.appendChild(p);
-        resultsList.appendChild(noResDiv);
+        const card = createEl("div", "p-3.5 space-y-2");
+        const topRow = createEl("div", "flex items-start justify-between gap-2");
+        const infoDiv = createEl("div", "min-w-0");
+        infoDiv.appendChild(createEl("p", "text-sm font-bold text-slate-900 break-words", name));
+        if (meta) {
+          infoDiv.appendChild(createEl("p", "text-[11px] text-slate-400 mt-0.5", meta));
+        }
+        topRow.appendChild(infoDiv);
+
+        const addBtn = createEl(
+          "button",
+          "min-h-[40px] px-3 py-1.5 rounded-xl bg-brand-500 text-white text-xs font-semibold hover:bg-brand-600 active:scale-[0.98] transition shrink-0",
+          "+ 식단 추가"
+        );
+        addBtn.type = "button";
+        addBtn.addEventListener("click", () => addMealEntryFromRawItem(state.rawApiItems[idx]));
+        topRow.appendChild(addBtn);
+        card.appendChild(topRow);
+
+        const metaRow = createEl("div", "flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-slate-600");
+        metaRow.appendChild(createEl("span", "font-semibold text-brand-700", `기준량: ${serving}`));
+        metaRow.appendChild(createEl("span", "font-semibold text-slate-800", `열량: ${formatNutrientText(kcal, 0, "kcal")}`));
+        metaRow.appendChild(
+          createEl(
+            "span",
+            "text-slate-500",
+            `탄 ${formatNutrientText(carbs, 1)}g · 단 ${formatNutrientText(protein, 1)}g · 지 ${formatNutrientText(fat, 1)}g`
+          )
+        );
+        card.appendChild(metaRow);
+        mobileWrapper.appendChild(card);
+      });
+      containerEl.appendChild(mobileWrapper);
+
+      // 데스크톱·태블릿용 표 (>= sm)
+      const tableScroll = createEl("div", "hidden sm:block max-h-72 overflow-y-auto overflow-x-auto bg-white");
+      const table = createEl("table", "w-full text-left border-collapse");
+      const thead = createEl("thead", "sticky top-0 bg-slate-100 border-b border-slate-200 text-[11px] text-slate-600");
+      const headTr = createEl("tr");
+      [
+        { label: "식품명 / 분류", cls: "py-2.5 px-3 font-semibold" },
+        { label: "기준량 (1회)", cls: "py-2.5 px-3 font-semibold" },
+        { label: "열량", cls: "py-2.5 px-3 font-semibold text-right" },
+        { label: "탄 / 단 / 지 (g)", cls: "py-2.5 px-3 font-semibold text-right" },
+        { label: "식단 추가", cls: "py-2.5 px-3 font-semibold text-center" }
+      ].forEach((col) => headTr.appendChild(createEl("th", col.cls, col.label)));
+      thead.appendChild(headTr);
+      table.appendChild(thead);
+
+      const tbody = createEl("tbody", "divide-y divide-slate-200/70");
+      state.rawApiItems.forEach((rawItem, idx) => {
+        const name = rawItem.FOOD_NM_KR || "식품명 미표기";
+        const serving = rawItem.SERVING_SIZE ? String(rawItem.SERVING_SIZE).trim() : "정보 없음";
+        const meta = [rawItem.FOOD_CAT1_NM, rawItem.MAKER_NM, rawItem.DB_CLASS_NM].filter(Boolean).join(" · ") || "-";
+
+        const kcal = parseSafeNumber(rawItem.AMT_NUM1);
+        const carbs = parseSafeNumber(rawItem.AMT_NUM6);
+        const protein = parseSafeNumber(rawItem.AMT_NUM3);
+        const fat = parseSafeNumber(rawItem.AMT_NUM4);
+
+        const tr = createEl("tr", "hover:bg-slate-50 transition");
+
+        const tdName = createEl("td", "py-2.5 px-3");
+        tdName.appendChild(createEl("div", "font-semibold text-slate-900 text-xs sm:text-sm", name));
+        tdName.appendChild(createEl("div", "text-[11px] text-slate-400", meta));
+        tr.appendChild(tdName);
+
+        const tdServing = createEl(
+          "td",
+          `py-2.5 px-3 text-xs whitespace-nowrap ${rawItem.SERVING_SIZE ? "text-slate-700 font-medium" : "text-amber-700 font-medium"}`,
+          serving
+        );
+        tr.appendChild(tdServing);
+
+        const tdKcal = createEl(
+          "td",
+          `py-2.5 px-3 text-right text-xs font-semibold whitespace-nowrap ${kcal === null ? "text-amber-700" : "text-slate-800"}`,
+          formatNutrientText(kcal, 0, "kcal")
+        );
+        tr.appendChild(tdKcal);
+
+        const macroSummary = `${formatNutrientText(carbs, 1)} / ${formatNutrientText(protein, 1)} / ${formatNutrientText(fat, 1)}`;
+        tr.appendChild(createEl("td", "py-2.5 px-3 text-right text-xs text-slate-600 whitespace-nowrap", macroSummary));
+
+        const tdAction = createEl("td", "py-2.5 px-3 text-center whitespace-nowrap");
+        const addBtn = createEl(
+          "button",
+          "min-h-[36px] px-3 py-1.5 rounded-lg bg-brand-500 text-white text-xs font-semibold hover:bg-brand-600 transition",
+          "+ 식단 추가"
+        );
+        addBtn.type = "button";
+        addBtn.addEventListener("click", () => addMealEntryFromRawItem(state.rawApiItems[idx]));
+        tdAction.appendChild(addBtn);
+        tr.appendChild(tdAction);
+
+        tbody.appendChild(tr);
+      });
+
+      table.appendChild(tbody);
+      tableScroll.appendChild(table);
+      containerEl.appendChild(tableScroll);
+    }
+
+    /**
+     * 식단에 음식 1회(표시된 기준량 1개 분량) 추가
+     * - 원본 rawItem 객체를 변형하지 않고 그대로 참조 보관
+     * - 같은 음식을 두 번 추가해도 고유 entryId로 별도 항목 생성
+     */
+    function addMealEntryFromRawItem(rawItem) {
+      if (!rawItem) return;
+      const entryId = `meal-${state.nextEntrySeq++}`;
+      state.mealEntries.push({
+        entryId,
+        rawItem
+      });
+
+      const foodName = rawItem.FOOD_NM_KR || "선택한 음식";
+      const serving = rawItem.SERVING_SIZE ? String(rawItem.SERVING_SIZE).trim() : "기준량 정보 없음";
+      showToast(`'${foodName}' (기준량: ${serving}, 1개 분량)을(를) 식단에 추가했습니다.`, "success");
+      renderAll();
+    }
+
+    /**
+     * 식단에서 특정 항목 개별 삭제 (entryId 기준)
+     */
+    function removeMealEntryById(entryId) {
+      const target = state.mealEntries.find((entry) => entry.entryId === entryId);
+      state.mealEntries = state.mealEntries.filter((entry) => entry.entryId !== entryId);
+      document.getElementById("foodDetailDrawer").classList.add("hidden");
+      if (target) {
+        const name = target.rawItem.FOOD_NM_KR || "선택한 음식";
+        showToast(`'${name}' 항목을 식단에서 삭제했습니다.`, "info");
+      }
+      renderAll();
+    }
+
+    /**
+     * 선택 음식의 세부 영양성분 드로어 표시 (textContent 안전 바인딩)
+     */
+    function showFoodDetailDrawer(rawItem) {
+      const drawer = document.getElementById("foodDetailDrawer");
+      const titleEl = document.getElementById("drawerFoodTitle");
+      const contentEl = document.getElementById("drawerFoodContent");
+
+      const foodName = rawItem.FOOD_NM_KR || "식품";
+      const serving = rawItem.SERVING_SIZE ? String(rawItem.SERVING_SIZE).trim() : "기준량 정보 없음";
+      titleEl.textContent = `${foodName} (${serving} 1개 분량 기준) 세부 정보`;
+
+      contentEl.innerHTML = "";
+      const detailFields = [
+        { label: "기준량 (SERVING_SIZE)", raw: serving },
+        { label: "열량 (AMT_NUM1)", val: parseSafeNumber(rawItem.AMT_NUM1), unit: "kcal", dec: 0 },
+        { label: "탄수화물 (AMT_NUM6)", val: parseSafeNumber(rawItem.AMT_NUM6), unit: "g", dec: 1 },
+        { label: "단백질 (AMT_NUM3)", val: parseSafeNumber(rawItem.AMT_NUM3), unit: "g", dec: 1 },
+        { label: "지방 (AMT_NUM4)", val: parseSafeNumber(rawItem.AMT_NUM4), unit: "g", dec: 1 },
+        { label: "나트륨 (AMT_NUM13)", val: parseSafeNumber(rawItem.AMT_NUM13), unit: "mg", dec: 0 },
+        { label: "당류 (AMT_NUM7)", val: parseSafeNumber(rawItem.AMT_NUM7), unit: "g", dec: 1 },
+        { label: "식이섬유 (AMT_NUM8)", val: parseSafeNumber(rawItem.AMT_NUM8), unit: "g", dec: 1 },
+        { label: "칼슘 (AMT_NUM9)", val: parseSafeNumber(rawItem.AMT_NUM9), unit: "mg", dec: 1 },
+        { label: "철 (AMT_NUM10)", val: parseSafeNumber(rawItem.AMT_NUM10), unit: "mg", dec: 1 },
+        { label: "식품대분류 (FOOD_CAT1_NM)", raw: rawItem.FOOD_CAT1_NM || "정보 없음" },
+        { label: "업체/제조사 (MAKER_NM)", raw: rawItem.MAKER_NM || "정보 없음" }
+      ];
+
+      detailFields.forEach((f) => {
+        const card = createEl("div", "rounded-lg bg-white border border-slate-200 p-2.5");
+        card.appendChild(createEl("div", "text-[11px] text-slate-400", f.label));
+        const valueStr = f.raw !== undefined ? String(f.raw) : formatNutrientText(f.val, f.dec, f.unit);
+        const valEl = createEl(
+          "div",
+          `font-semibold mt-0.5 ${valueStr === "정보 없음" ? "text-amber-700" : "text-slate-800"}`,
+          valueStr
+        );
+        card.appendChild(valEl);
+        contentEl.appendChild(card);
+      });
+
+      drawer.classList.remove("hidden");
+    }
+
+    /**
+     * 싫어하는 음식 추가/삭제 및 렌더링
+     */
+    function addDislikedFood(rawName) {
+      const name = rawName.trim();
+      if (!name) {
+        showToast("싫어하는 음식이나 식재료를 입력해 주세요.", "warn");
         return;
       }
-
-      resultsHeader.classList.remove('hidden');
-      const totalPages = Math.ceil(currentState.totalCount / currentState.numOfRows) || 1;
-      
-      resultsCountText.textContent = `총 ${currentState.totalCount.toLocaleString()}건 중 ${currentState.searchResults.length}건`;
-      pageIndicator.textContent = `${currentState.pageNo} / ${totalPages}`;
-      btnPrevPage.disabled = currentState.pageNo <= 1;
-      btnNextPage.disabled = currentState.pageNo >= totalPages;
-
-      currentState.searchResults.forEach((item) => {
-        const itemCard = document.createElement('div');
-        itemCard.className = 'bg-white border-2 border-slate-200 hover:border-emerald-300 p-4 rounded-2xl transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-sm';
-
-        const infoDiv = document.createElement('div');
-        infoDiv.className = 'space-y-1 flex-1';
-
-        const badgeRow = document.createElement('div');
-        badgeRow.className = 'flex flex-wrap items-center gap-1.5 text-[10px]';
-
-        if (item.FOOD_CAT1_NM) {
-          const catSpan = document.createElement('span');
-          catSpan.className = 'bg-emerald-100 text-emerald-900 border border-emerald-300 px-2 py-0.5 rounded-full font-bold';
-          catSpan.textContent = item.FOOD_CAT1_NM;
-          badgeRow.appendChild(catSpan);
-        }
-
-        if (item.MAKER_NM) {
-          const makerSpan = document.createElement('span');
-          makerSpan.className = 'bg-slate-100 text-slate-700 px-2 py-0.5 rounded-full font-bold';
-          makerSpan.textContent = item.MAKER_NM;
-          badgeRow.appendChild(makerSpan);
-        }
-
-        const nameHeading = document.createElement('h3');
-        nameHeading.className = 'font-extrabold text-slate-800 text-sm leading-snug';
-        nameHeading.textContent = item.FOOD_NM_KR || '식품명 정보 없음';
-
-        const servingDiv = document.createElement('div');
-        servingDiv.className = 'text-xs text-slate-500 font-medium flex items-center gap-1';
-        servingDiv.textContent = `기준량: ${item.SERVING_SIZE || '정보 없음'}`;
-
-        const kcalDisplay = formatNutrientDisplay(item.AMT_NUM1, ' kcal');
-        const proteinDisplay = formatNutrientDisplay(item.AMT_NUM3, 'g');
-        const fatDisplay = formatNutrientDisplay(item.AMT_NUM4, 'g');
-        const carbsDisplay = formatNutrientDisplay(item.AMT_NUM6, 'g');
-
-        const nutGrid = document.createElement('div');
-        nutGrid.className = 'grid grid-cols-2 sm:grid-cols-4 gap-1.5 text-[11px] pt-1 text-slate-600 font-mono';
-
-        const addNutPill = (label, displayObj) => {
-          const pill = document.createElement('div');
-          pill.className = 'bg-slate-50 px-2 py-0.5 rounded-xl border border-slate-200 flex justify-between items-center';
-          
-          const lbl = document.createElement('span');
-          lbl.className = 'text-slate-400 font-sans font-bold';
-          lbl.textContent = label;
-
-          const val = document.createElement('span');
-          val.className = displayObj.isMissing ? 'text-amber-600 font-extrabold' : 'font-extrabold text-slate-700';
-          val.textContent = displayObj.text;
-
-          pill.appendChild(lbl);
-          pill.appendChild(val);
-          return pill;
-        };
-
-        nutGrid.appendChild(addNutPill('열량', kcalDisplay));
-        nutGrid.appendChild(addNutPill('단백질', proteinDisplay));
-        nutGrid.appendChild(addNutPill('지방', fatDisplay));
-        nutGrid.appendChild(addNutPill('탄수화물', carbsDisplay));
-
-        infoDiv.appendChild(badgeRow);
-        infoDiv.appendChild(nameHeading);
-        infoDiv.appendChild(servingDiv);
-        infoDiv.appendChild(nutGrid);
-
-        // Buttons
-        const actionDiv = document.createElement('div');
-        actionDiv.className = 'flex sm:flex-col items-center justify-end gap-1.5 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-100';
-
-        const btnAdd = document.createElement('button');
-        btnAdd.className = 'w-full sm:w-auto bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold text-xs px-3.5 py-1.5 rounded-xl transition-all shadow-sm active:scale-95 flex items-center justify-center gap-1';
-        
-        const addIcon = document.createElement('i');
-        addIcon.className = 'fa-solid fa-plus text-[10px]';
-        const addSpan = document.createElement('span');
-        addSpan.textContent = '식단 추가';
-
-        btnAdd.appendChild(addIcon);
-        btnAdd.appendChild(addSpan);
-
-        btnAdd.addEventListener('click', () => {
-          addFoodToMealLog(item);
-        });
-
-        const btnJson = document.createElement('button');
-        btnJson.className = 'w-full sm:w-auto bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold text-[11px] px-2.5 py-1 rounded-xl transition-colors flex items-center justify-center gap-1';
-        
-        const jsonSpan = document.createElement('span');
-        jsonSpan.textContent = 'RAW JSON';
-        btnJson.appendChild(jsonSpan);
-
-        btnJson.addEventListener('click', () => {
-          openJsonModal(item);
-        });
-
-        actionDiv.appendChild(btnAdd);
-        actionDiv.appendChild(btnJson);
-
-        itemCard.appendChild(infoDiv);
-        itemCard.appendChild(actionDiv);
-
-        resultsList.appendChild(itemCard);
-      });
+      if (state.dislikedFoods.includes(name)) {
+        showToast(`'${name}'은(는) 이미 등록되어 있습니다.`, "info");
+        return;
+      }
+      state.dislikedFoods.push(name);
+      showToast(`'${name}'을(를) 편식 대상 음식으로 등록했습니다.`, "success");
+      renderAll();
     }
 
-    // Add Meal Item
-    function addFoodToMealLog(rawItem) {
-      const logEntry = {
-        id: 'meal_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
-        rawItem: rawItem,
-        quantity: 1
+    function removeDislikedFood(name) {
+      state.dislikedFoods = state.dislikedFoods.filter((item) => item !== name);
+      renderAll();
+    }
+
+    function renderDislikedSection() {
+      const chipsEl = document.getElementById("quickDislikedChips");
+      chipsEl.innerHTML = "";
+      QUICK_DISLIKED_FOODS.forEach((food) => {
+        const btn = createEl(
+          "button",
+          "min-h-[36px] px-2.5 py-1 text-xs rounded-lg border border-slate-200 bg-slate-50 text-slate-700 hover:border-amber-500 hover:bg-amber-50 hover:text-amber-800 transition",
+          `+ ${food}`
+        );
+        btn.type = "button";
+        btn.addEventListener("click", () => addDislikedFood(food));
+        chipsEl.appendChild(btn);
+      });
+
+      document.getElementById("dislikedCountBadge").textContent = `${state.dislikedFoods.length}개 등록됨`;
+      const listEl = document.getElementById("dislikedList");
+      listEl.innerHTML = "";
+
+      if (state.dislikedFoods.length === 0) {
+        listEl.appendChild(createEl("span", "text-xs text-slate-400", "등록된 편식 대상 음식이 없습니다."));
+      } else {
+        state.dislikedFoods.forEach((food) => {
+          const btn = createEl(
+            "button",
+            "min-h-[36px] inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-amber-50 border border-amber-200 text-amber-900 hover:bg-amber-100 transition"
+          );
+          btn.type = "button";
+          btn.setAttribute("aria-label", `${food} 삭제`);
+          btn.appendChild(createEl("span", "", food));
+          btn.appendChild(createEl("span", "text-amber-700 font-bold", "×"));
+          btn.addEventListener("click", () => removeDislikedFood(food));
+          listEl.appendChild(btn);
+        });
+      }
+    }
+
+    /**
+     * 선택한 먹은 음식 식단표, 영양소 합계 계산(확인된 값만 합산 표시), 불균형/누락 필수 안내 배너 렌더링
+     */
+    function renderMealEntriesAndNutrition() {
+      document.getElementById("eatenCountBadge").textContent = `${state.mealEntries.length}개 선택됨`;
+
+      const tbody = document.getElementById("eatenNutritionTableBody");
+      const tfoot = document.getElementById("eatenNutritionTableFoot");
+      const mobileList = document.getElementById("eatenMobileCardList");
+      tbody.innerHTML = "";
+      tfoot.innerHTML = "";
+      mobileList.innerHTML = "";
+
+      // 각 영양소별 확인된 값 합계 및 유효 개수 추적
+      const stats = {
+        kcal: { sum: 0, validCount: 0, missingCount: 0 },
+        carbs: { sum: 0, validCount: 0, missingCount: 0 },
+        protein: { sum: 0, validCount: 0, missingCount: 0 },
+        fat: { sum: 0, validCount: 0, missingCount: 0 },
+        sodium: { sum: 0, validCount: 0, missingCount: 0 }
       };
 
-      currentState.mealLogs.push(logEntry);
-      renderMealLogs();
-      calculateTotals();
-    }
+      let hasAnyMissingInfo = false;
+      const missingSummaryList = [];
 
-    // Remove Meal Item
-    function removeMealLog(id) {
-      currentState.mealLogs = currentState.mealLogs.filter(entry => entry.id !== id);
-      renderMealLogs();
-      calculateTotals();
-    }
+      if (state.mealEntries.length === 0) {
+        const emptyTr = createEl("tr");
+        const emptyTd = createEl(
+          "td",
+          "py-8 px-3 text-center text-xs text-slate-400",
+          "아직 추가된 음식이 없습니다. 상단에서 음식을 검색해 '+ 식단 추가'를 눌러 주세요."
+        );
+        emptyTd.colSpan = 10;
+        emptyTr.appendChild(emptyTd);
+        tbody.appendChild(emptyTr);
 
-    // Update Quantity
-    function updateMealQuantity(id, delta) {
-      const entry = currentState.mealLogs.find(item => item.id === id);
-      if (entry) {
-        entry.quantity = Math.max(1, entry.quantity + delta);
-        renderMealLogs();
-        calculateTotals();
-      }
-    }
+        mobileList.appendChild(
+          createEl(
+            "div",
+            "rounded-xl border border-dashed border-slate-200 p-5 text-center text-xs text-slate-400",
+            "아직 추가된 음식이 없습니다. 위 검색 결과에서 '+ 식단 추가'를 눌러 주세요."
+          )
+        );
+      } else {
+        state.mealEntries.forEach((entry, index) => {
+          const item = entry.rawItem;
+          const name = item.FOOD_NM_KR || "식품명 정보 없음";
+          const catMeta = [item.FOOD_CAT1_NM, item.MAKER_NM].filter(Boolean).join(" / ") || "-";
+          const serving = item.SERVING_SIZE ? String(item.SERVING_SIZE).trim() : null;
 
-    // Render Added Meal Deck
-    function renderMealLogs() {
-      logList.textContent = '';
+          const kcal = parseSafeNumber(item.AMT_NUM1);
+          const protein = parseSafeNumber(item.AMT_NUM3);
+          const fat = parseSafeNumber(item.AMT_NUM4);
+          const carbs = parseSafeNumber(item.AMT_NUM6);
+          const sodium = parseSafeNumber(item.AMT_NUM13);
 
-      if (currentState.mealLogs.length === 0) {
-        logList.appendChild(logEmptyState);
-        logEmptyState.classList.remove('hidden');
-        return;
-      }
+          const itemMissingFields = [];
+          if (!serving) itemMissingFields.push("기준량");
 
-      currentState.mealLogs.forEach((entry) => {
-        const item = entry.rawItem;
+          if (kcal !== null) {
+            stats.kcal.sum += kcal;
+            stats.kcal.validCount += 1;
+          } else {
+            stats.kcal.missingCount += 1;
+            itemMissingFields.push("열량");
+          }
 
-        const card = document.createElement('div');
-        card.className = 'bg-white border-2 border-slate-200 p-3.5 rounded-2xl flex flex-col gap-2 relative shadow-sm hover:border-emerald-300 transition-all';
+          if (carbs !== null) {
+            stats.carbs.sum += carbs;
+            stats.carbs.validCount += 1;
+          } else {
+            stats.carbs.missingCount += 1;
+            itemMissingFields.push("탄수화물");
+          }
 
-        const topRow = document.createElement('div');
-        topRow.className = 'flex items-start justify-between gap-2';
+          if (protein !== null) {
+            stats.protein.sum += protein;
+            stats.protein.validCount += 1;
+          } else {
+            stats.protein.missingCount += 1;
+            itemMissingFields.push("단백질");
+          }
 
-        const titleDiv = document.createElement('div');
-        titleDiv.className = 'space-y-0.5 pr-6';
+          if (fat !== null) {
+            stats.fat.sum += fat;
+            stats.fat.validCount += 1;
+          } else {
+            stats.fat.missingCount += 1;
+            itemMissingFields.push("지방");
+          }
 
-        const nameH4 = document.createElement('h4');
-        nameH4.className = 'font-extrabold text-slate-800 text-xs sm:text-sm leading-snug';
-        nameH4.textContent = item.FOOD_NM_KR || '식품명 정보 없음';
+          if (sodium !== null) {
+            stats.sodium.sum += sodium;
+            stats.sodium.validCount += 1;
+          } else {
+            stats.sodium.missingCount += 1;
+            itemMissingFields.push("나트륨");
+          }
 
-        const servingP = document.createElement('p');
-        servingP.className = 'text-[11px] text-slate-400 font-medium';
-        servingP.textContent = `기준량: ${item.SERVING_SIZE || '정보 없음'}`;
+          if (itemMissingFields.length > 0) {
+            hasAnyMissingInfo = true;
+            missingSummaryList.push(`${name}(${itemMissingFields.join("·")} 정보 없음)`);
+          }
 
-        titleDiv.appendChild(nameH4);
-        titleDiv.appendChild(servingP);
+          // 1) 데스크톱·태블릿 표 행 생성
+          const tr = createEl("tr", itemMissingFields.length > 0 ? "bg-amber-50/40" : "hover:bg-slate-50/70");
+          tr.appendChild(createEl("td", "py-3 px-3 text-xs font-semibold text-slate-500", String(index + 1)));
+          tr.appendChild(createEl("td", "py-3 px-3 font-semibold text-slate-900", name));
+          tr.appendChild(createEl("td", "py-3 px-3 text-xs text-slate-500", catMeta));
+          tr.appendChild(
+            createEl(
+              "td",
+              `py-3 px-3 text-xs whitespace-nowrap ${serving ? "text-slate-800 font-medium" : "text-amber-700 font-medium"}`,
+              serving ? `${serving} (1개 분량)` : "정보 없음"
+            )
+          );
 
-        // Delete button
-        const btnDelete = document.createElement('button');
-        btnDelete.className = 'absolute right-3 top-3 text-slate-400 hover:text-rose-500 p-1 rounded-lg hover:bg-rose-50 transition-colors';
-        btnDelete.title = '삭제';
-        
-        const delIcon = document.createElement('i');
-        delIcon.className = 'fa-solid fa-xmark text-sm';
-        btnDelete.appendChild(delIcon);
+          [
+            { val: kcal, dec: 0, bold: true },
+            { val: carbs, dec: 1, bold: false },
+            { val: protein, dec: 1, bold: false },
+            { val: fat, dec: 1, bold: false },
+            { val: sodium, dec: 0, bold: false }
+          ].forEach((cell) => {
+            const isNull = cell.val === null;
+            const td = createEl(
+              "td",
+              `py-3 px-3 text-right whitespace-nowrap ${
+                isNull
+                  ? "text-xs text-amber-700 font-medium"
+                  : cell.bold
+                  ? "font-semibold text-slate-900"
+                  : "text-slate-700"
+              }`,
+              formatNutrientText(cell.val, cell.dec)
+            );
+            tr.appendChild(td);
+          });
 
-        btnDelete.addEventListener('click', () => {
-          removeMealLog(entry.id);
+          const tdActions = createEl("td", "py-3 px-3 text-center whitespace-nowrap space-x-1.5");
+          const detailBtn = createEl(
+            "button",
+            "min-h-[34px] px-2.5 py-1 rounded-lg border border-slate-200 bg-white text-xs font-medium text-slate-600 hover:border-brand-500 hover:text-brand-700",
+            "세부"
+          );
+          detailBtn.type = "button";
+          detailBtn.addEventListener("click", () => showFoodDetailDrawer(item));
+
+          const delBtn = createEl(
+            "button",
+            "min-h-[34px] px-2.5 py-1 rounded-lg border border-red-200 bg-red-50/70 text-xs font-medium text-red-700 hover:bg-red-100",
+            "삭제"
+          );
+          delBtn.type = "button";
+          delBtn.addEventListener("click", () => removeMealEntryById(entry.entryId));
+
+          tdActions.appendChild(detailBtn);
+          tdActions.appendChild(delBtn);
+          tr.appendChild(tdActions);
+          tbody.appendChild(tr);
+
+          // 2) 모바일 카드 생성
+          const mCard = createEl(
+            "div",
+            `rounded-xl border p-3.5 space-y-2 ${
+              itemMissingFields.length > 0 ? "border-amber-300 bg-amber-50/40" : "border-slate-200 bg-white"
+            }`
+          );
+          const mTop = createEl("div", "flex items-start justify-between gap-2");
+          const mTitleBox = createEl("div", "min-w-0");
+          mTitleBox.appendChild(createEl("p", "text-sm font-bold text-slate-900 break-words", `#${index + 1} ${name}`));
+          mTitleBox.appendChild(
+            createEl(
+              "p",
+              `text-xs mt-0.5 ${serving ? "text-brand-700 font-medium" : "text-amber-700 font-medium"}`,
+              `기준량: ${serving ? `${serving} (1개 분량)` : "정보 없음"}`
+            )
+          );
+          mTop.appendChild(mTitleBox);
+
+          const mBtnGroup = createEl("div", "flex items-center gap-1.5 shrink-0");
+          const mDetailBtn = createEl(
+            "button",
+            "min-h-[40px] px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white text-xs font-medium text-slate-700",
+            "세부"
+          );
+          mDetailBtn.type = "button";
+          mDetailBtn.addEventListener("click", () => showFoodDetailDrawer(item));
+
+          const mDelBtn = createEl(
+            "button",
+            "min-h-[40px] px-3 py-1.5 rounded-lg border border-red-200 bg-red-50 text-xs font-semibold text-red-700",
+            "삭제"
+          );
+          mDelBtn.type = "button";
+          mDelBtn.addEventListener("click", () => removeMealEntryById(entry.entryId));
+
+          mBtnGroup.appendChild(mDetailBtn);
+          mBtnGroup.appendChild(mDelBtn);
+          mTop.appendChild(mBtnGroup);
+          mCard.appendChild(mTop);
+
+          const mNutrients = createEl("div", "grid grid-cols-3 gap-1.5 pt-1 text-[11px] text-slate-700");
+          mNutrients.appendChild(createEl("span", "bg-slate-100/80 rounded-md px-2 py-1 font-semibold", `열량: ${formatNutrientText(kcal, 0, "kcal")}`));
+          mNutrients.appendChild(createEl("span", "bg-slate-100/80 rounded-md px-2 py-1", `탄수: ${formatNutrientText(carbs, 1, "g")}`));
+          mNutrients.appendChild(createEl("span", "bg-slate-100/80 rounded-md px-2 py-1", `단백: ${formatNutrientText(protein, 1, "g")}`));
+          mNutrients.appendChild(createEl("span", "bg-slate-100/80 rounded-md px-2 py-1", `지방: ${formatNutrientText(fat, 1, "g")}`));
+          mNutrients.appendChild(createEl("span", "col-span-2 bg-slate-100/80 rounded-md px-2 py-1", `나트륨: ${formatNutrientText(sodium, 0, "mg")}`));
+          mCard.appendChild(mNutrients);
+          mobileList.appendChild(mCard);
         });
 
-        topRow.appendChild(titleDiv);
-        topRow.appendChild(btnDelete);
-
-        // Controls
-        const bottomRow = document.createElement('div');
-        bottomRow.className = 'flex items-center justify-between pt-2 border-t border-slate-100 text-xs';
-
-        const qtyDiv = document.createElement('div');
-        qtyDiv.className = 'flex items-center space-x-1 bg-slate-50 border border-slate-200 rounded-xl p-0.5';
-
-        const btnMinus = document.createElement('button');
-        btnMinus.className = 'w-5 h-5 flex items-center justify-center text-slate-600 hover:bg-slate-200 rounded-lg text-xs font-bold transition-colors';
-        btnMinus.textContent = '-';
-        btnMinus.addEventListener('click', () => updateMealQuantity(entry.id, -1));
-
-        const qtySpan = document.createElement('span');
-        qtySpan.className = 'px-1.5 font-bold text-slate-700 min-w-[20px] text-center';
-        qtySpan.textContent = `${entry.quantity}회`;
-
-        const btnPlus = document.createElement('button');
-        btnPlus.className = 'w-5 h-5 flex items-center justify-center text-slate-600 hover:bg-slate-200 rounded-lg text-xs font-bold transition-colors';
-        btnPlus.textContent = '+';
-        btnPlus.addEventListener('click', () => updateMealQuantity(entry.id, 1));
-
-        qtyDiv.appendChild(btnMinus);
-        qtyDiv.appendChild(qtySpan);
-        qtyDiv.appendChild(btnPlus);
-
-        // Item Calorie Total
-        const kcalDisplay = formatNutrientDisplay(item.AMT_NUM1);
-        const kcalValDiv = document.createElement('div');
-        kcalValDiv.className = 'text-right font-mono';
-
-        if (kcalDisplay.isMissing) {
-          const missingSpan = document.createElement('span');
-          missingSpan.className = 'text-amber-600 font-bold text-[11px]';
-          missingSpan.textContent = '열량 정보 없음';
-          kcalValDiv.appendChild(missingSpan);
-        } else {
-          const totalKcalForItem = (kcalDisplay.value * entry.quantity);
-          const kcalSpan = document.createElement('span');
-          kcalSpan.className = 'font-bold text-slate-700 text-xs';
-          kcalSpan.textContent = `${Number.isInteger(totalKcalForItem) ? totalKcalForItem : totalKcalForItem.toFixed(1)} kcal`;
-          kcalValDiv.appendChild(kcalSpan);
+        // 표 하단 합계 행 (누락값이 있으면 '확인된 값만 합산' 명시)
+        const footTr = createEl("tr");
+        const footLabelTd = createEl("td", "py-3 px-3", "");
+        footLabelTd.colSpan = 4;
+        footLabelTd.appendChild(createEl("span", "", `선택 음식 영양소 합계 (${state.mealEntries.length}개 항목)`));
+        if (hasAnyMissingInfo) {
+          footLabelTd.appendChild(
+            createEl(
+              "span",
+              "ml-2 inline-block text-[11px] font-semibold px-2 py-0.5 rounded bg-amber-100 text-amber-900 border border-amber-300",
+              "확인된 값만 합산"
+            )
+          );
         }
+        footTr.appendChild(footLabelTd);
 
-        bottomRow.appendChild(qtyDiv);
-        bottomRow.appendChild(kcalValDiv);
+        [
+          { stat: stats.kcal, dec: 0, unit: "kcal" },
+          { stat: stats.carbs, dec: 1, unit: "g" },
+          { stat: stats.protein, dec: 1, unit: "g" },
+          { stat: stats.fat, dec: 1, unit: "g" },
+          { stat: stats.sodium, dec: 0, unit: "mg" }
+        ].forEach(({ stat, dec, unit }) => {
+          const td = createEl("td", "py-3 px-3 text-right whitespace-nowrap");
+          if (state.mealEntries.length > 0 && stat.validCount === 0) {
+            td.classList.add("text-amber-700", "text-xs");
+            td.textContent = "정보 없음";
+          } else {
+            const valStr = dec === 0 ? Math.round(stat.sum).toLocaleString() : stat.sum.toFixed(dec);
+            td.textContent = `${valStr} ${unit}`;
+            if (stat.missingCount > 0) {
+              td.appendChild(createEl("div", "text-[10px] font-medium text-amber-800", "확인된 값만 합산"));
+            }
+          }
+          footTr.appendChild(td);
+        });
 
-        card.appendChild(topRow);
-        card.appendChild(bottomRow);
-
-        logList.appendChild(card);
-      });
-    }
-
-    // Dynamic Nutrients Calculation
-    function calculateTotals() {
-      let sumKcal = 0, hasKcalMissing = false;
-      let sumCarbs = 0, hasCarbsMissing = false;
-      let sumProtein = 0, hasProteinMissing = false;
-      let sumFat = 0, hasFatMissing = false;
-      let sumSodium = 0, hasSodiumMissing = false;
-
-      currentState.mealLogs.forEach((entry) => {
-        const item = entry.rawItem;
-        const qty = entry.quantity;
-
-        const kcal = parseNutrientValue(item.AMT_NUM1);
-        if (kcal !== null) sumKcal += (kcal * qty);
-        else hasKcalMissing = true;
-
-        const carbs = parseNutrientValue(item.AMT_NUM6);
-        if (carbs !== null) sumCarbs += (carbs * qty);
-        else hasCarbsMissing = true;
-
-        const protein = parseNutrientValue(item.AMT_NUM3);
-        if (protein !== null) sumProtein += (protein * qty);
-        else hasProteinMissing = true;
-
-        const fat = parseNutrientValue(item.AMT_NUM4);
-        if (fat !== null) sumFat += (fat * qty);
-        else hasFatMissing = true;
-
-        const sodium = parseNutrientValue(item.AMT_NUM13);
-        if (sodium !== null) sumSodium += (sodium * qty);
-        else hasSodiumMissing = true;
-      });
-
-      updateTotalCard(totalKcalEl, flagKcalEl, sumKcal, hasKcalMissing);
-      updateTotalCard(totalCarbsEl, flagCarbsEl, sumCarbs, hasCarbsMissing);
-      updateTotalCard(totalProteinEl, flagProteinEl, sumProtein, hasProteinMissing);
-      updateTotalCard(totalFatEl, flagFatEl, sumFat, hasFatMissing);
-      updateTotalCard(totalSodiumEl, flagSodiumEl, sumSodium, hasSodiumMissing);
-
-      evaluateCalorieStatus(sumKcal, currentState.targetKcal);
-    }
-
-    function updateTotalCard(valueEl, flagEl, sumVal, isMissing) {
-      const formatted = Number.isInteger(sumVal) ? sumVal : sumVal.toFixed(1);
-      valueEl.textContent = formatted;
-      flagEl.textContent = isMissing ? '(확인된 값만 합산)' : '';
-    }
-
-    // MANDATORY EVALUATION DISPLAY LOGIC
-    function evaluateCalorieStatus(currentKcal, targetKcal) {
-      progressCurrentText.textContent = Number.isInteger(currentKcal) ? currentKcal : currentKcal.toFixed(1);
-      progressTargetText.textContent = targetKcal;
-
-      const percentage = Math.round((currentKcal / targetKcal) * 100);
-      evalPercentage.textContent = `${percentage}%`;
-
-      const barWidth = Math.min(percentage, 100);
-      progressBarFill.style.width = `${barWidth}%`;
-
-      const lowerBound = targetKcal - 150; 
-      const upperBound = targetKcal + 150; 
-
-      statusEvaluationCard.className = 'p-4 sm:p-5 rounded-2xl bg-white border shadow-sm flex items-center justify-between gap-4 transition-all ';
-
-      if (currentKcal > upperBound) {
-        // OVER CALORIES -> "식단조절하세요"
-        statusEvaluationCard.className += 'border-rose-200';
-        evalEmoji.textContent = '⚠️';
-        evalMainText.textContent = '식단조절하세요';
-        evalMainText.className = 'text-lg sm:text-xl font-bold tracking-tight text-rose-700 mt-0.5';
-        evalSubText.textContent = '권장 칼로리를 초과했습니다. 가벼운 수분 섭취와 채소 위주 식단을 고려해보세요.';
-        progressStatusBadge.textContent = '열량 초과';
-        progressStatusBadge.className = 'text-rose-600 font-medium';
-      } else if (currentKcal < lowerBound) {
-        // UNDER CALORIES -> "식사량을 늘리세요"
-        statusEvaluationCard.className += 'border-sky-200';
-        evalEmoji.textContent = '🥣';
-        evalMainText.textContent = '식사량을 늘리세요';
-        evalMainText.className = 'text-lg sm:text-xl font-bold tracking-tight text-sky-700 mt-0.5';
-        evalSubText.textContent = '목표 에너지가 부족합니다. 건강한 영양소로 하루 필수 식사량을 충원하세요.';
-        progressStatusBadge.textContent = '에너지 부족';
-        progressStatusBadge.className = 'text-sky-600 font-medium';
-      } else {
-        // OPTIMAL TARGET -> "좋습니다지금처럼 하세요"
-        statusEvaluationCard.className += 'border-emerald-300 bg-emerald-50/30';
-        evalEmoji.textContent = '✨';
-        evalMainText.textContent = '좋습니다지금처럼 하세요';
-        evalMainText.className = 'text-lg sm:text-xl font-bold tracking-tight text-emerald-800 mt-0.5';
-        evalSubText.textContent = '아주 이상적인 균형 식단입니다! 지금의 건강한 식습관을 계속 유지해보세요.';
-        progressStatusBadge.textContent = '목표 범위 달성';
-        progressStatusBadge.className = 'text-emerald-700 font-semibold';
+        footTr.appendChild(createEl("td", "py-3 px-3 text-center text-xs font-normal text-slate-500", "-"));
+        tfoot.appendChild(footTr);
       }
+
+      // 요약 카드 5종 업데이트 (누락 항목 존재 시 '확인된 값만 합산' 배지 활성화)
+      const globalPartialBadge = document.getElementById("confirmedOnlyGlobalBadge");
+      globalPartialBadge.classList.toggle("hidden", !(state.mealEntries.length > 0 && hasAnyMissingInfo));
+
+      function updateSummaryCard(stat, valElId, badgeElId, dec, unit) {
+        const valEl = document.getElementById(valElId);
+        const badgeEl = document.getElementById(badgeElId);
+        const isPartial = state.mealEntries.length > 0 && stat.missingCount > 0;
+        badgeEl.classList.toggle("hidden", !isPartial);
+
+        if (state.mealEntries.length > 0 && stat.validCount === 0) {
+          valEl.textContent = "정보 없음";
+          valEl.classList.add("text-amber-700");
+        } else {
+          valEl.classList.remove("text-amber-700");
+          const numStr = dec === 0 ? Math.round(stat.sum).toLocaleString() : stat.sum.toFixed(dec);
+          valEl.textContent = `${numStr} ${unit}`;
+        }
+      }
+
+      updateSummaryCard(stats.kcal, "sumKcal", "badgeKcalPartial", 0, "kcal");
+      updateSummaryCard(stats.carbs, "sumCarbs", "badgeCarbsPartial", 1, "g");
+      updateSummaryCard(stats.protein, "sumProtein", "badgeProteinPartial", 1, "g");
+      updateSummaryCard(stats.fat, "sumFat", "badgeFatPartial", 1, "g");
+      updateSummaryCard(stats.sodium, "sumSodium", "badgeSodiumPartial", 0, "mg");
+
+      // 열량 비중 계산 (확인된 값 기준)
+      const macroKcal = stats.carbs.sum * 4 + stats.protein.sum * 4 + stats.fat.sum * 9;
+      const carbPct = macroKcal > 0 ? Math.round(((stats.carbs.sum * 4) / macroKcal) * 100) : 0;
+      const proteinPct = macroKcal > 0 ? Math.round(((stats.protein.sum * 4) / macroKcal) * 100) : 0;
+      const fatPct = macroKcal > 0 ? Math.round(((stats.fat.sum * 9) / macroKcal) * 100) : 0;
+
+      document.getElementById("ratioCarbsText").textContent = `열량 비중 ${carbPct}% (권장 55~65%)`;
+      document.getElementById("ratioProteinText").textContent = `열량 비중 ${proteinPct}% (권장 15~25%)`;
+      document.getElementById("ratioFatText").textContent = `열량 비중 ${fatPct}% (권장 15~30%)`;
+
+      /**
+       * 필수 안내 배너 판별:
+       * 특정 음식이나 영양소 정보가 없거나 지나치게 한쪽 영양소에 치우친 식단이라면
+       * "영양 정보를 다시 확인하거나 다양한 음식을 골고루 선택해 보세요" 안내 표시
+       */
+      const alertReasons = [];
+      if (hasAnyMissingInfo) {
+        alertReasons.push(`영양성분 또는 기준량 정보가 누락된 항목이 있습니다: ${missingSummaryList.join(", ")}.`);
+      }
+      if (state.mealEntries.length === 0) {
+        alertReasons.push("현재 선택된 먹은 음식이 없습니다.");
+      } else if (state.mealEntries.length === 1) {
+        alertReasons.push("음식이 1가지만 선택되어 단일 식품에 편중되어 있습니다.");
+      }
+      if (macroKcal > 0) {
+        if (carbPct >= 70) alertReasons.push(`탄수화물 열량 비중이 ${carbPct}%로 지나치게 높습니다.`);
+        if (proteinPct >= 70) alertReasons.push(`단백질 열량 비중이 ${proteinPct}%로 한쪽에 치우쳐 있습니다.`);
+        if (fatPct >= 70) alertReasons.push(`지방 열량 비중이 ${fatPct}%로 지나치게 높습니다.`);
+        if (proteinPct < 8) alertReasons.push(`단백질 열량 비중이 ${proteinPct}%로 극도로 부족합니다.`);
+        if (carbPct < 20) alertReasons.push(`탄수화물 열량 비중이 ${carbPct}%로 매우 부족합니다.`);
+      }
+
+      const alertBox = document.getElementById("imbalanceAlertBox");
+      const reasonEl = document.getElementById("imbalanceReasonText");
+      if (alertReasons.length > 0) {
+        alertBox.classList.remove("hidden");
+        reasonEl.textContent = `점검 사유: ${alertReasons.join(" ")}`;
+      } else {
+        alertBox.classList.add("hidden");
+        reasonEl.textContent = "";
+      }
+
+      renderAnalysisSection({
+        stats,
+        hasAnyMissingInfo,
+        macroKcal,
+        carbPct,
+        proteinPct,
+        fatPct
+      });
     }
 
-    // Modal Raw JSON Inspector
-    function openJsonModal(rawItem) {
-      jsonModalContent.textContent = JSON.stringify(rawItem, null, 2);
-      jsonModal.classList.remove('hidden');
+    /**
+     * ① 음식 도전 미션 렌더링
+     */
+    function renderChallengeSection() {
+      const targets = state.dislikedFoods.length > 0 ? state.dislikedFoods : ["브로콜리", "시금치"];
+      const cardsEl = document.getElementById("challengeCardsContainer");
+      const tableBody = document.getElementById("challengeTableBody");
+      cardsEl.innerHTML = "";
+      tableBody.innerHTML = "";
+
+      let totalCount = 0;
+      let doneCount = 0;
+
+      targets.forEach((target) => {
+        CHALLENGE_STEPS.forEach((stepObj, stepIdx) => {
+          totalCount += 1;
+          const key = `${target}__${stepIdx}`;
+          const isDone = Boolean(state.completedChallenges[key]);
+          if (isDone) doneCount += 1;
+
+          const card = createEl(
+            "div",
+            `rounded-xl border p-4 flex flex-col justify-between transition ${
+              isDone ? "border-brand-300 bg-brand-50/50" : "border-slate-200 bg-white hover:border-slate-300"
+            }`
+          );
+          const topDiv = createEl("div");
+          const badgeRow = createEl("div", "flex items-center justify-between gap-2 mb-2");
+          badgeRow.appendChild(
+            createEl("span", "text-xs font-bold px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200", `대상: ${target}`)
+          );
+          badgeRow.appendChild(createEl("span", "text-xs font-bold text-brand-700", stepObj.level));
+          topDiv.appendChild(badgeRow);
+          topDiv.appendChild(createEl("h4", "text-sm font-bold text-slate-900 mb-1", stepObj.title));
+          topDiv.appendChild(createEl("p", "text-xs text-slate-700 leading-relaxed mb-2", stepObj.mission));
+          topDiv.appendChild(createEl("p", "text-[11px] text-slate-500", stepObj.tip));
+          card.appendChild(topDiv);
+
+          const bottomDiv = createEl("div", "mt-4 pt-3 border-t border-slate-100 flex items-center justify-between");
+          bottomDiv.appendChild(
+            createEl("span", `text-xs font-semibold ${isDone ? "text-brand-700" : "text-slate-400"}`, isDone ? "도전 달성 완료" : "도전 대기 중")
+          );
+          const toggleBtn = createEl(
+            "button",
+            `min-h-[38px] px-3.5 py-1.5 rounded-lg text-xs font-semibold transition ${
+              isDone ? "bg-brand-600 text-white hover:bg-brand-700" : "bg-slate-100 text-slate-700 hover:bg-brand-500 hover:text-white"
+            }`,
+            isDone ? "✓ 완료됨" : "도전 체크"
+          );
+          toggleBtn.type = "button";
+          toggleBtn.addEventListener("click", () => {
+            state.completedChallenges[key] = !state.completedChallenges[key];
+            renderChallengeSection();
+          });
+          bottomDiv.appendChild(toggleBtn);
+          card.appendChild(bottomDiv);
+          cardsEl.appendChild(card);
+
+          const tr = createEl("tr", isDone ? "bg-brand-50/40" : "");
+          tr.appendChild(createEl("td", "py-2.5 px-3 font-semibold text-slate-900", target));
+          tr.appendChild(createEl("td", "py-2.5 px-3 text-xs font-semibold text-brand-700", `${stepObj.level} · ${stepObj.title}`));
+          tr.appendChild(createEl("td", "py-2.5 px-3 text-xs text-slate-700", stepObj.mission));
+          const checkTd = createEl("td", "py-2.5 px-3 text-center");
+          const checkbox = createEl("input", "h-5 w-5 accent-brand-500 cursor-pointer");
+          checkbox.type = "checkbox";
+          checkbox.checked = isDone;
+          checkbox.setAttribute("aria-label", `${target} ${stepObj.level} 완료 체크`);
+          checkbox.addEventListener("change", () => {
+            state.completedChallenges[key] = !state.completedChallenges[key];
+            renderChallengeSection();
+          });
+          checkTd.appendChild(checkbox);
+          tr.appendChild(checkTd);
+          tableBody.appendChild(tr);
+        });
+      });
+
+      const pct = totalCount > 0 ? Math.round((doneCount / totalCount) * 100) : 0;
+      document.getElementById("challengeProgressText").textContent = `${doneCount} / ${totalCount} (${pct}%)`;
+      document.getElementById("challengeProgressBar").style.width = `${pct}%`;
     }
+
+    /**
+     * ② 식습관 분석 및 맞춤 추천 렌더링
+     */
+    function renderAnalysisSection({ stats, hasAnyMissingInfo, macroKcal, carbPct, proteinPct, fatPct }) {
+      const summaryEl = document.getElementById("habitSummaryText");
+      if (state.mealEntries.length === 0) {
+        summaryEl.textContent = "먹은 음식을 검색하여 추가하면 탄수화물·단백질·지방·나트륨 균형과 편식 보완 식품을 분석해 드립니다.";
+      } else {
+        const dislikedMsg =
+          state.dislikedFoods.length > 0
+            ? ` 등록된 편식 대상(${state.dislikedFoods.join(", ")})으로 인해 부족해지기 쉬운 비타민·식이섬유·단백질을 보완할 수 있도록 대체 식품을 추천합니다.`
+            : " 등록된 편식 대상이 없으며, 다양한 식품군을 조합하여 균형을 맞춰 보세요.";
+        const partialNote = hasAnyMissingInfo ? " (누락된 영양값이 있는 항목은 확인된 값만 합산하여 분석했습니다.)" : "";
+        summaryEl.textContent = `선택한 ${state.mealEntries.length}개 항목의 확인된 총 열량은 ${Math.round(stats.kcal.sum).toLocaleString()}kcal이며, 에너지 비율은 탄수화물 ${carbPct}% · 단백질 ${proteinPct}% · 지방 ${fatPct}%입니다.${partialNote}${dislikedMsg}`;
+      }
+
+      const balanceBody = document.getElementById("nutrientBalanceTableBody");
+      balanceBody.innerHTML = "";
+
+      const rowsData = [
+        {
+          name: "탄수화물 (AMT_NUM6)",
+          current: stats.carbs.validCount === 0 && state.mealEntries.length > 0 ? "정보 없음" : `${stats.carbs.sum.toFixed(1)} g (${carbPct}%)`,
+          target: "열량 비중 55~65%",
+          status: macroKcal === 0 ? "데이터 부족" : carbPct >= 70 ? "탄수화물 과다 편중" : carbPct < 20 ? "탄수화물 부족" : "적정 범위",
+          isWarn: macroKcal > 0 && (carbPct >= 70 || carbPct < 20),
+          guide: "정제 탄수화물 위주라면 잡곡밥·채소 반찬을 함께 곁들여 보세요."
+        },
+        {
+          name: "단백질 (AMT_NUM3)",
+          current: stats.protein.validCount === 0 && state.mealEntries.length > 0 ? "정보 없음" : `${stats.protein.sum.toFixed(1)} g (${proteinPct}%)`,
+          target: "열량 비중 15~25%",
+          status: macroKcal === 0 ? "데이터 부족" : proteinPct < 12 ? "성장기 단백질 보충 필요" : proteinPct >= 70 ? "단백질 편중" : "양호",
+          isWarn: macroKcal > 0 && (proteinPct < 12 || proteinPct >= 70),
+          guide: "성장기 청소년은 매 끼니 달걀·두부·살코기·생선 중 1가지를 포함하는 것이 좋습니다."
+        },
+        {
+          name: "지방 (AMT_NUM4)",
+          current: stats.fat.validCount === 0 && state.mealEntries.length > 0 ? "정보 없음" : `${stats.fat.sum.toFixed(1)} g (${fatPct}%)`,
+          target: "열량 비중 15~30%",
+          status: macroKcal === 0 ? "데이터 부족" : fatPct >= 35 ? "지방 비중 높음" : "적정 범위",
+          isWarn: macroKcal > 0 && fatPct >= 35,
+          guide: "튀김류 대신 구이·찜·나물 반찬을 선택하면 지방 섭취를 조절할 수 있습니다."
+        },
+        {
+          name: "나트륨 (AMT_NUM13)",
+          current: stats.sodium.validCount === 0 && state.mealEntries.length > 0 ? "정보 없음" : `${Math.round(stats.sodium.sum).toLocaleString()} mg`,
+          target: "1일 기준 2,000mg 미만",
+          status: stats.sodium.validCount === 0 ? "데이터 부족" : stats.sodium.sum > 1200 ? "나트륨 주의" : "양호",
+          isWarn: stats.sodium.sum > 1200,
+          guide: "국물 섭취를 줄이고 칼륨이 풍부한 채소·과일·우유를 함께 섭취하세요."
+        }
+      ];
+
+      rowsData.forEach((r) => {
+        const tr = createEl("tr");
+        tr.appendChild(createEl("td", "py-3 px-3 font-semibold text-slate-900", r.name));
+        tr.appendChild(createEl("td", "py-3 px-3 text-right text-slate-800", r.current));
+        tr.appendChild(createEl("td", "py-3 px-3 text-right text-slate-600", r.target));
+        tr.appendChild(
+          createEl(
+            "td",
+            `py-3 px-3 text-xs font-semibold ${r.isWarn ? "text-amber-800" : macroKcal === 0 ? "text-slate-400" : "text-brand-700"}`,
+            r.status
+          )
+        );
+        tr.appendChild(createEl("td", "py-3 px-3 text-xs text-slate-600", r.guide));
+        balanceBody.appendChild(tr);
+      });
+
+      // 맞춤 대체/보완 식품 추천 목록
+      const recs = [];
+      if (proteinPct < 15 || state.dislikedFoods.some((f) => f.includes("생선") || f.includes("콩"))) {
+        recs.push({
+          goal: "단백질·성장 영양 보완",
+          food: "닭가슴살",
+          reason: "담백하고 부드러운 식감으로 생선·콩류를 꺼리는 청소년도 쉽게 단백질을 보충할 수 있습니다."
+        });
+        recs.push({
+          goal: "식물성 단백질·칼슘 보완",
+          food: "두부",
+          reason: "구이나 전으로 조리하면 거부감이 적고 양질의 단백질과 칼슘을 공급합니다."
+        });
+      }
+      if (state.dislikedFoods.some((f) => ["브로콜리", "시금치", "당근", "가지", "버섯", "파프리카"].some((v) => f.includes(v))) || carbPct >= 68) {
+        recs.push({
+          goal: "비타민·식이섬유 공백 보완",
+          food: "시금치나물",
+          reason: "고소한 참기름 양념으로 채소 특유의 쓴맛을 줄이고 철분과 식이섬유를 채워줍니다."
+        });
+      }
+      recs.push({
+        goal: "칼슘·단백질 균형 간식",
+        food: "우유",
+        reason: "성장기 청소년에게 필수적인 칼슘과 단백질을 간편하게 보충할 수 있습니다."
+      });
+
+      const recBody = document.getElementById("recommendedMealTableBody");
+      recBody.innerHTML = "";
+      recs.forEach((rec) => {
+        const tr = createEl("tr");
+        tr.appendChild(createEl("td", "py-3 px-3 font-semibold text-slate-900", rec.goal));
+        tr.appendChild(createEl("td", "py-3 px-3 font-bold text-brand-700", rec.food));
+        tr.appendChild(createEl("td", "py-3 px-3 text-xs text-slate-600", rec.reason));
+
+        const actionTd = createEl("td", "py-3 px-3 text-center");
+        const searchBtn = createEl(
+          "button",
+          "min-h-[38px] px-3 py-1.5 rounded-lg bg-accent-50 text-accent-700 border border-accent-100 text-xs font-semibold hover:bg-accent-600 hover:text-white transition",
+          "API 검색"
+        );
+        searchBtn.type = "button";
+        searchBtn.addEventListener("click", () => {
+          document.getElementById("searchFoodName").value = rec.food;
+          window.scrollTo({ top: 0, behavior: "smooth" });
+          searchFoodApi(rec.food);
+        });
+        actionTd.appendChild(searchBtn);
+        tr.appendChild(actionTd);
+        recBody.appendChild(tr);
+      });
+    }
+
+    /**
+     * ③ 음식 레시피 추천 섹션 렌더링
+     */
+    function renderRecipeSection() {
+      const sortedRecipes = [...RECIPES].sort((a, b) => {
+        const aMatch = a.targets.some((t) => state.dislikedFoods.some((d) => d.includes(t) || t.includes(d)));
+        const bMatch = b.targets.some((t) => state.dislikedFoods.some((d) => d.includes(t) || t.includes(d)));
+        return (bMatch ? 1 : 0) - (aMatch ? 1 : 0);
+      });
+
+      const tableBody = document.getElementById("recipeComparisonTableBody");
+      tableBody.innerHTML = "";
+      sortedRecipes.forEach((r) => {
+        const tr = createEl("tr");
+        tr.appendChild(createEl("td", "py-3 px-3 font-semibold text-slate-900", r.title));
+        tr.appendChild(createEl("td", "py-3 px-3 text-xs text-slate-600", r.targets.join(", ")));
+        tr.appendChild(createEl("td", "py-3 px-3 text-xs text-slate-700 whitespace-nowrap", r.cookTime));
+        tr.appendChild(createEl("td", "py-3 px-3 text-xs text-slate-700 whitespace-nowrap", r.difficulty));
+        tr.appendChild(createEl("td", "py-3 px-3 text-xs text-slate-600", r.tip));
+        tableBody.appendChild(tr);
+      });
+
+      const cardsEl = document.getElementById("recipeCardsContainer");
+      cardsEl.innerHTML = "";
+      sortedRecipes.forEach((r) => {
+        const isMatched = r.targets.some((t) => state.dislikedFoods.some((d) => d.includes(t) || t.includes(d)));
+        const article = createEl(
+          "article",
+          `rounded-2xl border p-5 flex flex-col justify-between ${
+            isMatched ? "border-brand-300 bg-brand-50/30" : "border-slate-200 bg-white"
+          }`
+        );
+
+        const topDiv = createEl("div");
+        const headerRow = createEl("div", "flex items-center justify-between gap-2 mb-2");
+        headerRow.appendChild(
+          createEl(
+            "span",
+            `text-xs font-semibold px-2.5 py-0.5 rounded-full ${
+              isMatched ? "bg-brand-100 text-brand-800" : "bg-slate-100 text-slate-600"
+            }`,
+            isMatched ? "내 편식 맞춤 레시피" : "청소년 추천 레시피"
+          )
+        );
+        headerRow.appendChild(createEl("span", "text-xs text-slate-500", `조리 ${r.cookTime} · 난이도 ${r.difficulty}`));
+        topDiv.appendChild(headerRow);
+
+        topDiv.appendChild(createEl("h3", "text-base font-bold text-slate-900 mb-2", r.title));
+        topDiv.appendChild(createEl("p", "text-xs text-slate-600 mb-3", `준비 재료: ${r.ingredients.join(", ")}`));
+
+        const ol = createEl("ol", "list-decimal list-inside space-y-1.5 text-xs text-slate-700 mb-4 leading-relaxed");
+        r.steps.forEach((step) => ol.appendChild(createEl("li", "", step)));
+        topDiv.appendChild(ol);
+        article.appendChild(topDiv);
+
+        article.appendChild(
+          createEl("div", "pt-3 border-t border-slate-100 text-xs text-brand-700 font-medium", `편식 극복 팁: ${r.tip}`)
+        );
+        cardsEl.appendChild(article);
+      });
+    }
+
+    /**
+     * 탭 전환 처리
+     */
+    function switchTab(tabName) {
+      state.activeTab = tabName;
+      document.querySelectorAll(".tab-btn").forEach((btn) => {
+        const isCurrent = btn.dataset.tab === tabName;
+        btn.classList.toggle("bg-brand-500", isCurrent);
+        btn.classList.toggle("text-white", isCurrent);
+        btn.classList.toggle("text-slate-600", !isCurrent);
+        btn.classList.toggle("hover:bg-slate-50", !isCurrent);
+      });
+
+      document.querySelectorAll(".tab-panel").forEach((panel) => {
+        panel.classList.toggle("hidden", panel.id !== `panel-${tabName}`);
+      });
+    }
+
+    /**
+     * 전체 화면 렌더링 동기화
+     */
+    function renderAll() {
+      renderDislikedSection();
+      renderMealEntriesAndNutrition();
+      renderChallengeSection();
+      renderRecipeSection();
+    }
+
+    /**
+     * 초기 이벤트 바인딩
+     */
+    document.addEventListener("DOMContentLoaded", () => {
+      // 빠른 검색어 버튼 생성
+      const quickChipsBox = document.getElementById("quickSearchChips");
+      QUICK_SEARCH_KEYWORDS.forEach((kw) => {
+        const btn = createEl(
+          "button",
+          "min-h-[34px] px-2.5 py-1 text-xs rounded-lg bg-slate-100 text-slate-700 hover:bg-brand-50 hover:text-brand-700 transition",
+          kw
+        );
+        btn.type = "button";
+        btn.addEventListener("click", () => {
+          document.getElementById("searchFoodName").value = kw;
+          searchFoodApi(kw);
+        });
+        quickChipsBox.appendChild(btn);
+      });
+
+      // API 검색 폼 제출
+      document.getElementById("apiSearchForm").addEventListener("submit", (e) => {
+        e.preventDefault();
+        searchFoodApi();
+      });
+
+      // 상세 검색조건 토글
+      document.getElementById("btnToggleFilters").addEventListener("click", () => {
+        const box = document.getElementById("optionalFiltersBox");
+        const arrow = document.getElementById("filterToggleArrow");
+        const btn = document.getElementById("btnToggleFilters");
+        const isHidden = box.classList.contains("hidden");
+        box.classList.toggle("hidden", !isHidden);
+        box.classList.toggle("grid", isHidden);
+        arrow.textContent = isHidden ? "▾" : "▸";
+        btn.setAttribute("aria-expanded", String(isHidden));
+      });
+
+      // 세부 영양성분 드로어 닫기
+      document.getElementById("btnCloseDrawer").addEventListener("click", () => {
+        document.getElementById("foodDetailDrawer").classList.add("hidden");
+      });
+
+      // 싫어하는 음식 등록
+      const dislikedInput = document.getElementById("dislikedInput");
+      document.getElementById("btnAddDisliked").addEventListener("click", () => {
+        addDislikedFood(dislikedInput.value);
+        dislikedInput.value = "";
+        dislikedInput.focus();
+      });
+      dislikedInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          addDislikedFood(dislikedInput.value);
+          dislikedInput.value = "";
+        }
+      });
+
+      // 핵심 기능 탭 전환
+      document.querySelectorAll(".tab-btn").forEach((btn) => {
+        btn.addEventListener("click", () => switchTab(btn.dataset.tab));
+      });
+
+      // 전체 초기화 버튼
+      document.getElementById("btnResetAll").addEventListener("click", () => {
+        state.mealEntries = [];
+        state.dislikedFoods = [];
+        state.completedChallenges = {};
+        document.getElementById("foodDetailDrawer").classList.add("hidden");
+        showToast("선택한 식단 및 편식 기록이 초기화되었습니다.", "info");
+        renderAll();
+      });
+
+      // 초기 UI 렌더링 및 기본 검색 실행
+      renderAll();
+      document.getElementById("searchFoodName").value = "김밥";
+      searchFoodApi("김밥");
+    });
   </script>
 </body>
 </html>

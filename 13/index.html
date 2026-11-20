@@ -1,895 +1,1809 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>로얄 바카라 2D (Royal Baccarat)</title>
-    <!-- Tailwind CSS 로드 -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Tone.js (신디사이저 효과음) 로드 -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
-    <!-- Google Fonts: Inter & Cinzel (카지노 럭셔리 느낌) -->
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background: radial-gradient(circle at center, #064e3b 0%, #022c22 70%, #011812 100%);
-            color: #f8fafc;
-            user-select: none;
-            -webkit-tap-highlight-color: transparent;
-            overflow-x: hidden;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>그린밸런스 · 청소년 건강 식단 설계 웹앱</title>
+  <style>
+    :root {
+      --bg-page: #f4faf6;
+      --bg-card: #ffffff;
+      --bg-soft: #eaf6ee;
+      --primary: #1f8a5b;
+      --primary-dark: #156642;
+      --primary-light: #d3f0e2;
+      --accent: #38b27c;
+      --warn-bg: #fff8eb;
+      --warn-border: #f4b942;
+      --warn-text: #8a5300;
+      --danger-bg: #fff2f0;
+      --danger-border: #ff7875;
+      --danger-text: #a8071a;
+      --text-main: #1b2e24;
+      --text-sub: #4d6859;
+      --border: #d9ece1;
+      --shadow: 0 10px 30px rgba(27, 86, 56, 0.08);
+      --radius: 18px;
+    }
 
-        .font-casino {
-            font-family: 'Cinzel', serif;
-        }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-        /* 카지노 테이블 펠트 질감 및 골드 테두리 */
-        .casino-table {
-            background: radial-gradient(ellipse at center, #047857 0%, #065f46 60%, #064e3b 100%);
-            box-shadow: inset 0 0 80px rgba(0, 0, 0, 0.7), 0 10px 30px rgba(0, 0, 0, 0.8);
-            border: 4px solid #b45309;
-        }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans KR", "Apple SD Gothic Neo", sans-serif;
+      background: linear-gradient(180deg, #e9f7ee 0%, var(--bg-page) 38%, #f9fcfa 100%);
+      color: var(--text-main);
+      line-height: 1.55;
+      min-height: 100vh;
+      padding-bottom: 64px;
+      -webkit-tap-highlight-color: transparent;
+    }
 
-        /* 3D 카드 플립 & 딜링 애니메이션 */
-        .card-container {
-            perspective: 1000px;
-            width: 74px;
-            height: 106px;
-        }
-        @media (min-width: 640px) {
-            .card-container {
-                width: 96px;
-                height: 138px;
-            }
-        }
+    .container {
+      max-width: 1140px;
+      margin: 0 auto;
+      padding: 18px 14px;
+    }
 
-        .card-inner {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-            transform-style: preserve-3d;
-        }
+    @media (min-width: 640px) {
+      .container {
+        padding: 24px 18px;
+      }
+    }
 
-        .card-container.flipped .card-inner {
-            transform: rotateY(180deg);
-        }
+    /* 헤더 */
+    .hero {
+      background: linear-gradient(135deg, #1b8a5a 0%, #2ca972 60%, #52c48d 100%);
+      color: #ffffff;
+      border-radius: 22px;
+      padding: 22px 20px;
+      box-shadow: 0 14px 32px rgba(27, 138, 90, 0.22);
+      margin-bottom: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+    }
 
-        /* 3번째 카드 가로 눕히기 (바카라 전통 룰 연출) */
-        .card-container.third-card {
-            transform: rotate(90deg);
-            margin-left: 14px;
-        }
-        @media (min-width: 640px) {
-            .card-container.third-card {
-                margin-left: 20px;
-            }
-        }
+    @media (min-width: 640px) {
+      .hero {
+        border-radius: 24px;
+        padding: 28px 32px;
+        margin-bottom: 24px;
+      }
+    }
 
-        .card-face {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            backface-visibility: hidden;
-            border-radius: 10px;
-            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.45);
-        }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(6px);
+      padding: 6px 13px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
 
-        .card-front {
-            background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%);
-            transform: rotateY(180deg);
-            border: 1px solid #cbd5e1;
-        }
+    .hero h1 {
+      font-size: clamp(1.45rem, 4.5vw, 2.1rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+    }
 
-        .card-back {
-            background: repeating-linear-gradient(
-                45deg,
-                #7f1d1d,
-                #7f1d1d 8px,
-                #991b1b 8px,
-                #991b1b 16px
-            );
-            border: 3px solid #fef3c7;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+    .hero p {
+      color: rgba(255, 255, 255, 0.94);
+      font-size: 0.94rem;
+      max-width: 660px;
+    }
 
-        .card-back::after {
-            content: 'ROYAL';
-            font-family: 'Cinzel', serif;
-            font-size: 11px;
-            font-weight: 900;
-            color: #fcd34d;
-            border: 1px solid #fcd34d;
-            padding: 2px 5px;
-            border-radius: 4px;
-            background: rgba(127, 29, 29, 0.9);
-        }
+    .source-note {
+      margin-top: 10px;
+      font-size: 0.8rem;
+      color: rgba(255, 255, 255, 0.92);
+    }
 
-        /* 포커 칩 스타일 */
-        .poker-chip {
-            position: relative;
-            border-radius: 9999px;
-            border: 4px dashed rgba(255, 255, 255, 0.85);
-            box-shadow: 0 5px 12px rgba(0, 0, 0, 0.5), inset 0 2px 4px rgba(255, 255, 255, 0.4);
-            transition: transform 0.15s ease, box-shadow 0.15s ease;
-        }
-        .poker-chip:active {
-            transform: scale(0.92);
-        }
-        .poker-chip.selected {
-            transform: translateY(-8px) scale(1.08);
-            box-shadow: 0 12px 20px rgba(250, 204, 21, 0.5), 0 0 0 3px #facc15;
-        }
+    .target-box {
+      background: rgba(255, 255, 255, 0.16);
+      border: 1px solid rgba(255, 255, 255, 0.32);
+      border-radius: 16px;
+      padding: 14px 16px;
+      width: 100%;
+    }
 
-        /* 베팅 구역 스타일 */
-        .bet-zone {
-            transition: all 0.2s ease;
-            background: rgba(0, 0, 0, 0.25);
-        }
-        .bet-zone:hover:not(.disabled) {
-            background: rgba(255, 255, 255, 0.08);
-            transform: translateY(-2px);
-        }
-        .bet-zone.winner-glow {
-            animation: winnerPulse 1.2s infinite alternate;
-            border-color: #facc15 !important;
-            background: rgba(250, 204, 21, 0.2) !important;
-        }
+    @media (min-width: 760px) {
+      .target-box {
+        width: auto;
+        min-width: 260px;
+        max-width: 340px;
+      }
+    }
 
-        @keyframes winnerPulse {
-            from { box-shadow: 0 0 10px rgba(250, 204, 21, 0.4); }
-            to { box-shadow: 0 0 28px rgba(250, 204, 21, 0.9); }
-        }
+    .target-box label {
+      display: block;
+      font-size: 0.8rem;
+      opacity: 0.95;
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
 
-        /* 딜링 등장 애니메이션 */
-        @keyframes dealIn {
-            from {
-                opacity: 0;
-                transform: translate(60px, -120px) scale(0.6);
-            }
-            to {
-                opacity: 1;
-                transform: translate(0, 0) scale(1);
-            }
-        }
-        .animate-deal {
-            animation: dealIn 0.35s ease-out forwards;
-        }
-    </style>
+    .target-box select {
+      width: 100%;
+      min-height: 42px;
+      padding: 9px 12px;
+      border-radius: 10px;
+      border: none;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-main);
+      background: #ffffff;
+      cursor: pointer;
+    }
+
+    .target-meta {
+      margin-top: 8px;
+      font-size: 0.79rem;
+      opacity: 0.95;
+    }
+
+    /* 레이아웃 그리드 */
+    .grid-main {
+      display: grid;
+      grid-template-columns: 1.08fr 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+
+    @media (max-width: 920px) {
+      .grid-main {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px 16px;
+      box-shadow: var(--shadow);
+      margin-bottom: 18px;
+    }
+
+    @media (min-width: 640px) {
+      .card {
+        padding: 22px;
+        margin-bottom: 22px;
+      }
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+
+    .card-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .step-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: var(--primary-light);
+      color: var(--primary-dark);
+      font-size: 0.85rem;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+
+    /* 검색 영역 */
+    .search-form {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    @media (max-width: 480px) {
+      .search-form {
+        flex-direction: column;
+      }
+    }
+
+    .search-input,
+    .filter-grid input,
+    .filter-grid select {
+      min-height: 42px;
+      padding: 10px 12px;
+      border: 1.5px solid var(--border);
+      border-radius: 11px;
+      font-size: 0.94rem;
+      color: var(--text-main);
+      background: #fbfdfb;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .search-input {
+      flex: 1;
+      min-height: 44px;
+      padding: 11px 14px;
+      font-size: 0.96rem;
+    }
+
+    .search-input:focus,
+    .filter-grid input:focus,
+    .filter-grid select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(31, 138, 91, 0.14);
+      background: #ffffff;
+    }
+
+    .filter-panel {
+      background: #f6fbf8;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px 13px;
+      margin-bottom: 12px;
+    }
+
+    .filter-toggle-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .filter-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    @media (max-width: 560px) {
+      .filter-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .field label {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--text-sub);
+      margin-bottom: 4px;
+    }
+
+    .field input,
+    .field select {
+      width: 100%;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 12px;
+      min-height: 42px;
+      padding: 10px 15px;
+      font-size: 0.92rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.12s, background-color 0.2s, opacity 0.2s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+
+    .btn:active {
+      transform: scale(0.98);
+    }
+
+    .btn:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #ffffff;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background: var(--primary-dark);
+    }
+
+    .btn-soft {
+      background: var(--bg-soft);
+      color: var(--primary-dark);
+    }
+
+    .btn-soft:hover:not(:disabled) {
+      background: var(--primary-light);
+    }
+
+    .btn-outline {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      color: var(--text-sub);
+    }
+
+    .btn-outline:hover:not(:disabled) {
+      background: var(--bg-soft);
+      color: var(--primary-dark);
+    }
+
+    .btn-sm {
+      min-height: 36px;
+      padding: 7px 12px;
+      font-size: 0.83rem;
+      border-radius: 9px;
+    }
+
+    .quick-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-bottom: 12px;
+    }
+
+    .quick-chip {
+      background: var(--bg-soft);
+      color: var(--primary-dark);
+      border: 1px solid #cce7d7;
+      border-radius: 999px;
+      min-height: 34px;
+      padding: 5px 12px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.15s;
+    }
+
+    .quick-chip:hover {
+      background: var(--primary-light);
+    }
+
+    /* 검색 상태 및 결과 */
+    .search-status {
+      font-size: 0.84rem;
+      color: var(--text-sub);
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      min-height: 22px;
+    }
+
+    .status-error {
+      color: var(--danger-text);
+      font-weight: 700;
+    }
+
+    .search-results {
+      display: flex;
+      flex-direction: column;
+      gap: 11px;
+      max-height: 540px;
+      overflow-y: auto;
+      padding-right: 2px;
+    }
+
+    .food-card {
+      border: 1px solid var(--border);
+      background: #fcfefd;
+      border-radius: 14px;
+      padding: 13px 14px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .food-card:hover {
+      border-color: var(--accent);
+      box-shadow: 0 4px 14px rgba(31, 138, 91, 0.08);
+    }
+
+    .food-card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 8px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+
+    .food-name {
+      font-size: 0.98rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .food-submeta {
+      font-size: 0.78rem;
+      color: var(--text-sub);
+      margin-top: 2px;
+    }
+
+    .food-serving {
+      font-size: 0.8rem;
+      color: var(--primary-dark);
+      background: var(--bg-soft);
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-weight: 700;
+    }
+
+    .nutri-mini-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 6px;
+      margin-bottom: 11px;
+      text-align: center;
+    }
+
+    @media (max-width: 520px) {
+      .nutri-mini-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .nutri-cell {
+      background: var(--bg-page);
+      border: 1px solid #e3f1e8;
+      border-radius: 10px;
+      padding: 7px 5px;
+    }
+
+    .nutri-cell span {
+      display: block;
+      font-size: 0.73rem;
+      color: var(--text-sub);
+    }
+
+    .nutri-cell strong {
+      font-size: 0.86rem;
+      color: var(--text-main);
+    }
+
+    .missing-val {
+      color: #cf1322 !important;
+      font-size: 0.8rem !important;
+    }
+
+    .food-card-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .portion-note {
+      font-size: 0.8rem;
+      color: var(--text-sub);
+      font-weight: 600;
+    }
+
+    .pagination-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 12px;
+      gap: 10px;
+    }
+
+    /* 안내/오류 박스 */
+    .notice-box {
+      border-radius: 14px;
+      padding: 14px 15px;
+      margin-top: 6px;
+      font-size: 0.88rem;
+      border: 1.5px solid;
+    }
+
+    .notice-warn {
+      background: var(--warn-bg);
+      border-color: var(--warn-border);
+      color: var(--warn-text);
+    }
+
+    .notice-error {
+      background: var(--danger-bg);
+      border-color: var(--danger-border);
+      color: var(--danger-text);
+    }
+
+    .notice-title {
+      display: block;
+      font-size: 0.94rem;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+
+    .notice-detail {
+      margin-top: 4px;
+      font-size: 0.82rem;
+      opacity: 0.92;
+    }
+
+    /* 하루 식단 목록 */
+    .meal-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .meal-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 12px 13px;
+      border-radius: 13px;
+      background: #f8fcf9;
+      border: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+
+    .meal-item-title {
+      font-weight: 700;
+      font-size: 0.94rem;
+    }
+
+    .meal-item-sub {
+      font-size: 0.8rem;
+      color: var(--text-sub);
+      margin-top: 2px;
+    }
+
+    .meal-item-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-left: auto;
+    }
+
+    .kcal-badge {
+      background: var(--primary-light);
+      color: var(--primary-dark);
+      font-weight: 800;
+      font-size: 0.84rem;
+      padding: 5px 10px;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 24px 14px;
+      background: #f9fcfa;
+      border: 1px dashed var(--border);
+      border-radius: 14px;
+      color: var(--text-sub);
+      font-size: 0.9rem;
+    }
+
+    /* 영양소 합계 요약 */
+    .total-summary {
+      background: linear-gradient(135deg, #effaf3 0%, #e3f5ea 100%);
+      border: 1px solid #c6e6d3;
+      border-radius: 16px;
+      padding: 15px;
+    }
+
+    .total-summary-title {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: var(--primary-dark);
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .partial-sum-note {
+      background: var(--warn-bg);
+      border: 1px solid var(--warn-border);
+      color: var(--warn-text);
+      border-radius: 10px;
+      padding: 8px 11px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .total-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+    }
+
+    @media (max-width: 640px) {
+      .total-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .total-grid .total-box:last-child {
+        grid-column: 1 / -1;
+      }
+    }
+
+    .total-box {
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 10px 8px;
+      text-align: center;
+      border: 1px solid #d7ede0;
+    }
+
+    .total-box .label {
+      font-size: 0.76rem;
+      color: var(--text-sub);
+      font-weight: 600;
+    }
+
+    .total-box .value {
+      font-size: 1.03rem;
+      font-weight: 800;
+      color: var(--primary-dark);
+      margin-top: 2px;
+    }
+
+    .total-box .sub {
+      font-size: 0.72rem;
+      color: var(--text-sub);
+      margin-top: 2px;
+    }
+
+    /* 결과 테이블 */
+    .table-wrap {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+      background: #ffffff;
+    }
+
+    th, td {
+      padding: 11px 12px;
+      text-align: left;
+      border-bottom: 1px solid #ebf4ee;
+      white-space: nowrap;
+    }
+
+    th {
+      background: var(--bg-soft);
+      color: var(--primary-dark);
+      font-weight: 700;
+      font-size: 0.82rem;
+    }
+
+    tr.total-row td {
+      background: #f2fbf5;
+      font-weight: 800;
+      color: var(--primary-dark);
+      border-top: 2px solid #bce2cb;
+    }
+
+    .num {
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* 개선점 & 안내 배너 */
+    .alert-banner {
+      border-radius: 14px;
+      padding: 13px 15px;
+      margin-bottom: 12px;
+      font-size: 0.9rem;
+      border-left: 5px solid;
+    }
+
+    .alert-warn {
+      background: var(--warn-bg);
+      border-color: var(--warn-border);
+      color: var(--warn-text);
+    }
+
+    .alert-good {
+      background: var(--bg-soft);
+      border-color: var(--primary);
+      color: var(--primary-dark);
+    }
+
+    .feedback-list {
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+    }
+
+    .feedback-item {
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: #f9fcfa;
+      border: 1px solid var(--border);
+      font-size: 0.89rem;
+    }
+
+    .exercise-tip {
+      margin-top: 14px;
+      padding: 13px 15px;
+      border-radius: 14px;
+      background: #f1fbf5;
+      border: 1px solid #cce8d8;
+      font-size: 0.88rem;
+      color: var(--text-main);
+    }
+
+    .tag-missing {
+      display: inline-block;
+      background: #fff1f0;
+      color: #cf1322;
+      border: 1px solid #ffa39e;
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 1px 6px;
+      border-radius: 6px;
+      margin-left: 4px;
+      vertical-align: middle;
+    }
+  </style>
 </head>
-<body class="min-h-screen flex flex-col justify-between p-2 sm:p-4">
-
-    <!-- 상단 헤더: 타이틀, 잔액, 사운드 & 룰 버튼 -->
-    <header class="max-w-5xl w-full mx-auto flex flex-wrap items-center justify-between gap-2 bg-slate-950/70 backdrop-blur-md border border-amber-500/30 rounded-2xl px-4 py-2.5 shadow-xl">
-        <div class="flex items-center gap-2.5">
-            <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-slate-950 font-black text-lg shadow-md">
-                ♠
-            </div>
-            <div>
-                <h1 class="font-casino text-lg sm:text-xl font-bold text-amber-400 tracking-wider leading-none">ROYAL BACCARAT</h1>
-                <p class="text-[11px] text-emerald-300/80 mt-0.5">8-Deck Standard Casino Rules</p>
-            </div>
+<body>
+  <div class="container">
+    <!-- 상단 헤더 -->
+    <header class="hero">
+      <div>
+        <div class="hero-badge">🌿 청소년 체중 관리 &amp; 균형 식단 설계</div>
+        <h1>오늘 먹은 음식 · 먹고 싶은 음식으로<br />건강한 하루 식단을 만들어보세요</h1>
+        <p>
+          식품영양성분DB에서 음식을 검색해 하루 식단에 담고, 표시된 기준량에 따른 열량과
+          주요 영양소 합계를 계산한 뒤 식단 개선점을 확인해 보세요.
+        </p>
+        <div class="source-note">
+          데이터 출처: 식품의약품안전처 식품영양성분DB정보 (영양값은 해당 식품의 표시된 기준량 기준)
         </div>
+      </div>
 
-        <!-- 보유 자산 및 총 베팅액 -->
-        <div class="flex items-center gap-3 sm:gap-5">
-            <div class="text-right">
-                <div class="text-[10px] uppercase tracking-wider text-slate-400">보유 잔액 (Balance)</div>
-                <div id="balanceDisplay" class="text-base sm:text-xl font-extrabold text-amber-400">$10,000</div>
-            </div>
-            <div class="h-7 w-px bg-slate-700"></div>
-            <div class="text-right">
-                <div class="text-[10px] uppercase tracking-wider text-slate-400">총 베팅 (Total Bet)</div>
-                <div id="totalBetDisplay" class="text-base sm:text-xl font-extrabold text-white">$0</div>
-            </div>
-        </div>
-
-        <!-- 유틸리티 버튼 (사운드, 룰 설명, 파산 시 리필) -->
-        <div class="flex items-center gap-1.5">
-            <button id="soundToggleBtn" class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-300 border border-slate-700 transition" title="효과음 켜기/끄기">
-                🔊
-            </button>
-            <button id="rulesBtn" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-200 border border-slate-700 transition">
-                게임 룰
-            </button>
-            <button id="refillBtn" class="hidden px-3 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-xs font-bold text-slate-950 shadow-lg animate-bounce">
-                +$5,000 충전
-            </button>
-        </div>
+      <div class="target-box">
+        <label for="profileSelect">청소년 성장·활동 기준 선택</label>
+        <select id="profileSelect">
+          <option value="teen_active">중·고등학생 · 규칙적 운동 (권장 약 2,300 kcal)</option>
+          <option value="teen_low" selected>중·고등학생 · 운동 부족/좌식 위주 (권장 약 2,000 kcal)</option>
+          <option value="teen_weight">체중 감량 목표 · 가벼운 활동 (권장 약 1,750 kcal)</option>
+        </select>
+        <div class="target-meta" id="targetMeta"></div>
+      </div>
     </header>
 
-    <!-- 메인 카지노 테이블 영역 -->
-    <main class="max-w-5xl w-full mx-auto my-2 flex-1 flex flex-col justify-between casino-table rounded-3xl p-3 sm:p-6 relative">
-        
-        <!-- 덱 잔량 & 스코어보드 (히스토리 비드 로드) -->
-        <div class="flex flex-col sm:flex-row items-center justify-between gap-2 mb-3 bg-black/30 rounded-2xl p-2.5 border border-white/10">
-            <div class="flex items-center gap-3 text-xs">
-                <span class="px-2.5 py-1 rounded-lg bg-emerald-950 border border-emerald-600/50 text-emerald-300 font-semibold">
-                    남은 카드: <span id="deckCountDisplay" class="text-white font-bold">416</span>장
-                </span>
-                <div class="flex items-center gap-2 font-bold">
-                    <span class="text-blue-400">P: <span id="statPlayer">0</span></span>
-                    <span class="text-rose-400">B: <span id="statBanker">0</span></span>
-                    <span class="text-emerald-400">T: <span id="statTie">0</span></span>
-                </div>
+    <div class="grid-main">
+      <!-- 왼쪽 열: ① 음식 영양정보 검색 -->
+      <div>
+        <section class="card" aria-labelledby="searchHeading">
+          <div class="card-header">
+            <h2 class="card-title" id="searchHeading">
+              <span class="step-pill">①</span> 음식 영양정보 검색
+            </h2>
+            <button type="button" class="btn btn-outline btn-sm" id="resetFiltersBtn">검색 초기화</button>
+          </div>
+
+          <form class="search-form" id="searchForm">
+            <input
+              type="text"
+              id="searchInput"
+              class="search-input"
+              placeholder="먹었거나 먹고 싶은 음식 이름을 입력하세요 (예: 김밥, 닭가슴살, 사과)"
+              autocomplete="off"
+            />
+            <button type="submit" class="btn btn-primary" id="searchSubmitBtn">검색</button>
+          </form>
+
+          <!-- 선택 검색조건 (빈 값은 요청에서 생략) -->
+          <div class="filter-panel">
+            <div class="filter-toggle-row">
+              <span style="font-size:0.82rem; font-weight:700; color:var(--primary-dark);">추가 검색조건 (선택 · 빈 값 생략)</span>
+              <button type="button" class="btn btn-soft btn-sm" id="toggleExtraFiltersBtn">조건 펼치기/접기</button>
+            </div>
+            <div class="filter-grid" id="extraFiltersGrid" style="display:none;">
+              <div class="field">
+                <label for="fMakerNm">업체명 (MAKER_NM)</label>
+                <input type="text" id="fMakerNm" placeholder="예: 오뚜기" />
+              </div>
+              <div class="field">
+                <label for="fCat1Nm">식품대분류명 (FOOD_CAT1_NM)</label>
+                <input type="text" id="fCat1Nm" placeholder="예: 밥류, 과일류" />
+              </div>
+              <div class="field">
+                <label for="fItemReportNo">품목제조보고번호 (ITEM_REPORT_NO)</label>
+                <input type="text" id="fItemReportNo" placeholder="선택 입력" />
+              </div>
+              <div class="field">
+                <label for="fDbClassNm">품목대표/상용제품 (DB_CLASS_NM)</label>
+                <select id="fDbClassNm">
+                  <option value="">전체 (생략)</option>
+                  <option value="품목대표">품목대표</option>
+                  <option value="상용제품">상용제품</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="fResearchYmd">데이터생성일자 (RESEARCH_YMD)</label>
+                <input type="text" id="fResearchYmd" placeholder="예: 20240101" />
+              </div>
+              <div class="field">
+                <label for="fUpdateDate">데이터수정일자 (UPDATE_DATE)</label>
+                <input type="text" id="fUpdateDate" placeholder="예: 20240601" />
+              </div>
+            </div>
+          </div>
+
+          <div class="quick-chips" id="quickChips">
+            <button type="button" class="quick-chip" data-query="김밥">김밥</button>
+            <button type="button" class="quick-chip" data-query="현미밥">현미밥</button>
+            <button type="button" class="quick-chip" data-query="닭가슴살">닭가슴살</button>
+            <button type="button" class="quick-chip" data-query="달걀">달걀</button>
+            <button type="button" class="quick-chip" data-query="사과">사과</button>
+            <button type="button" class="quick-chip" data-query="떡볶이">떡볶이</button>
+            <button type="button" class="quick-chip" data-query="요거트">요거트</button>
+          </div>
+
+          <div class="search-status">
+            <span id="searchStatusText">음식명을 입력하고 검색해 주세요.</span>
+            <span id="pageInfoText">페이지 1</span>
+          </div>
+
+          <div class="search-results" id="searchResults"></div>
+
+          <div class="pagination-row" id="paginationRow" style="display:none;">
+            <button type="button" class="btn btn-outline btn-sm" id="prevPageBtn">이전 페이지</button>
+            <span id="currentPageLabel" style="font-size:0.84rem; font-weight:700; color:var(--text-sub);">1 페이지</span>
+            <button type="button" class="btn btn-outline btn-sm" id="nextPageBtn">다음 페이지</button>
+          </div>
+        </section>
+      </div>
+
+      <!-- 오른쪽 열: ② 하루 식단 추가 및 영양소 합계 -->
+      <div>
+        <section class="card" aria-labelledby="mealHeading">
+          <div class="card-header">
+            <h2 class="card-title" id="mealHeading">
+              <span class="step-pill">②</span> 하루 식단 &amp; 영양소 합계
+            </h2>
+            <button type="button" class="btn btn-outline btn-sm" id="clearMealBtn">식단 비우기</button>
+          </div>
+
+          <div id="mealList" class="meal-list"></div>
+
+          <div class="total-summary">
+            <div class="total-summary-title">
+              <span>하루 총 영양소 합계</span>
+              <span id="mealCountBadge">0개 항목</span>
             </div>
 
-            <!-- 최근 결과 기록 (Bead Plate) -->
-            <div id="roadmapContainer" class="flex items-center gap-1.5 overflow-x-auto max-w-full py-0.5 px-1">
-                <span class="text-[11px] text-emerald-200/60 italic">게임 기록이 여기에 표시됩니다</span>
-            </div>
-        </div>
-
-        <!-- 카드 딜링 보드 (PLAYER vs BANKER) -->
-        <div class="grid grid-cols-2 gap-3 sm:gap-8 my-auto py-2 relative">
-            <!-- 중앙 VS 배지 -->
-            <div class="hidden sm:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-slate-950 border-2 border-amber-500 items-center justify-center font-casino font-black text-amber-400 text-sm shadow-lg z-10">
-                VS
+            <div id="partialSumNote" class="partial-sum-note" style="display:none;">
+              일부 항목에 정보 없음이 포함되어 있어 확인된 값만 합산했습니다.
             </div>
 
-            <!-- PLAYER 영역 -->
-            <div id="playerHandArea" class="flex flex-col items-center bg-blue-950/35 border border-blue-400/30 rounded-2xl p-3 sm:p-4 min-h-[175px] sm:min-h-[215px]">
-                <div class="flex items-center justify-between w-full mb-2 sm:mb-3 px-1">
-                    <span class="font-casino font-bold text-blue-300 tracking-wider text-sm sm:text-lg">PLAYER</span>
-                    <span id="playerScoreBadge" class="px-3 py-0.5 rounded-full bg-blue-600 text-white font-extrabold text-sm sm:text-base shadow">
-                        0
-                    </span>
-                </div>
-                <div id="playerCards" class="flex items-center justify-center gap-2 sm:gap-3 my-auto min-h-[110px] sm:min-h-[140px]">
-                    <!-- 플레이어 카드가 동적으로 추가됨 -->
-                </div>
+            <div class="total-grid" id="totalSummaryGrid">
+              <div class="total-box">
+                <div class="label">열량</div>
+                <div class="value" id="sumKcal">0 kcal</div>
+                <div class="sub" id="subKcal">목표 대비 0%</div>
+              </div>
+              <div class="total-box">
+                <div class="label">탄수화물</div>
+                <div class="value" id="sumCarbs">0 g</div>
+                <div class="sub" id="subCarbs">에너지 비율 0%</div>
+              </div>
+              <div class="total-box">
+                <div class="label">단백질</div>
+                <div class="value" id="sumProtein">0 g</div>
+                <div class="sub" id="subProtein">에너지 비율 0%</div>
+              </div>
+              <div class="total-box">
+                <div class="label">지방</div>
+                <div class="value" id="sumFat">0 g</div>
+                <div class="sub" id="subFat">에너지 비율 0%</div>
+              </div>
+              <div class="total-box">
+                <div class="label">나트륨</div>
+                <div class="value" id="sumSodium">0 mg</div>
+                <div class="sub" id="subSodium">권장 대비 0%</div>
+              </div>
             </div>
-
-            <!-- BANKER 영역 -->
-            <div id="bankerHandArea" class="flex flex-col items-center bg-rose-950/35 border border-rose-400/30 rounded-2xl p-3 sm:p-4 min-h-[175px] sm:min-h-[215px]">
-                <div class="flex items-center justify-between w-full mb-2 sm:mb-3 px-1">
-                    <span class="font-casino font-bold text-rose-300 tracking-wider text-sm sm:text-lg">BANKER</span>
-                    <span id="bankerScoreBadge" class="px-3 py-0.5 rounded-full bg-rose-600 text-white font-extrabold text-sm sm:text-base shadow">
-                        0
-                    </span>
-                </div>
-                <div id="bankerCards" class="flex items-center justify-center gap-2 sm:gap-3 my-auto min-h-[110px] sm:min-h-[140px]">
-                    <!-- 뱅커 카드가 동적으로 추가됨 -->
-                </div>
-            </div>
-        </div>
-
-        <!-- 결과 안내 메시지 배너 -->
-        <div id="statusBanner" class="my-2 text-center py-2 px-4 rounded-xl bg-black/45 border border-amber-400/30 text-amber-200 font-bold text-sm sm:text-base tracking-wide shadow-inner">
-            칩을 선택하고 베팅 구역을 클릭한 뒤 DEAL 버튼을 누르세요!
-        </div>
-
-        <!-- 5개 베팅 구역 (Player Pair, Player, Tie, Banker, Banker Pair) -->
-        <div class="grid grid-cols-3 sm:grid-cols-5 gap-2 sm:gap-3 mt-1">
-            <!-- PLAYER PAIR -->
-            <button data-bet="playerPair" class="bet-zone col-span-1 order-4 sm:order-1 rounded-2xl border-2 border-blue-400/40 p-2 sm:p-3 flex flex-col items-center justify-between relative cursor-pointer">
-                <div class="text-[11px] sm:text-xs font-bold text-blue-300">P. PAIR</div>
-                <div class="text-[10px] text-blue-200/70">11 : 1</div>
-                <div id="bet-playerPair" class="mt-1.5 min-h-[26px] px-2.5 py-0.5 rounded-full bg-slate-900/90 text-amber-400 font-extrabold text-xs sm:text-sm border border-amber-500/40 opacity-0 transition-opacity">
-                    $0
-                </div>
-            </button>
-
-            <!-- PLAYER -->
-            <button data-bet="player" class="bet-zone col-span-1 order-1 sm:order-2 rounded-2xl border-2 border-blue-500/70 p-2.5 sm:p-3 flex flex-col items-center justify-between relative cursor-pointer">
-                <div class="font-casino text-sm sm:text-lg font-black text-blue-400">PLAYER</div>
-                <div class="text-[11px] text-blue-200/80 font-semibold">1 : 1</div>
-                <div id="bet-player" class="mt-1.5 min-h-[28px] px-3 py-0.5 rounded-full bg-slate-900/90 text-amber-400 font-extrabold text-xs sm:text-sm border border-amber-500/50 opacity-0 transition-opacity">
-                    $0
-                </div>
-            </button>
-
-            <!-- TIE -->
-            <button data-bet="tie" class="bet-zone col-span-1 order-2 sm:order-3 rounded-2xl border-2 border-emerald-400/70 p-2.5 sm:p-3 flex flex-col items-center justify-between relative cursor-pointer">
-                <div class="font-casino text-sm sm:text-lg font-black text-emerald-300">TIE</div>
-                <div class="text-[11px] text-emerald-200/80 font-semibold">8 : 1</div>
-                <div id="bet-tie" class="mt-1.5 min-h-[28px] px-3 py-0.5 rounded-full bg-slate-900/90 text-amber-400 font-extrabold text-xs sm:text-sm border border-amber-500/50 opacity-0 transition-opacity">
-                    $0
-                </div>
-            </button>
-
-            <!-- BANKER -->
-            <button data-bet="banker" class="bet-zone col-span-1 order-3 sm:order-4 rounded-2xl border-2 border-rose-500/70 p-2.5 sm:p-3 flex flex-col items-center justify-between relative cursor-pointer">
-                <div class="font-casino text-sm sm:text-lg font-black text-rose-400">BANKER</div>
-                <div class="text-[11px] text-rose-200/80 font-semibold">0.95 : 1</div>
-                <div id="bet-banker" class="mt-1.5 min-h-[28px] px-3 py-0.5 rounded-full bg-slate-900/90 text-amber-400 font-extrabold text-xs sm:text-sm border border-amber-500/50 opacity-0 transition-opacity">
-                    $0
-                </div>
-            </button>
-
-            <!-- BANKER PAIR -->
-            <button data-bet="bankerPair" class="bet-zone col-span-2 sm:col-span-1 order-5 rounded-2xl border-2 border-rose-400/40 p-2 sm:p-3 flex flex-col items-center justify-between relative cursor-pointer">
-                <div class="text-[11px] sm:text-xs font-bold text-rose-300">B. PAIR</div>
-                <div class="text-[10px] text-rose-200/70">11 : 1</div>
-                <div id="bet-bankerPair" class="mt-1.5 min-h-[26px] px-2.5 py-0.5 rounded-full bg-slate-900/90 text-amber-400 font-extrabold text-xs sm:text-sm border border-amber-500/40 opacity-0 transition-opacity">
-                    $0
-                </div>
-            </button>
-        </div>
-    </main>
-
-    <!-- 하단 컨트롤 패널: 칩 선택 & 액션 버튼 -->
-    <footer class="max-w-5xl w-full mx-auto bg-slate-950/80 backdrop-blur-md border border-amber-500/30 rounded-2xl p-3 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-2xl">
-        <!-- 칩 선택기 -->
-        <div class="flex items-center justify-center gap-2.5 sm:gap-3.5">
-            <button data-chip="10" class="poker-chip selected w-12 h-12 sm:w-14 sm:h-14 bg-sky-600 text-white font-extrabold text-xs sm:text-sm flex items-center justify-center cursor-pointer">
-                $10
-            </button>
-            <button data-chip="50" class="poker-chip w-12 h-12 sm:w-14 sm:h-14 bg-emerald-600 text-white font-extrabold text-xs sm:text-sm flex items-center justify-center cursor-pointer">
-                $50
-            </button>
-            <button data-chip="100" class="poker-chip w-12 h-12 sm:w-14 sm:h-14 bg-rose-600 text-white font-extrabold text-xs sm:text-sm flex items-center justify-center cursor-pointer">
-                $100
-            </button>
-            <button data-chip="500" class="poker-chip w-12 h-12 sm:w-14 sm:h-14 bg-purple-600 text-white font-extrabold text-xs sm:text-sm flex items-center justify-center cursor-pointer">
-                $500
-            </button>
-            <button data-chip="1000" class="poker-chip w-12 h-12 sm:w-14 sm:h-14 bg-amber-500 text-slate-950 font-black text-xs sm:text-sm flex items-center justify-center cursor-pointer">
-                $1K
-            </button>
-        </div>
-
-        <!-- 게임 제어 버튼 (초기화, 재베팅, 딜) -->
-        <div class="flex items-center gap-2 w-full sm:w-auto justify-center">
-            <button id="clearBetBtn" class="px-3.5 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 disabled:opacity-40 text-slate-200 font-bold text-xs sm:text-sm border border-slate-600 transition cursor-pointer">
-                초기화
-            </button>
-            <button id="rebetBtn" class="px-3.5 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 disabled:opacity-40 text-amber-300 font-bold text-xs sm:text-sm border border-amber-500/40 transition cursor-pointer">
-                재베팅
-            </button>
-            <button id="dealBtn" class="flex-1 sm:flex-initial px-8 py-3 rounded-xl bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 hover:from-amber-400 hover:to-yellow-300 disabled:opacity-40 text-slate-950 font-casino font-black text-base sm:text-lg tracking-wider shadow-lg shadow-amber-500/25 transition transform active:scale-95 cursor-pointer">
-                DEAL
-            </button>
-        </div>
-    </footer>
-
-    <!-- 게임 룰 안내 모달 -->
-    <div id="rulesModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div class="bg-slate-900 border-2 border-amber-500/50 rounded-3xl max-w-lg w-full p-6 text-slate-200 shadow-2xl">
-            <div class="flex items-center justify-between border-b border-slate-700 pb-3 mb-4">
-                <h2 class="font-casino text-xl font-bold text-amber-400">바카라 (BACCARAT) 게임 룰</h2>
-                <button id="closeRulesBtn" class="text-slate-400 hover:text-white text-xl font-bold px-2">✕</button>
-            </div>
-            <div class="space-y-3 text-xs sm:text-sm leading-relaxed max-h-[65vh] overflow-y-auto pr-1">
-                <p><strong class="text-amber-300">1. 기본 목표:</strong> <strong>PLAYER</strong>와 <strong>BANKER</strong> 중 카드 합계의 끝자리 숫자가 <strong>9에 더 가까운 쪽</strong>을 예측해 베팅합니다.</p>
-                <p><strong class="text-amber-300">2. 카드 점수 계산:</strong><br>
-                   • <strong>A (에이스):</strong> 1점<br>
-                   • <strong>2 ~ 9:</strong> 카드 숫자 그대로 계산<br>
-                   • <strong>10, J, Q, K:</strong> 0점<br>
-                   • 합계가 10 이상이면 <strong>일의 자리 숫자</strong>만 인정합니다. (예: 7 + 8 = 15 → <strong>5점</strong>)</p>
-                <p><strong class="text-amber-300">3. 배당률 (Payout):</strong><br>
-                   • <strong>PLAYER 승리:</strong> 1 : 1 (원금 + 1배)<br>
-                   • <strong>BANKER 승리:</strong> 0.95 : 1 (5% 커미션 제외)<br>
-                   • <strong>TIE (무승부):</strong> 8 : 1 (무승부 시 Player/Banker 베팅금은 반환)<br>
-                   • <strong>P. PAIR / B. PAIR:</strong> 처음 받은 2장의 카드가 같은 숫자/무늬 등급일 때 11 : 1 지급</p>
-                <p><strong class="text-amber-300">4. 3번째 카드(Third Card) 규칙:</strong><br>
-                   • 양쪽 중 한 곳이라도 처음 2장 합이 <strong>8 또는 9(내추럴)</strong>면 즉시 승부가 결정됩니다.<br>
-                   • 그 외에는 국제 카지노 표준 바카라 3번째 카드 드로우 테이블에 따라 자동으로 1장을 더 받습니다.</p>
-            </div>
-            <button id="confirmRulesBtn" class="mt-5 w-full py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-sm">
-                확인했습니다
-            </button>
-        </div>
+          </div>
+        </section>
+      </div>
     </div>
 
-    <script>
-        /**
-         * 로얄 바카라 2D (Royal Baccarat 2D)
-         * - 8덱 슈(416장) 기반 정통 카지노 바카라 시뮬레이터
-         * - Web Audio / Tone.js 기반 효과음 내장
-         */
+    <!-- 하단 전체 폭: 결과 표 & ③ 식단 개선점 알려주기 -->
+    <section class="card" aria-labelledby="resultTableHeading">
+      <div class="card-header">
+        <h2 class="card-title" id="resultTableHeading">
+          📋 식단 영양정보 결과표 (음식별 &amp; 하루 합계)
+        </h2>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>음식이름</th>
+              <th>영양성분기준양</th>
+              <th class="num">열량</th>
+              <th class="num">탄수화물</th>
+              <th class="num">단백질</th>
+              <th class="num">지방</th>
+              <th class="num">나트륨</th>
+              <th>관리</th>
+            </tr>
+          </thead>
+          <tbody id="resultTableBody"></tbody>
+        </table>
+      </div>
+    </section>
 
-        // 게임 상태 변수
-        let balance = 10000;
-        let selectedChip = 10;
-        let isDealing = false;
-        let soundEnabled = true;
+    <section class="card" aria-labelledby="adviceHeading">
+      <div class="card-header">
+        <h2 class="card-title" id="adviceHeading">
+          <span class="step-pill">③</span> 식단 영양 분석 및 개선할 점
+        </h2>
+      </div>
+      <div id="adviceContainer"></div>
+    </section>
+  </div>
 
-        // 현재 라운드 베팅 내역
-        let bets = {
-            player: 0,
-            banker: 0,
-            tie: 0,
-            playerPair: 0,
-            bankerPair: 0
-        };
+  <script>
+    const API_ENDPOINT = 'https://glittery-dasik-3cb269.netlify.app/api/food';
+    const REQUEST_TIMEOUT_MS = 10000;
+    const NUM_OF_ROWS = 10;
 
-        // 직전 라운드 베팅 내역 (재베팅용)
-        let lastBets = null;
+    const PROFILES = {
+      teen_low: {
+        label: '중·고등학생 · 운동 부족/좌식 위주',
+        kcalTarget: 2000,
+        sodiumLimit: 2000,
+        exerciseNote: '하루 30~60분 빠른 걷기, 줄넘기, 스트레칭 등 유산소·전신 움직임을 늘리면 체중 관리와 혈당 안정에 큰 도움이 됩니다.'
+      },
+      teen_active: {
+        label: '중·고등학생 · 규칙적 운동',
+        kcalTarget: 2300,
+        sodiumLimit: 2200,
+        exerciseNote: '운동 전후 탄수화물과 단백질을 적절히 보충하고, 충분한 수분 섭취와 수면을 함께 챙겨주세요.'
+      },
+      teen_weight: {
+        label: '체중 감량 목표 · 가벼운 활동',
+        kcalTarget: 1750,
+        sodiumLimit: 1800,
+        exerciseNote: '극단적인 식사 제한 대신 단백질·채소 비중을 유지하면서 매일 가벼운 유산소 운동을 병행하는 것이 건강한 체중 감량에 좋습니다.'
+      }
+    };
 
-        // 8덱 슈 및 통계
-        let shoe = [];
-        let history = [];
-        let stats = { player: 0, banker: 0, tie: 0 };
+    // 원본 body.items 배열을 변형/삭제하지 않고 보관
+    let rawBodyItems = [];
+    let currentPage = 1;
+    let totalCount = 0;
 
-        // 카드 문양 및 숫자 정의
-        const SUITS = [
-            { symbol: '♠', color: 'text-slate-900' },
-            { symbol: '♥', color: 'text-rose-600' },
-            { symbol: '♦', color: 'text-rose-600' },
-            { symbol: '♣', color: 'text-slate-900' }
-        ];
-        const RANKS = [
-            { label: 'A', value: 1 },
-            { label: '2', value: 2 },
-            { label: '3', value: 3 },
-            { label: '4', value: 4 },
-            { label: '5', value: 5 },
-            { label: '6', value: 6 },
-            { label: '7', value: 7 },
-            { label: '8', value: 8 },
-            { label: '9', value: 9 },
-            { label: '10', value: 0 },
-            { label: 'J', value: 0 },
-            { label: 'Q', value: 0 },
-            { label: 'K', value: 0 }
-        ];
+    // 식단 추가 1회는 표시된 기준량 1개 분량(배수 1)으로 저장
+    // 같은 음식을 두 번 추가해도 각각 별도 항목으로 유지
+    let mealEntries = []; // { uid, rawItem }
 
-        // Tone.js 신디사이저 초기화
-        let synth = null;
-        function initAudio() {
-            if (!synth && typeof Tone !== 'undefined') {
-                synth = new Tone.PolySynth(Tone.Synth).toDestination();
-                synth.volume.value = -8;
-            }
-            if (Tone && Tone.context && Tone.context.state !== 'running') {
-                Tone.start();
-            }
+    const searchForm = document.getElementById('searchForm');
+    const searchInput = document.getElementById('searchInput');
+    const searchSubmitBtn = document.getElementById('searchSubmitBtn');
+    const searchResults = document.getElementById('searchResults');
+    const searchStatusText = document.getElementById('searchStatusText');
+    const pageInfoText = document.getElementById('pageInfoText');
+    const paginationRow = document.getElementById('paginationRow');
+    const prevPageBtn = document.getElementById('prevPageBtn');
+    const nextPageBtn = document.getElementById('nextPageBtn');
+    const currentPageLabel = document.getElementById('currentPageLabel');
+    const resetFiltersBtn = document.getElementById('resetFiltersBtn');
+    const toggleExtraFiltersBtn = document.getElementById('toggleExtraFiltersBtn');
+    const extraFiltersGrid = document.getElementById('extraFiltersGrid');
+    const quickChips = document.getElementById('quickChips');
+    const profileSelect = document.getElementById('profileSelect');
+    const targetMeta = document.getElementById('targetMeta');
+
+    /**
+     * 문자열 숫자 변환:
+     * - null, undefined, 빈 문자열(""), 공백만 있는 문자열은 0이 아니라 null 반환
+     * - 쉼표(,) 제거 후 Number 변환
+     * - 유한한 숫자가 아니면 null 반환
+     */
+    function parseNullableNumber(val) {
+      if (val === null || val === undefined) return null;
+      if (typeof val === 'number') {
+        return Number.isFinite(val) ? val : null;
+      }
+      const str = String(val).trim();
+      if (str === '' || str.toLowerCase() === 'null' || str === '-') return null;
+      const cleaned = str.replace(/,/g, '');
+      const num = Number(cleaned);
+      return Number.isFinite(num) ? num : null;
+    }
+
+    function formatNumber(num, decimals = 1) {
+      if (num === null || num === undefined || !Number.isFinite(num)) return null;
+      return Number.isInteger(num) ? String(num) : num.toFixed(decimals);
+    }
+
+    function hasNonEmptyText(val) {
+      return val !== null && val !== undefined && String(val).trim() !== '';
+    }
+
+    function selectDisplayFields(rawItem) {
+      const src = rawItem && typeof rawItem === 'object' ? rawItem : {};
+      return {
+        foodName: hasNonEmptyText(src.FOOD_NM_KR) ? String(src.FOOD_NM_KR).trim() : null,
+        servingSize: hasNonEmptyText(src.SERVING_SIZE) ? String(src.SERVING_SIZE).trim() : null,
+        kcal: parseNullableNumber(src.AMT_NUM1),     // 열량(kcal)
+        protein: parseNullableNumber(src.AMT_NUM3),  // 단백질(g)
+        fat: parseNullableNumber(src.AMT_NUM4),      // 지방(g)
+        carbs: parseNullableNumber(src.AMT_NUM6),    // 탄수화물(g)
+        sodium: parseNullableNumber(src.AMT_NUM13),  // 나트륨(mg)
+        makerName: hasNonEmptyText(src.MAKER_NM) ? String(src.MAKER_NM).trim() : null,
+        cat1Name: hasNonEmptyText(src.FOOD_CAT1_NM) ? String(src.FOOD_CAT1_NM).trim() : null
+      };
+    }
+
+    function hasAnyMissingNutrition(fields) {
+      return (
+        fields.kcal === null ||
+        fields.carbs === null ||
+        fields.protein === null ||
+        fields.fat === null ||
+        fields.sodium === null ||
+        fields.servingSize === null ||
+        fields.foodName === null
+      );
+    }
+
+    function renderProfileMeta() {
+      const p = PROFILES[profileSelect.value];
+      targetMeta.textContent = `기준: 약 ${p.kcalTarget.toLocaleString()} kcal · 탄수화물 50~60% · 단백질 15~20% · 지방 20~30% · 나트륨 ${p.sodiumLimit.toLocaleString()}mg 이하`;
+    }
+
+    function buildRequestUrl(page) {
+      const url = new URL(API_ENDPOINT);
+      const params = new URLSearchParams({
+        pageNo: String(page),
+        numOfRows: String(NUM_OF_ROWS),
+        type: 'json',
+        FOOD_NM_KR: searchInput.value.trim()
+      });
+
+      const optionalEntries = [
+        ['MAKER_NM', document.getElementById('fMakerNm').value.trim()],
+        ['FOOD_CAT1_NM', document.getElementById('fCat1Nm').value.trim()],
+        ['ITEM_REPORT_NO', document.getElementById('fItemReportNo').value.trim()],
+        ['RESEARCH_YMD', document.getElementById('fResearchYmd').value.trim()],
+        ['UPDATE_DATE', document.getElementById('fUpdateDate').value.trim()],
+        ['DB_CLASS_NM', document.getElementById('fDbClassNm').value.trim()]
+      ];
+
+      optionalEntries.forEach(([key, value]) => {
+        if (value !== '') {
+          params.set(key, value);
+        }
+      });
+
+      url.search = params.toString();
+      return url;
+    }
+
+    function showNoticeBox(targetEl, variant, titleText, messageText, detailText = '') {
+      targetEl.textContent = '';
+      const box = document.createElement('div');
+      box.className = `notice-box ${variant === 'error' ? 'notice-error' : 'notice-warn'}`;
+
+      const titleEl = document.createElement('span');
+      titleEl.className = 'notice-title';
+      titleEl.textContent = titleText;
+
+      const msgEl = document.createElement('p');
+      msgEl.textContent = messageText;
+
+      box.appendChild(titleEl);
+      box.appendChild(msgEl);
+
+      if (detailText) {
+        const detailEl = document.createElement('p');
+        detailEl.className = 'notice-detail';
+        detailEl.textContent = detailText;
+        box.appendChild(detailEl);
+      }
+
+      targetEl.appendChild(box);
+    }
+
+    function showEmptyPlaceholder(targetEl, messageText) {
+      targetEl.textContent = '';
+      const div = document.createElement('div');
+      div.className = 'empty-state';
+      div.textContent = messageText;
+      targetEl.appendChild(div);
+    }
+
+    function setSearchingState(isSearching, page = 1) {
+      searchSubmitBtn.disabled = isSearching;
+      prevPageBtn.disabled = isSearching || currentPage <= 1;
+      nextPageBtn.disabled = isSearching;
+      searchStatusText.classList.remove('status-error');
+
+      if (isSearching) {
+        searchStatusText.textContent = '식품영양성분DB에서 검색 중입니다...';
+        pageInfoText.textContent = `페이지 ${page}`;
+        showEmptyPlaceholder(searchResults, '음식 영양정보를 불러오는 중입니다. 잠시만 기다려 주세요.');
+      }
+    }
+
+    async function runSearch(page = 1) {
+      const foodName = searchInput.value.trim();
+      const hasExtraFilter = [
+        document.getElementById('fMakerNm').value.trim(),
+        document.getElementById('fCat1Nm').value.trim(),
+        document.getElementById('fItemReportNo').value.trim(),
+        document.getElementById('fResearchYmd').value.trim(),
+        document.getElementById('fUpdateDate').value.trim(),
+        document.getElementById('fDbClassNm').value.trim()
+      ].some((v) => v !== '');
+
+      if (!foodName && !hasExtraFilter) {
+        rawBodyItems = [];
+        totalCount = 0;
+        paginationRow.style.display = 'none';
+        searchStatusText.classList.remove('status-error');
+        searchStatusText.textContent = '음식 이름을 입력해 주세요. (빈 검색어)';
+        showNoticeBox(
+          searchResults,
+          'warn',
+          '검색어가 비어 있어요',
+          '먹었거나 먹고 싶은 음식 이름(예: 김밥, 닭가슴살, 사과)을 입력한 뒤 검색해 주세요.'
+        );
+        return;
+      }
+
+      currentPage = page;
+      paginationRow.style.display = 'none';
+      setSearchingState(true, page);
+
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+
+      try {
+        const url = buildRequestUrl(page);
+        const response = await fetch(url.toString(), { signal: controller.signal });
+        clearTimeout(timeoutId);
+
+        if (!response.ok) {
+          throw {
+            kind: 'http',
+            message: `서버 응답 상태가 정상(200)이 아닙니다. (HTTP ${response.status})`
+          };
         }
 
-        function playSound(type) {
-            if (!soundEnabled) return;
-            try {
-                initAudio();
-                if (!synth) return;
-                const now = Tone.now();
-                if (type === 'chip') {
-                    synth.triggerAttackRelease('C6', '32n', now);
-                } else if (type === 'card') {
-                    synth.triggerAttackRelease('G4', '32n', now);
-                } else if (type === 'win') {
-                    synth.triggerAttackRelease(['C5', 'E5', 'G5', 'C6'], '8n', now);
-                } else if (type === 'lose') {
-                    synth.triggerAttackRelease(['Eb4', 'C4'], '8n', now);
-                } else if (type === 'clear') {
-                    synth.triggerAttackRelease('A4', '32n', now);
-                }
-            } catch (e) {
-                // 오디오 컨텍스트 제한 예외 무시
-            }
+        const rawText = await response.text();
+        let data;
+        try {
+          data = JSON.parse(rawText);
+        } catch {
+          throw {
+            kind: 'non_json',
+            message: '서버가 JSON 형식이 아닌 오류 응답을 반환했습니다.'
+          };
         }
 
-        // 8덱 슈 생성 및 피셔-예이츠 셔플
-        function buildAndShuffleShoe() {
-            shoe = [];
-            for (let d = 0; d < 8; d++) {
-                for (const suit of SUITS) {
-                    for (const rank of RANKS) {
-                        shoe.push({
-                            suit: suit.symbol,
-                            color: suit.color,
-                            label: rank.label,
-                            value: rank.value
-                        });
-                    }
-                }
-            }
-            // Fisher-Yates 셔플
-            for (let i = shoe.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [shoe[i], shoe[j]] = [shoe[j], shoe[i]];
-            }
-            updateDeckDisplay();
+        const header = data && typeof data === 'object' ? data.header : null;
+        const resultCode = header && header.resultCode !== undefined && header.resultCode !== null
+          ? String(header.resultCode).trim()
+          : '';
+        const resultMsg = header && hasNonEmptyText(header.resultMsg)
+          ? String(header.resultMsg).trim()
+          : '';
+
+        if (resultCode === '03') {
+          rawBodyItems = [];
+          totalCount = 0;
+          setSearchingState(false, page);
+          searchStatusText.textContent = '조회 결과 없음 (코드 03)';
+          showNoticeBox(
+            searchResults,
+            'warn',
+            '검색 결과가 없어요',
+            '영양정보를 다시 확인하거나 다양한 음식을 골고루 선택해보세요.',
+            '철자를 다시 확인하거나 다른 음식 이름 또는 검색조건으로 조회해 보세요.'
+          );
+          return;
         }
 
-        function drawCard() {
-            // 카드가 20장 미만 남으면 자동 리셔플
-            if (shoe.length < 20) {
-                buildAndShuffleShoe();
-                setStatus('새로운 8덱 카드 슈를 셔플했습니다!');
-            }
-            const card = shoe.pop();
-            updateDeckDisplay();
-            return card;
+        if (resultCode && resultCode !== '00') {
+          throw {
+            kind: 'api_code',
+            message: `API 오류 코드(${resultCode})가 반환되었습니다.${resultMsg ? ` (${resultMsg})` : ''}`
+          };
         }
 
-        function updateDeckDisplay() {
-            document.getElementById('deckCountDisplay').textContent = shoe.length;
+        const items = data && data.body && Array.isArray(data.body.items) ? data.body.items : [];
+        // 원본 body.items를 변형하거나 필드를 삭제하지 않고 그대로 보관
+        rawBodyItems = items;
+        const parsedTotal = parseNullableNumber(data && data.body ? data.body.totalCount : null);
+        totalCount = parsedTotal !== null ? parsedTotal : rawBodyItems.length;
+
+        setSearchingState(false, page);
+
+        if (rawBodyItems.length === 0) {
+          searchStatusText.textContent = '조회 결과 없음';
+          showNoticeBox(
+            searchResults,
+            'warn',
+            '표시할 음식 정보가 없어요',
+            '영양정보를 다시 확인하거나 다양한 음식을 골고루 선택해보세요.'
+          );
+          return;
         }
 
-        // 바카라 점수 계산 (합의 1의 자리)
-        function calculateBaccaratScore(cards) {
-            const sum = cards.reduce((acc, c) => acc + c.value, 0);
-            return sum % 10;
+        searchStatusText.textContent = `검색 결과 ${totalCount.toLocaleString()}건 중 ${rawBodyItems.length}건 표시`;
+        pageInfoText.textContent = `페이지 ${currentPage}`;
+        renderSearchResults();
+        renderPagination();
+      } catch (err) {
+        clearTimeout(timeoutId);
+        rawBodyItems = [];
+        totalCount = 0;
+        setSearchingState(false, page);
+        searchStatusText.classList.add('status-error');
+
+        if (err && err.name === 'AbortError') {
+          searchStatusText.textContent = '요청 시간 초과';
+          showNoticeBox(
+            searchResults,
+            'error',
+            '검색 요청 시간이 초과되었어요',
+            '네트워크 연결이 느리거나 서버 응답이 지연되고 있습니다. 잠시 후 다시 시도해 주세요.'
+          );
+          return;
         }
 
-        // 총 베팅 금액 계산
-        function getTotalBet() {
-            return Object.values(bets).reduce((a, b) => a + b, 0);
+        if (err && (err.kind === 'http' || err.kind === 'api_code' || err.kind === 'non_json')) {
+          searchStatusText.textContent = '오류 안내';
+          showNoticeBox(
+            searchResults,
+            'error',
+            '영양정보를 불러오지 못했어요',
+            err.message,
+            '영양정보를 다시 확인하거나 다양한 음식을 골고루 선택해보세요.'
+          );
+          return;
         }
 
-        // UI 업데이트
-        function updateUI() {
-            document.getElementById('balanceDisplay').textContent = `$${balance.toLocaleString()}`;
-            const totalBet = getTotalBet();
-            document.getElementById('totalBetDisplay').textContent = `$${totalBet.toLocaleString()}`;
+        // fetch 네트워크 실패 / CORS 차단 등 통신 실패 처리
+        searchStatusText.textContent = '통신/CORS 오류';
+        showNoticeBox(
+          searchResults,
+          'error',
+          '중계 API 통신에 실패했어요 (네트워크 또는 CORS 문제일 수 있습니다)',
+          '인터넷 연결을 확인해 주시고, CORS 문제라면 선생님께 서버에서 CORS 설정을 확인해 달라고 말씀해 주세요.',
+          '실제 API 통신 실패로 인해 임시 가상 데이터로 대체하지 않았습니다.'
+        );
+      }
+    }
 
-            // 각 베팅 구역 칩 금액 표시
-            for (const key of Object.keys(bets)) {
-                const badge = document.getElementById(`bet-${key}`);
-                if (bets[key] > 0) {
-                    badge.textContent = `$${bets[key].toLocaleString()}`;
-                    badge.classList.remove('opacity-0');
-                } else {
-                    badge.textContent = '$0';
-                    badge.classList.add('opacity-0');
-                }
-            }
+    function createNutrientBox(label, numVal, unit, decimals) {
+      const cell = document.createElement('div');
+      cell.className = 'nutri-cell';
 
-            // 버튼 활성화 상태
-            document.getElementById('dealBtn').disabled = isDealing || totalBet === 0;
-            document.getElementById('clearBetBtn').disabled = isDealing || totalBet === 0;
-            document.getElementById('rebetBtn').disabled = isDealing || !lastBets || totalBet > 0;
+      const span = document.createElement('span');
+      span.textContent = label;
 
-            // 파산 시 무료 충전 버튼 표시
-            const refillBtn = document.getElementById('refillBtn');
-            if (balance === 0 && totalBet === 0 && !isDealing) {
-                refillBtn.classList.remove('hidden');
-            } else {
-                refillBtn.classList.add('hidden');
-            }
+      const strong = document.createElement('strong');
+      const formatted = formatNumber(numVal, decimals);
+      if (formatted === null) {
+        strong.textContent = '정보 없음';
+        strong.classList.add('missing-val');
+      } else {
+        strong.textContent = `${formatted} ${unit}`;
+      }
+
+      cell.appendChild(span);
+      cell.appendChild(strong);
+      return cell;
+    }
+
+    function renderSearchResults() {
+      searchResults.textContent = '';
+
+      rawBodyItems.forEach((rawItem, idx) => {
+        const fields = selectDisplayFields(rawItem);
+        const card = document.createElement('div');
+        card.className = 'food-card';
+
+        const top = document.createElement('div');
+        top.className = 'food-card-top';
+
+        const leftInfo = document.createElement('div');
+        const titleRow = document.createElement('div');
+        titleRow.className = 'food-name';
+        titleRow.textContent = fields.foodName || '정보 없음';
+
+        if (hasAnyMissingNutrition(fields)) {
+          const tag = document.createElement('span');
+          tag.className = 'tag-missing';
+          tag.textContent = '일부 정보 없음';
+          titleRow.appendChild(tag);
         }
 
-        function setStatus(msg, highlight = false) {
-            const banner = document.getElementById('statusBanner');
-            banner.textContent = msg;
-            if (highlight) {
-                banner.classList.add('text-amber-300', 'border-amber-400');
-            } else {
-                banner.classList.remove('text-amber-300', 'border-amber-400');
-            }
+        leftInfo.appendChild(titleRow);
+
+        const metaParts = [];
+        if (fields.cat1Name) metaParts.push(`분류: ${fields.cat1Name}`);
+        if (fields.makerName) metaParts.push(`업체: ${fields.makerName}`);
+        if (metaParts.length > 0) {
+          const submeta = document.createElement('div');
+          submeta.className = 'food-submeta';
+          submeta.textContent = metaParts.join(' · ');
+          leftInfo.appendChild(submeta);
         }
 
-        // 카드 DOM 생성 및 플립 연출
-        function renderCardElement(card, isThirdCard = false) {
-            const container = document.createElement('div');
-            container.className = `card-container animate-deal ${isThirdCard ? 'third-card' : ''}`;
+        const servingBadge = document.createElement('span');
+        servingBadge.className = 'food-serving';
+        servingBadge.textContent = `기준량: ${fields.servingSize || '정보 없음'}`;
 
-            container.innerHTML = `
-                <div class="card-inner">
-                    <div class="card-face card-back"></div>
-                    <div class="card-face card-front p-1.5 sm:p-2 flex flex-col justify-between ${card.color}">
-                        <div class="text-left leading-none">
-                            <div class="font-extrabold text-sm sm:text-lg">${card.label}</div>
-                            <div class="text-xs sm:text-base">${card.suit}</div>
-                        </div>
-                        <div class="text-center text-2xl sm:text-4xl my-auto">
-                            ${card.suit}
-                        </div>
-                        <div class="text-right leading-none rotate-180">
-                            <div class="font-extrabold text-sm sm:text-lg">${card.label}</div>
-                            <div class="text-xs sm:text-base">${card.suit}</div>
-                        </div>
-                    </div>
-                </div>
-            `;
+        top.appendChild(leftInfo);
+        top.appendChild(servingBadge);
 
-            // 딜링 직후 뒤집기 애니메이션 실행
-            setTimeout(() => {
-                container.classList.add('flipped');
-            }, 120);
+        const grid = document.createElement('div');
+        grid.className = 'nutri-mini-grid';
+        grid.appendChild(createNutrientBox('열량', fields.kcal, 'kcal', 0));
+        grid.appendChild(createNutrientBox('탄수화물', fields.carbs, 'g', 1));
+        grid.appendChild(createNutrientBox('단백질', fields.protein, 'g', 1));
+        grid.appendChild(createNutrientBox('지방', fields.fat, 'g', 1));
+        grid.appendChild(createNutrientBox('나트륨', fields.sodium, 'mg', 0));
 
-            return container;
-        }
+        const actions = document.createElement('div');
+        actions.className = 'food-card-actions';
 
-        const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+        const portionLabel = document.createElement('span');
+        portionLabel.className = 'portion-note';
+        portionLabel.textContent = `추가 1회 = 기준량 1개 분량 (${fields.servingSize || '정보 없음'})`;
 
-        // 정통 바카라 라운드 진행 로직
-        async function startRound() {
-            const totalBet = getTotalBet();
-            if (isDealing || totalBet === 0) return;
-
-            isDealing = true;
-            lastBets = { ...bets };
-            updateUI();
-
-            // 이전 카드 및 승리 하이라이트 초기화
-            const playerCardsEl = document.getElementById('playerCards');
-            const bankerCardsEl = document.getElementById('bankerCards');
-            playerCardsEl.innerHTML = '';
-            bankerCardsEl.innerHTML = '';
-            document.getElementById('playerScoreBadge').textContent = '0';
-            document.getElementById('bankerScoreBadge').textContent = '0';
-            document.querySelectorAll('.bet-zone').forEach(z => z.classList.remove('winner-glow'));
-
-            setStatus('카드를 딜링하고 있습니다...');
-
-            const playerHand = [];
-            const bankerHand = [];
-
-            // 1. 초기 4장 교차 딜링 (P1 -> B1 -> P2 -> B2)
-            playSound('card');
-            const p1 = drawCard();
-            playerHand.push(p1);
-            playerCardsEl.appendChild(renderCardElement(p1));
-            document.getElementById('playerScoreBadge').textContent = calculateBaccaratScore(playerHand);
-            await sleep(420);
-
-            playSound('card');
-            const b1 = drawCard();
-            bankerHand.push(b1);
-            bankerCardsEl.appendChild(renderCardElement(b1));
-            document.getElementById('bankerScoreBadge').textContent = calculateBaccaratScore(bankerHand);
-            await sleep(420);
-
-            playSound('card');
-            const p2 = drawCard();
-            playerHand.push(p2);
-            playerCardsEl.appendChild(renderCardElement(p2));
-            let pScore = calculateBaccaratScore(playerHand);
-            document.getElementById('playerScoreBadge').textContent = pScore;
-            await sleep(420);
-
-            playSound('card');
-            const b2 = drawCard();
-            bankerHand.push(b2);
-            bankerCardsEl.appendChild(renderCardElement(b2));
-            let bScore = calculateBaccaratScore(bankerHand);
-            document.getElementById('bankerScoreBadge').textContent = bScore;
-            await sleep(550);
-
-            // 페어(Pair) 여부 확인
-            const isPlayerPair = p1.label === p2.label;
-            const isBankerPair = b1.label === b2.label;
-
-            // 2. 내추럴(Natural 8 or 9) 체크
-            const isNatural = (pScore >= 8 || bScore >= 8);
-
-            if (!isNatural) {
-                let playerThirdCard = null;
-
-                // 3. 플레이어 3번째 카드 규칙 (0~5 드로우, 6~7 스탠드)
-                if (pScore <= 5) {
-                    setStatus('PLAYER가 3번째 카드를 받습니다.');
-                    await sleep(450);
-                    playSound('card');
-                    playerThirdCard = drawCard();
-                    playerHand.push(playerThirdCard);
-                    playerCardsEl.appendChild(renderCardElement(playerThirdCard, true));
-                    pScore = calculateBaccaratScore(playerHand);
-                    document.getElementById('playerScoreBadge').textContent = pScore;
-                    await sleep(550);
-                }
-
-                // 4. 뱅커 3번째 카드 규칙 (표준 카지노 드로우 테이블)
-                let bankerDraws = false;
-                if (!playerThirdCard) {
-                    // 플레이어가 스탠드(6 또는 7)한 경우: 뱅커는 0~5일 때 드로우
-                    if (bScore <= 5) bankerDraws = true;
-                } else {
-                    const p3Val = playerThirdCard.value;
-                    if (bScore <= 2) {
-                        bankerDraws = true;
-                    } else if (bScore === 3 && p3Val !== 8) {
-                        bankerDraws = true;
-                    } else if (bScore === 4 && [2, 3, 4, 5, 6, 7].includes(p3Val)) {
-                        bankerDraws = true;
-                    } else if (bScore === 5 && [4, 5, 6, 7].includes(p3Val)) {
-                        bankerDraws = true;
-                    } else if (bScore === 6 && [6, 7].includes(p3Val)) {
-                        bankerDraws = true;
-                    }
-                }
-
-                if (bankerDraws) {
-                    setStatus('BANKER가 3번째 카드를 받습니다.');
-                    await sleep(450);
-                    playSound('card');
-                    const b3 = drawCard();
-                    bankerHand.push(b3);
-                    bankerCardsEl.appendChild(renderCardElement(b3, true));
-                    bScore = calculateBaccaratScore(bankerHand);
-                    document.getElementById('bankerScoreBadge').textContent = bScore;
-                    await sleep(550);
-                }
-            } else {
-                setStatus('NATURAL! 즉시 승부가 결정됩니다!');
-                await sleep(500);
-            }
-
-            // 5. 승패 판정 및 정산
-            let winner = 'tie';
-            if (pScore > bScore) winner = 'player';
-            else if (bScore > pScore) winner = 'banker';
-
-            let payout = 0;
-
-            // 메인 베팅 정산
-            if (winner === 'player') {
-                document.querySelector('[data-bet="player"]').classList.add('winner-glow');
-                if (bets.player > 0) payout += bets.player * 2; // 원금 + 1배
-            } else if (winner === 'banker') {
-                document.querySelector('[data-bet="banker"]').classList.add('winner-glow');
-                if (bets.banker > 0) payout += Math.floor(bets.banker * 1.95); // 원금 + 0.95배 (5% 커미션)
-            } else {
-                document.querySelector('[data-bet="tie"]').classList.add('winner-glow');
-                if (bets.tie > 0) payout += bets.tie * 9; // 원금 + 8배
-                // 타이(Tie) 발생 시 Player와 Banker에 건 금액은 원금 반환 (Push)
-                payout += bets.player + bets.banker;
-            }
-
-            // 사이드 베팅 (Pair) 정산
-            if (isPlayerPair) {
-                document.querySelector('[data-bet="playerPair"]').classList.add('winner-glow');
-                if (bets.playerPair > 0) payout += bets.playerPair * 12; // 원금 + 11배
-            }
-            if (isBankerPair) {
-                document.querySelector('[data-bet="bankerPair"]').classList.add('winner-glow');
-                if (bets.bankerPair > 0) payout += bets.bankerPair * 12; // 원금 + 11배
-            }
-
-            // 잔액 반영
-            balance += payout;
-            const netProfit = payout - totalBet;
-
-            // 결과 메시지 출력
-            const winnerText = winner === 'player' ? 'PLAYER WIN!' : (winner === 'banker' ? 'BANKER WIN!' : 'TIE (무승부)!');
-            const pairNotes = [];
-            if (isPlayerPair) pairNotes.push('P.PAIR');
-            if (isBankerPair) pairNotes.push('B.PAIR');
-            const pairStr = pairNotes.length ? ` [${pairNotes.join(' & ')}]` : '';
-
-            if (netProfit > 0) {
-                playSound('win');
-                setStatus(`${winnerText}${pairStr} — 축하합니다! +$${netProfit.toLocaleString()} 획득!`, true);
-            } else if (payout > 0 && netProfit === 0) {
-                playSound('chip');
-                setStatus(`${winnerText}${pairStr} — 무승부로 메인 베팅금이 반환되었습니다.`);
-            } else {
-                playSound('lose');
-                setStatus(`${winnerText}${pairStr} — 다음 라운드에 도전하세요!`);
-            }
-
-            // 로드맵(스코어보드) 기록 업데이트
-            recordHistory(winner, isPlayerPair, isBankerPair);
-
-            // 다음 라운드를 위해 베팅 초기화
-            bets = { player: 0, banker: 0, tie: 0, playerPair: 0, bankerPair: 0 };
-            isDealing = false;
-            updateUI();
-        }
-
-        // 히스토리 비드 로드 업데이트
-        function recordHistory(winner, pPair, bPair) {
-            history.push({ winner, pPair, bPair });
-            if (history.length > 18) history.shift();
-
-            stats[winner]++;
-            document.getElementById('statPlayer').textContent = stats.player;
-            document.getElementById('statBanker').textContent = stats.banker;
-            document.getElementById('statTie').textContent = stats.tie;
-
-            const container = document.getElementById('roadmapContainer');
-            container.innerHTML = '';
-
-            history.forEach(item => {
-                const dot = document.createElement('div');
-                let bgClass = 'bg-emerald-500 text-slate-950';
-                let label = 'T';
-                if (item.winner === 'player') {
-                    bgClass = 'bg-blue-500 text-white';
-                    label = 'P';
-                } else if (item.winner === 'banker') {
-                    bgClass = 'bg-rose-500 text-white';
-                    label = 'B';
-                }
-
-                dot.className = `relative flex-shrink-0 w-6 h-6 rounded-full ${bgClass} font-extrabold text-[11px] flex items-center justify-center shadow`;
-                dot.textContent = label;
-
-                // 페어 표시 점 (파란점: P.Pair, 빨간점: B.Pair)
-                if (item.pPair) {
-                    const pDot = document.createElement('span');
-                    pDot.className = 'absolute -bottom-0.5 -right-0.5 w-2 h-2 rounded-full bg-sky-300 border border-slate-900';
-                    dot.appendChild(pDot);
-                }
-                if (item.bPair) {
-                    const bDot = document.createElement('span');
-                    bDot.className = 'absolute -top-0.5 -left-0.5 w-2 h-2 rounded-full bg-amber-300 border border-slate-900';
-                    dot.appendChild(bDot);
-                }
-
-                container.appendChild(dot);
-            });
-        }
-
-        // 이벤트 리스너 등록
-        window.addEventListener('DOMContentLoaded', () => {
-            buildAndShuffleShoe();
-            updateUI();
-
-            // 칩 선택 이벤트
-            document.querySelectorAll('.poker-chip').forEach(chipBtn => {
-                chipBtn.addEventListener('click', () => {
-                    if (isDealing) return;
-                    playSound('chip');
-                    document.querySelectorAll('.poker-chip').forEach(b => b.classList.remove('selected'));
-                    chipBtn.classList.add('selected');
-                    selectedChip = parseInt(chipBtn.dataset.chip, 10);
-                });
-            });
-
-            // 베팅 구역 클릭 이벤트
-            document.querySelectorAll('.bet-zone').forEach(zone => {
-                zone.addEventListener('click', () => {
-                    if (isDealing) return;
-                    const betType = zone.dataset.bet;
-                    if (balance < selectedChip) {
-                        setStatus('잔액이 부족합니다! 더 작은 칩을 선택하세요.');
-                        playSound('lose');
-                        return;
-                    }
-                    playSound('chip');
-                    balance -= selectedChip;
-                    bets[betType] += selectedChip;
-                    updateUI();
-                });
-            });
-
-            // 베팅 초기화 버튼
-            document.getElementById('clearBetBtn').addEventListener('click', () => {
-                if (isDealing) return;
-                const total = getTotalBet();
-                if (total > 0) {
-                    playSound('clear');
-                    balance += total;
-                    bets = { player: 0, banker: 0, tie: 0, playerPair: 0, bankerPair: 0 };
-                    updateUI();
-                }
-            });
-
-            // 재베팅(Rebet) 버튼
-            document.getElementById('rebetBtn').addEventListener('click', () => {
-                if (isDealing || !lastBets) return;
-                const needed = Object.values(lastBets).reduce((a, b) => a + b, 0);
-                if (balance < needed) {
-                    setStatus('재베팅을 위한 잔액이 부족합니다.');
-                    playSound('lose');
-                    return;
-                }
-                playSound('chip');
-                balance -= needed;
-                bets = { ...lastBets };
-                updateUI();
-            });
-
-            // DEAL 버튼
-            document.getElementById('dealBtn').addEventListener('click', startRound);
-
-            // 파산 시 무료 리필 버튼
-            document.getElementById('refillBtn').addEventListener('click', () => {
-                playSound('win');
-                balance = 5000;
-                setStatus('카지노 보너스 $5,000가 지급되었습니다!');
-                updateUI();
-            });
-
-            // 사운드 토글
-            const soundBtn = document.getElementById('soundToggleBtn');
-            soundBtn.addEventListener('click', () => {
-                soundEnabled = !soundEnabled;
-                soundBtn.textContent = soundEnabled ? '🔊' : '🔇';
-            });
-
-            // 게임 룰 모달 제어
-            const rulesModal = document.getElementById('rulesModal');
-            document.getElementById('rulesBtn').addEventListener('click', () => rulesModal.classList.remove('hidden'));
-            document.getElementById('closeRulesBtn').addEventListener('click', () => rulesModal.classList.add('hidden'));
-            document.getElementById('confirmRulesBtn').addEventListener('click', () => rulesModal.classList.add('hidden'));
+        const addBtn = document.createElement('button');
+        addBtn.type = 'button';
+        addBtn.className = 'btn btn-primary btn-sm';
+        addBtn.textContent = '+ 하루 식단에 추가';
+        addBtn.addEventListener('click', () => {
+          // 원본 body.items 요소 참조를 그대로 전달
+          addMealItem(rawBodyItems[idx]);
         });
-    </script>
+
+        actions.appendChild(portionLabel);
+        actions.appendChild(addBtn);
+
+        card.appendChild(top);
+        card.appendChild(grid);
+        card.appendChild(actions);
+        searchResults.appendChild(card);
+      });
+    }
+
+    function renderPagination() {
+      const totalPages = Math.max(1, Math.ceil(totalCount / NUM_OF_ROWS));
+      if (totalPages <= 1 && currentPage === 1) {
+        paginationRow.style.display = 'none';
+        return;
+      }
+      paginationRow.style.display = 'flex';
+      currentPageLabel.textContent = `${currentPage} / ${totalPages} 페이지`;
+      prevPageBtn.disabled = currentPage <= 1;
+      nextPageBtn.disabled = currentPage >= totalPages || rawBodyItems.length < NUM_OF_ROWS;
+    }
+
+    function addMealItem(rawItem) {
+      mealEntries.push({
+        uid: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+        rawItem
+      });
+      renderMealAndTotals();
+    }
+
+    function removeMealItem(uid) {
+      mealEntries = mealEntries.filter((entry) => entry.uid !== uid);
+      renderMealAndTotals();
+    }
+
+    function computeMealTotals() {
+      let kcal = 0;
+      let carbs = 0;
+      let protein = 0;
+      let fat = 0;
+      let sodium = 0;
+      let hasAnyMissingInMeal = false;
+
+      mealEntries.forEach(({ rawItem }) => {
+        const f = selectDisplayFields(rawItem);
+        if (hasAnyMissingNutrition(f)) {
+          hasAnyMissingInMeal = true;
+        }
+        if (f.kcal !== null) kcal += f.kcal;
+        if (f.carbs !== null) carbs += f.carbs;
+        if (f.protein !== null) protein += f.protein;
+        if (f.fat !== null) fat += f.fat;
+        if (f.sodium !== null) sodium += f.sodium;
+      });
+
+      return { kcal, carbs, protein, fat, sodium, hasAnyMissingInMeal };
+    }
+
+    function createTableCell(numVal, unit, decimals, isRightAlign = true) {
+      const td = document.createElement('td');
+      if (isRightAlign) td.className = 'num';
+
+      const formatted = formatNumber(numVal, decimals);
+      if (formatted === null) {
+        td.textContent = '정보 없음';
+        td.style.color = '#cf1322';
+        td.style.fontWeight = '700';
+      } else {
+        td.textContent = `${formatted} ${unit}`;
+      }
+      return td;
+    }
+
+    function renderMealAndTotals() {
+      const mealList = document.getElementById('mealList');
+      const tableBody = document.getElementById('resultTableBody');
+      const mealCountBadge = document.getElementById('mealCountBadge');
+      const partialSumNote = document.getElementById('partialSumNote');
+      const profile = PROFILES[profileSelect.value];
+
+      mealCountBadge.textContent = `${mealEntries.length}개 항목`;
+      mealList.textContent = '';
+      tableBody.textContent = '';
+
+      if (mealEntries.length === 0) {
+        showEmptyPlaceholder(
+          mealList,
+          '검색한 음식을 하루 식단에 추가하면 기준량 1개 분량 기준으로 열량과 영양소 합계가 계산됩니다.'
+        );
+
+        const emptyTr = document.createElement('tr');
+        const emptyTd = document.createElement('td');
+        emptyTd.colSpan = 8;
+        emptyTd.style.textAlign = 'center';
+        emptyTd.style.color = 'var(--text-sub)';
+        emptyTd.style.padding = '20px';
+        emptyTd.textContent = '아직 식단에 추가된 음식이 없습니다. 왼쪽에서 음식을 검색해 추가해 보세요.';
+        emptyTr.appendChild(emptyTd);
+        tableBody.appendChild(emptyTr);
+      } else {
+        mealEntries.forEach(({ uid, rawItem }, idx) => {
+          const f = selectDisplayFields(rawItem);
+
+          // ① 카드 목록 항목
+          const itemDiv = document.createElement('div');
+          itemDiv.className = 'meal-item';
+
+          const leftDiv = document.createElement('div');
+          const titleDiv = document.createElement('div');
+          titleDiv.className = 'meal-item-title';
+          titleDiv.textContent = `${idx + 1}. ${f.foodName || '정보 없음'}`;
+
+          if (hasAnyMissingNutrition(f)) {
+            const tag = document.createElement('span');
+            tag.className = 'tag-missing';
+            tag.textContent = '일부 정보 없음';
+            titleDiv.appendChild(tag);
+          }
+
+          const subDiv = document.createElement('div');
+          subDiv.className = 'meal-item-sub';
+          subDiv.textContent = `기준량: ${f.servingSize || '정보 없음'} (1회분)`;
+
+          leftDiv.appendChild(titleDiv);
+          leftDiv.appendChild(subDiv);
+
+          const rightDiv = document.createElement('div');
+          rightDiv.className = 'meal-item-right';
+
+          const badge = document.createElement('span');
+          badge.className = 'kcal-badge';
+          const kcalText = formatNumber(f.kcal, 0);
+          badge.textContent = kcalText !== null ? `${kcalText} kcal` : '열량 정보 없음';
+
+          const delBtn = document.createElement('button');
+          delBtn.type = 'button';
+          delBtn.className = 'btn btn-outline btn-sm';
+          delBtn.textContent = '삭제';
+          delBtn.addEventListener('click', () => removeMealItem(uid));
+
+          rightDiv.appendChild(badge);
+          rightDiv.appendChild(delBtn);
+
+          itemDiv.appendChild(leftDiv);
+          itemDiv.appendChild(rightDiv);
+          mealList.appendChild(itemDiv);
+
+          // ② 결과표 행
+          const tr = document.createElement('tr');
+
+          const tdName = document.createElement('td');
+          const strongName = document.createElement('strong');
+          strongName.textContent = f.foodName || '정보 없음';
+          tdName.appendChild(strongName);
+
+          const tdServing = document.createElement('td');
+          tdServing.textContent = f.servingSize || '정보 없음';
+
+          const tdDel = document.createElement('td');
+          const rowDelBtn = document.createElement('button');
+          rowDelBtn.type = 'button';
+          rowDelBtn.className = 'btn btn-outline btn-sm';
+          rowDelBtn.textContent = '삭제';
+          rowDelBtn.addEventListener('click', () => removeMealItem(uid));
+          tdDel.appendChild(rowDelBtn);
+
+          tr.appendChild(tdName);
+          tr.appendChild(tdServing);
+          tr.appendChild(createTableCell(f.kcal, 'kcal', 0, true));
+          tr.appendChild(createTableCell(f.carbs, 'g', 1, true));
+          tr.appendChild(createTableCell(f.protein, 'g', 1, true));
+          tr.appendChild(createTableCell(f.fat, 'g', 1, true));
+          tr.appendChild(createTableCell(f.sodium, 'mg', 0, true));
+          tr.appendChild(tdDel);
+
+          tableBody.appendChild(tr);
+        });
+
+        const totalsNow = computeMealTotals();
+        const totalTr = document.createElement('tr');
+        totalTr.className = 'total-row';
+
+        const tdTotalLabel = document.createElement('td');
+        tdTotalLabel.textContent = '하루 식단 합계';
+
+        const tdTotalCount = document.createElement('td');
+        tdTotalCount.textContent = `총 ${mealEntries.length}개 항목`;
+
+        const tdTotalAction = document.createElement('td');
+        tdTotalAction.textContent = '-';
+
+        totalTr.appendChild(tdTotalLabel);
+        totalTr.appendChild(tdTotalCount);
+        totalTr.appendChild(createTableCell(totalsNow.kcal, 'kcal', 0, true));
+        totalTr.appendChild(createTableCell(totalsNow.carbs, 'g', 1, true));
+        totalTr.appendChild(createTableCell(totalsNow.protein, 'g', 1, true));
+        totalTr.appendChild(createTableCell(totalsNow.fat, 'g', 1, true));
+        totalTr.appendChild(createTableCell(totalsNow.sodium, 'mg', 0, true));
+        totalTr.appendChild(tdTotalAction);
+
+        tableBody.appendChild(totalTr);
+      }
+
+      const totals = computeMealTotals();
+      partialSumNote.style.display = totals.hasAnyMissingInMeal ? 'block' : 'none';
+
+      document.getElementById('sumKcal').textContent = `${formatNumber(totals.kcal, 0)} kcal`;
+      document.getElementById('sumCarbs').textContent = `${formatNumber(totals.carbs, 1)} g`;
+      document.getElementById('sumProtein').textContent = `${formatNumber(totals.protein, 1)} g`;
+      document.getElementById('sumFat').textContent = `${formatNumber(totals.fat, 1)} g`;
+      document.getElementById('sumSodium').textContent = `${formatNumber(totals.sodium, 0)} mg`;
+
+      const kcalPct = profile.kcalTarget > 0 ? Math.round((totals.kcal / profile.kcalTarget) * 100) : 0;
+      document.getElementById('subKcal').textContent = `목표 대비 ${kcalPct}%`;
+
+      const macroEnergy = totals.carbs * 4 + totals.protein * 4 + totals.fat * 9;
+      const carbRatio = macroEnergy > 0 ? Math.round(((totals.carbs * 4) / macroEnergy) * 100) : 0;
+      const protRatio = macroEnergy > 0 ? Math.round(((totals.protein * 4) / macroEnergy) * 100) : 0;
+      const fatRatio = macroEnergy > 0 ? Math.round(((totals.fat * 9) / macroEnergy) * 100) : 0;
+
+      document.getElementById('subCarbs').textContent = `에너지 비율 ${carbRatio}%`;
+      document.getElementById('subProtein').textContent = `에너지 비율 ${protRatio}%`;
+      document.getElementById('subFat').textContent = `에너지 비율 ${fatRatio}%`;
+
+      const sodPct = profile.sodiumLimit > 0 ? Math.round((totals.sodium / profile.sodiumLimit) * 100) : 0;
+      document.getElementById('subSodium').textContent = `권장 대비 ${sodPct}%`;
+
+      renderAdvice(totals, { carbRatio, protRatio, fatRatio }, profile);
+    }
+
+    function renderAdvice(totals, ratios, profile) {
+      const container = document.getElementById('adviceContainer');
+      container.textContent = '';
+
+      if (mealEntries.length === 0) {
+        const goodBanner = document.createElement('div');
+        goodBanner.className = 'alert-banner alert-good';
+        goodBanner.textContent = '식단을 구성해보세요! 음식을 추가하면 열량, 탄수화물·단백질·지방 균형, 나트륨 섭취량을 바탕으로 개선할 점을 알려드립니다.';
+        container.appendChild(goodBanner);
+
+        const tipBox = document.createElement('div');
+        tipBox.className = 'exercise-tip';
+        tipBox.textContent = `🏃‍♀️ 운동 부족 예방 팁: ${profile.exerciseNote}`;
+        container.appendChild(tipBox);
+        return;
+      }
+
+      const notices = [];
+      const improvements = [];
+      let isSkewed = false;
+
+      if (totals.hasAnyMissingInMeal) {
+        notices.push(
+          '영양정보가 없는 항목이 포함되어 있습니다. 확인된 값만 합산했으며, 영양정보를 다시 확인하거나 다양한 음식을 골고루 선택해보세요.'
+        );
+      }
+
+      if (ratios.carbRatio > 68) {
+        isSkewed = true;
+        improvements.push(
+          `탄수화물 치우침 (${ratios.carbRatio}%): 탄수화물 비중이 높은 편이에요. 단백질 반찬(달걀, 두부, 살코기, 생선, 요거트 등)과 채소를 함께 곁들여 보세요.`
+        );
+      }
+
+      if (ratios.fatRatio > 35) {
+        isSkewed = true;
+        improvements.push(
+          `지방 치우침 (${ratios.fatRatio}%): 지방 비율이 높게 나타났어요. 튀김이나 기름진 음식 대신 구이·찜·과일·채소 위주로 구성을 조정해 보세요.`
+        );
+      }
+
+      if (ratios.protRatio < 10 && totals.kcal > 300) {
+        isSkewed = true;
+        improvements.push(
+          `단백질 비율 낮음 (${ratios.protRatio}%): 성장기 체중 관리와 포만감을 위해 단백질 식품이나 유제품을 골고루 추가해 보세요.`
+        );
+      }
+
+      if (isSkewed) {
+        notices.unshift(
+          '특정 영양소에 식단이 치우쳐 있어요. 영양정보를 다시 확인하거나 다양한 음식을 골고루 선택해보세요.'
+        );
+      }
+
+      if (totals.kcal > profile.kcalTarget * 1.15) {
+        improvements.push(
+          `총 열량 초과 (${formatNumber(totals.kcal, 0)} kcal / 목표 약 ${profile.kcalTarget.toLocaleString()} kcal): 하루 목표 열량을 넘겼어요. 고열량 음식이나 간식 횟수를 줄여보세요.`
+        );
+      } else if (totals.kcal < profile.kcalTarget * 0.65 && mealEntries.length >= 2) {
+        improvements.push(
+          `총 열량 부족 (${formatNumber(totals.kcal, 0)} kcal / 목표 약 ${profile.kcalTarget.toLocaleString()} kcal): 성장기 청소년에게 에너지가 부족할 수 있어요. 곡류·단백질·과일·채소를 골고루 보충해 보세요.`
+        );
+      }
+
+      if (totals.sodium > profile.sodiumLimit) {
+        improvements.push(
+          `나트륨 과다 (${formatNumber(totals.sodium, 0)} mg / 권장 ${profile.sodiumLimit.toLocaleString()} mg 이하): 국물·소스·가공식품 섭취를 줄이고 신선한 식품 비중을 높여보세요.`
+        );
+      }
+
+      if (improvements.length === 0 && !totals.hasAnyMissingInMeal) {
+        improvements.push(
+          '영양 구성이 비교적 균형 잡혀 있어요! 탄수화물·단백질·지방 비율과 열량 흐름이 안정적입니다.'
+        );
+      }
+
+      if (notices.length > 0) {
+        notices.forEach((msg) => {
+          const warnDiv = document.createElement('div');
+          warnDiv.className = 'alert-banner alert-warn';
+          warnDiv.textContent = `⚠️ 안내: ${msg}`;
+          container.appendChild(warnDiv);
+        });
+      } else {
+        const okDiv = document.createElement('div');
+        okDiv.className = 'alert-banner alert-good';
+        okDiv.textContent = '✅ 점검 완료: 누락된 영양정보가 없고 영양소 구성이 비교적 안정적입니다.';
+        container.appendChild(okDiv);
+      }
+
+      const listDiv = document.createElement('div');
+      listDiv.className = 'feedback-list';
+      improvements.forEach((text) => {
+        const itemDiv = document.createElement('div');
+        itemDiv.className = 'feedback-item';
+        itemDiv.textContent = text;
+        listDiv.appendChild(itemDiv);
+      });
+      container.appendChild(listDiv);
+
+      const exerciseDiv = document.createElement('div');
+      exerciseDiv.className = 'exercise-tip';
+      exerciseDiv.textContent = `🏃‍♀️ 건강한 체중 관리를 위한 활동 조언: ${profile.exerciseNote}`;
+      container.appendChild(exerciseDiv);
+    }
+
+    // 이벤트 연결
+    searchForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      runSearch(1);
+    });
+
+    toggleExtraFiltersBtn.addEventListener('click', () => {
+      const hidden = extraFiltersGrid.style.display === 'none';
+      extraFiltersGrid.style.display = hidden ? 'grid' : 'none';
+    });
+
+    resetFiltersBtn.addEventListener('click', () => {
+      searchInput.value = '';
+      document.getElementById('fMakerNm').value = '';
+      document.getElementById('fCat1Nm').value = '';
+      document.getElementById('fItemReportNo').value = '';
+      document.getElementById('fResearchYmd').value = '';
+      document.getElementById('fUpdateDate').value = '';
+      document.getElementById('fDbClassNm').value = '';
+      rawBodyItems = [];
+      totalCount = 0;
+      currentPage = 1;
+      paginationRow.style.display = 'none';
+      pageInfoText.textContent = '페이지 1';
+      searchStatusText.classList.remove('status-error');
+      searchStatusText.textContent = '음식명을 입력하고 검색해 주세요.';
+      showEmptyPlaceholder(
+        searchResults,
+        '검색창에 음식 이름(예: 김밥)을 입력하거나 위 추천 키워드를 눌러 영양정보를 조회해 보세요.'
+      );
+    });
+
+    quickChips.querySelectorAll('.quick-chip').forEach((chip) => {
+      chip.addEventListener('click', () => {
+        searchInput.value = chip.getAttribute('data-query') || '';
+        runSearch(1);
+      });
+    });
+
+    prevPageBtn.addEventListener('click', () => {
+      if (currentPage > 1) {
+        runSearch(currentPage - 1);
+      }
+    });
+
+    nextPageBtn.addEventListener('click', () => {
+      runSearch(currentPage + 1);
+    });
+
+    profileSelect.addEventListener('change', () => {
+      renderProfileMeta();
+      renderMealAndTotals();
+    });
+
+    document.getElementById('clearMealBtn').addEventListener('click', () => {
+      mealEntries = [];
+      renderMealAndTotals();
+    });
+
+    // 초기 화면 렌더링
+    renderProfileMeta();
+    showEmptyPlaceholder(
+      searchResults,
+      '검색창에 음식 이름(예: 김밥)을 입력하거나 위 추천 키워드를 눌러 영양정보를 조회해 보세요.'
+    );
+    renderMealAndTotals();
+  </script>
 </body>
 </html>

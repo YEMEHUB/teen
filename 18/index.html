@@ -1,1 +1,808 @@
 
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>청소년 식단 설계 - 심플 영양 밸런스</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #f8fafc;
+            color: #0f172a;
+        }
+        .card {
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 1rem;
+        }
+    </style>
+</head>
+<body class="min-h-screen antialiased pb-14">
+
+    <!-- 심플 상단 헤더 -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-20">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-600"></span>
+                <h1 class="text-base sm:text-lg font-black tracking-tight text-slate-900">청소년 식단 설계</h1>
+                <span class="hidden sm:inline-block text-xs text-slate-400 ml-1">몸무게 · 식단관리 · 운동량</span>
+            </div>
+            <button id="resetBtn" type="button" class="text-xs font-bold text-slate-500 hover:text-slate-900 px-3 py-1.5 rounded-lg border border-slate-200 hover:bg-slate-50 transition cursor-pointer">
+                초기화
+            </button>
+        </div>
+    </header>
+
+    <!-- 메인 콘텐츠 -->
+    <main class="max-w-5xl mx-auto px-4 sm:px-6 pt-6 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+
+        <!-- 좌측: 3대 핵심 기능 입력 (① 몸무게, ③ 운동량, ② 식단관리) -->
+        <div class="lg:col-span-6 space-y-5">
+
+            <!-- ① 몸무게 & 신체 기본 정보 -->
+            <section id="sectionWeight" class="card p-5">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center gap-2">
+                        <span class="w-6 h-6 rounded-full bg-slate-900 text-white text-xs font-bold flex items-center justify-center">1</span>
+                        <h2 class="text-sm sm:text-base font-bold text-slate-900">몸무게 &amp; 신체 정보</h2>
+                    </div>
+                    <span id="bmiBadge" class="text-xs font-medium text-slate-500">성장기 기준 산출</span>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3 mb-3">
+                    <div>
+                        <label for="ageInput" class="block text-xs font-medium text-slate-500 mb-1">나이 (만 나이)</label>
+                        <input id="ageInput" type="number" min="11" max="19" value="15" class="w-full rounded-xl border border-slate-200 bg-slate-50/70 px-3 py-2 text-sm font-bold focus:outline-none focus:bg-white focus:border-slate-900">
+                    </div>
+                    <div>
+                        <label for="genderSelect" class="block text-xs font-medium text-slate-500 mb-1">성별</label>
+                        <select id="genderSelect" class="w-full rounded-xl border border-slate-200 bg-slate-50/70 px-3 py-2 text-sm font-bold focus:outline-none focus:bg-white focus:border-slate-900">
+                            <option value="male" selected>남학생</option>
+                            <option value="female">여학생</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label for="heightInput" class="block text-xs font-medium text-slate-500 mb-1">키 (cm)</label>
+                        <input id="heightInput" type="number" min="120" max="210" value="170" placeholder="예: 170" class="w-full rounded-xl border border-slate-200 bg-slate-50/70 px-3 py-2 text-sm font-bold focus:outline-none focus:bg-white focus:border-slate-900">
+                    </div>
+                    <div>
+                        <label for="weightInput" class="block text-xs font-medium text-slate-500 mb-1">몸무게 (kg)</label>
+                        <input id="weightInput" type="number" min="25" max="150" value="60" placeholder="예: 60" class="w-full rounded-xl border border-slate-200 bg-slate-50/70 px-3 py-2 text-sm font-bold focus:outline-none focus:bg-white focus:border-slate-900">
+                    </div>
+                </div>
+            </section>
+
+            <!-- ③ 운동량 설정 -->
+            <section id="sectionExercise" class="card p-5">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center gap-2">
+                        <span class="w-6 h-6 rounded-full bg-slate-900 text-white text-xs font-bold flex items-center justify-center">2</span>
+                        <h2 class="text-sm sm:text-base font-bold text-slate-900">운동량</h2>
+                    </div>
+                    <span id="exerciseBurnText" class="text-xs font-bold text-emerald-700">+250 kcal 활동 반영</span>
+                </div>
+
+                <div class="grid grid-cols-3 gap-2 mb-3" id="activityLevelGroup">
+                    <button type="button" data-level="light" class="act-btn py-2.5 px-2 rounded-xl border border-slate-200 text-xs font-bold text-slate-600 hover:border-slate-400 transition cursor-pointer">
+                        가벼움<br><span class="text-[11px] font-normal text-slate-400">걷기·스트레칭</span>
+                    </button>
+                    <button type="button" data-level="moderate" class="act-btn py-2.5 px-2 rounded-xl border border-slate-900 bg-slate-900 text-xs font-bold text-white transition cursor-pointer">
+                        보통<br><span class="text-[11px] font-normal text-slate-300">체육·달리기</span>
+                    </button>
+                    <button type="button" data-level="intense" class="act-btn py-2.5 px-2 rounded-xl border border-slate-200 text-xs font-bold text-slate-600 hover:border-slate-400 transition cursor-pointer">
+                        활발함<br><span class="text-[11px] font-normal text-slate-400">스포츠·근력</span>
+                    </button>
+                </div>
+
+                <div>
+                    <div class="flex justify-between text-xs mb-1">
+                        <span class="text-slate-500 font-medium">하루 운동 시간</span>
+                        <span id="exerciseMinLabel" class="font-bold text-slate-900">40분</span>
+                    </div>
+                    <input id="exerciseMinRange" type="range" min="0" max="150" step="10" value="40" class="w-full accent-slate-900 cursor-pointer">
+                </div>
+            </section>
+
+            <!-- ② 식단관리 (메뉴 선택 및 조합) -->
+            <section id="sectionDiet" class="card p-5">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="flex items-center gap-2">
+                        <span class="w-6 h-6 rounded-full bg-slate-900 text-white text-xs font-bold flex items-center justify-center">3</span>
+                        <h2 class="text-sm sm:text-base font-bold text-slate-900">식단관리 (식품 검색 &amp; 식단 구성)</h2>
+                    </div>
+                    <span id="selectedMealCount" class="text-xs font-bold text-slate-500">0개 선택됨</span>
+                </div>
+
+                <!-- 식품영양성분DB API 검색 영역 -->
+                <div class="mb-4 p-3.5 rounded-xl bg-slate-50 border border-slate-200/80">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-bold text-slate-800">식약처 식품영양성분DB 검색</span>
+                        <span class="text-[11px] text-slate-400">기준량(SERVING_SIZE) 기준</span>
+                    </div>
+                    <form id="foodSearchForm" class="flex gap-2">
+                        <input id="foodSearchInput" type="text" placeholder="음식명 검색 (예: 김밥, 우유, 떡볶이)" class="flex-1 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-medium focus:outline-none focus:border-slate-900">
+                        <button id="foodSearchBtn" type="submit" class="px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition cursor-pointer shrink-0">
+                            검색
+                        </button>
+                    </form>
+                    <details class="mt-2">
+                        <summary class="text-[11px] text-slate-500 cursor-pointer select-none hover:text-slate-800">
+                            선택 검색조건 (제조사·식품대분류)
+                        </summary>
+                        <div class="grid grid-cols-2 gap-2 mt-2">
+                            <input id="makerFilterInput" type="text" placeholder="제조사명 (선택)" class="rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs">
+                            <input id="catFilterInput" type="text" placeholder="식품대분류명 (선택)" class="rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs">
+                        </div>
+                    </details>
+
+                    <!-- API 검색 상태 및 결과 목록 -->
+                    <div id="apiStatusBox" class="hidden mt-2.5 text-xs text-slate-500"></div>
+                    <div id="apiResultsList" class="mt-2.5 space-y-1.5 max-h-56 overflow-y-auto"></div>
+                </div>
+
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-xs font-bold text-slate-700">빠른 기본 메뉴 추가</span>
+                    <span class="text-[11px] text-slate-400">클릭 시 즉시 담기</span>
+                </div>
+
+                <!-- 메뉴 프리셋 버튼 목록 -->
+                <div id="foodCatalog" class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4"></div>
+
+                <!-- 직접 영양소 입력 추가 (간단 입력) -->
+                <details class="border-t border-slate-100 pt-3">
+                    <summary class="text-xs font-bold text-slate-600 cursor-pointer select-none hover:text-slate-900">
+                        + 직접 음식 추가하기 (탄수화물·단백질·지방·나트륨)
+                    </summary>
+                    <div class="mt-3 grid grid-cols-2 gap-2">
+                        <input id="customName" type="text" placeholder="음식 이름 (예: 닭가슴살 샐러드)" class="col-span-2 rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs">
+                        <input id="customCarb" type="number" min="0" max="300" placeholder="탄수화물 (g)" class="rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs">
+                        <input id="customPro" type="number" min="0" max="200" placeholder="단백질 (g)" class="rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs">
+                        <input id="customFat" type="number" min="0" max="150" placeholder="지방 (g)" class="rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs">
+                        <input id="customSodium" type="number" min="0" max="5000" placeholder="나트륨 (mg, 선택)" class="rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs">
+                        <button id="addCustomFoodBtn" type="button" class="col-span-2 rounded-lg bg-slate-900 text-white text-xs font-bold py-1.5 hover:bg-slate-800 transition cursor-pointer">
+                            식단에 추가
+                        </button>
+                    </div>
+                </details>
+            </section>
+        </div>
+
+        <!-- 우측: 결과 화면 (섭취할 영양소 & 편중 감지 시 "다시 확인하기" 안내) -->
+        <div class="lg:col-span-6 space-y-5 lg:sticky lg:top-20">
+
+            <!-- 영양 편중 감지 경고 배너 ("다시 확인하기") -->
+            <div id="imbalanceAlert" class="hidden rounded-2xl border-2 border-rose-500 bg-rose-50 p-5 shadow-sm">
+                <div class="flex items-start justify-between gap-3">
+                    <div>
+                        <span class="inline-block text-[11px] font-black uppercase tracking-wider px-2 py-0.5 rounded bg-rose-600 text-white mb-1.5">
+                            영양 균형 주의
+                        </span>
+                        <h3 class="text-base font-black text-rose-950">지나치게 한쪽 영양소에 치우친 식단입니다</h3>
+                        <p id="imbalanceReason" class="text-xs sm:text-sm text-rose-800 mt-1 leading-relaxed"></p>
+                    </div>
+                </div>
+                <div class="mt-4 flex items-center justify-between gap-3 pt-3 border-t border-rose-200/80">
+                    <span id="imbalanceTip" class="text-xs font-medium text-rose-900"></span>
+                    <button id="recheckDietBtn" type="button" class="shrink-0 px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-black transition cursor-pointer">
+                        다시 확인하기
+                    </button>
+                </div>
+            </div>
+
+            <!-- 균형 양호 배너 -->
+            <div id="balancedAlert" class="rounded-2xl border border-emerald-200 bg-emerald-50/80 p-4 flex items-center justify-between gap-3">
+                <div>
+                    <div class="text-xs font-bold text-emerald-700">영양 밸런스 양호</div>
+                    <p id="balancedSummary" class="text-xs sm:text-sm font-bold text-slate-800 mt-0.5">
+                        탄수화물·단백질·지방이 고르게 구성된 성장기 식단입니다.
+                    </p>
+                </div>
+                <span class="text-lg">✓</span>
+            </div>
+
+            <!-- 핵심 결과: 섭취할 영양소 요약 -->
+            <section class="card p-5">
+                <div class="flex items-baseline justify-between mb-4">
+                    <div>
+                        <h2 class="text-base font-black text-slate-900">오늘 섭취할 영양소 결과</h2>
+                        <p class="text-xs text-slate-500 mt-0.5">신체 정보와 운동량을 반영한 목표 대비 현재 식단</p>
+                    </div>
+                    <div class="text-right">
+                        <span id="totalKcalDisplay" class="text-xl font-black text-slate-900">0</span>
+                        <span id="targetKcalDisplay" class="text-xs font-medium text-slate-400"> / 2,400 kcal</span>
+                    </div>
+                </div>
+
+                <!-- 탄수화물 / 단백질 / 지방 비율 바 -->
+                <div class="mb-5">
+                    <div class="flex justify-between text-xs font-bold mb-1.5">
+                        <span class="text-amber-700">탄수화물 <span id="carbRatioText">0%</span></span>
+                        <span class="text-emerald-700">단백질 <span id="proRatioText">0%</span></span>
+                        <span class="text-sky-700">지방 <span id="fatRatioText">0%</span></span>
+                    </div>
+                    <div class="w-full h-3 rounded-full bg-slate-100 overflow-hidden flex">
+                        <div id="carbBar" class="bg-amber-400 h-full transition-all duration-300" style="width: 0%;"></div>
+                        <div id="proBar" class="bg-emerald-500 h-full transition-all duration-300" style="width: 0%;"></div>
+                        <div id="fatBar" class="bg-sky-400 h-full transition-all duration-300" style="width: 0%;"></div>
+                    </div>
+                    <div class="flex justify-between text-[11px] text-slate-400 mt-1">
+                        <span>권장 비율: 탄수화물 50~65%</span>
+                        <span>단백질 15~25%</span>
+                        <span>지방 15~30%</span>
+                    </div>
+                </div>
+
+                <!-- 5대 핵심 섭취 영양소 상세 수치 (섭취량 / 권장 섭취량) -->
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+                    <div class="p-3 rounded-xl bg-slate-50 border border-slate-100">
+                        <div class="text-[11px] text-slate-500 font-medium">탄수화물</div>
+                        <div class="text-sm font-black text-slate-900 mt-0.5">
+                            <span id="carbVal">0</span>g <span class="text-xs font-normal text-slate-400">/ <span id="carbTarget">320</span>g</span>
+                        </div>
+                    </div>
+                    <div class="p-3 rounded-xl bg-slate-50 border border-slate-100">
+                        <div class="text-[11px] text-slate-500 font-medium">단백질</div>
+                        <div class="text-sm font-black text-slate-900 mt-0.5">
+                            <span id="proVal">0</span>g <span class="text-xs font-normal text-slate-400">/ <span id="proTarget">75</span>g</span>
+                        </div>
+                    </div>
+                    <div class="p-3 rounded-xl bg-slate-50 border border-slate-100">
+                        <div class="text-[11px] text-slate-500 font-medium">지방</div>
+                        <div class="text-sm font-black text-slate-900 mt-0.5">
+                            <span id="fatVal">0</span>g <span class="text-xs font-normal text-slate-400">/ <span id="fatTarget">65</span>g</span>
+                        </div>
+                    </div>
+                    <div class="p-3 rounded-xl bg-slate-50 border border-slate-100">
+                        <div class="text-[11px] text-slate-500 font-medium">나트륨</div>
+                        <div class="text-sm font-black text-slate-900 mt-0.5">
+                            <span id="sodiumVal">0</span>mg <span class="text-xs font-normal text-slate-400">/ 2,000mg</span>
+                        </div>
+                    </div>
+                    <div class="p-3 rounded-xl bg-slate-50 border border-slate-100">
+                        <div class="text-[11px] text-slate-500 font-medium">칼슘 (성장기 핵심)</div>
+                        <div class="text-sm font-black text-slate-900 mt-0.5">
+                            <span id="calcVal">0</span>mg <span class="text-xs font-normal text-slate-400">/ <span id="calcTarget">900</span>mg</span>
+                        </div>
+                    </div>
+                    <div class="p-3 rounded-xl bg-slate-50 border border-slate-100">
+                        <div class="text-[11px] text-slate-500 font-medium">철분 (성장기 핵심)</div>
+                        <div class="text-sm font-black text-slate-900 mt-0.5">
+                            <span id="ironVal">0</span>mg <span class="text-xs font-normal text-slate-400">/ <span id="ironTarget">14</span>mg</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 현재 담긴 식단 목록 -->
+                <div class="mt-5 pt-4 border-t border-slate-100">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-bold text-slate-700">선택한 오늘의 식단 내역</span>
+                        <button id="clearMealsBtn" type="button" class="text-[11px] text-slate-400 hover:text-rose-600 transition cursor-pointer">전체 비우기</button>
+                    </div>
+                    <ul id="selectedMealList" class="space-y-1.5 text-xs"></ul>
+                    <p class="text-[11px] text-slate-400 mt-3">
+                        데이터 출처: 식품의약품안전처 식품영양성분DB정보 · 영양값은 각 식품에 표시된 기준량(SERVING_SIZE) 기준입니다.
+                    </p>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script>
+        // ==========================================
+        // 1. 중계 API 설정 및 유틸리티
+        // ==========================================
+        const FOOD_API_ENDPOINT = 'https://glittery-dasik-3cb269.netlify.app/api/food';
+        let lastRawApiItems = []; // body.items 원본 보존
+
+        // 문자열 숫자 안전 변환: 빈 문자열·null·undefined는 0이 아닌 null로 반환
+        function parseNumericField(raw) {
+            if (raw === null || raw === undefined) return null;
+            const trimmed = String(raw).trim();
+            if (trimmed === '') return null;
+            const cleaned = trimmed.replace(/,/g, '');
+            const num = Number(cleaned);
+            return Number.isFinite(num) ? num : null;
+        }
+
+        function formatFieldDisplay(num, unit = '') {
+            return num === null ? '정보없음' : `${num}${unit}`;
+        }
+
+        async function searchFoodFromApi(keyword, makerNm = '', foodCat1Nm = '') {
+            const statusBox = document.getElementById('apiStatusBox');
+            const resultsList = document.getElementById('apiResultsList');
+            const searchBtn = document.getElementById('foodSearchBtn');
+
+            const trimmedKeyword = keyword.trim();
+            if (!trimmedKeyword) {
+                statusBox.textContent = '검색할 음식명을 입력해 주세요.';
+                statusBox.className = 'mt-2.5 text-xs text-rose-600 font-medium';
+                statusBox.classList.remove('hidden');
+                return;
+            }
+
+            // 빈 선택 조건은 생략하고 URLSearchParams 구성 (serviceKey는 서버에서 자동 처리)
+            const paramsObj = {
+                pageNo: '1',
+                numOfRows: '10',
+                type: 'json',
+                FOOD_NM_KR: trimmedKeyword
+            };
+            if (makerNm.trim()) paramsObj.MAKER_NM = makerNm.trim();
+            if (foodCat1Nm.trim()) paramsObj.FOOD_CAT1_NM = foodCat1Nm.trim();
+
+            const url = new URL(FOOD_API_ENDPOINT);
+            url.search = new URLSearchParams(paramsObj);
+
+            searchBtn.disabled = true;
+            searchBtn.textContent = '조회중...';
+            statusBox.textContent = '식품영양성분DB를 조회하고 있습니다...';
+            statusBox.className = 'mt-2.5 text-xs text-slate-500';
+            statusBox.classList.remove('hidden');
+            resultsList.innerHTML = '';
+
+            try {
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error(`HTTP 오류 (${response.status})`);
+                }
+
+                const data = await response.json();
+                const resultCode = data?.header?.resultCode;
+                const resultMsg = data?.header?.resultMsg || '';
+
+                if (resultCode === '03') {
+                    lastRawApiItems = [];
+                    statusBox.textContent = `'${trimmedKeyword}'에 해당하는 식품 데이터가 없습니다. (resultCode: 03)`;
+                    statusBox.className = 'mt-2.5 text-xs text-slate-500 font-medium';
+                    return;
+                }
+
+                if (resultCode !== '00') {
+                    throw new Error(`API 응답 오류 (${resultCode || 'UNKNOWN'}: ${resultMsg})`);
+                }
+
+                const rawItems = data?.body?.items;
+                const itemsArray = Array.isArray(rawItems)
+                    ? rawItems
+                    : (rawItems ? [rawItems] : []);
+
+                // body.items 전체 원본 유지
+                lastRawApiItems = itemsArray;
+
+                if (lastRawApiItems.length === 0) {
+                    statusBox.textContent = `'${trimmedKeyword}'에 대한 검색 결과가 비어 있습니다.`;
+                    return;
+                }
+
+                statusBox.textContent = `검색 결과 ${lastRawApiItems.length}건 · 영양값은 표시된 기준량(SERVING_SIZE) 기준입니다.`;
+                statusBox.className = 'mt-2.5 text-[11px] text-emerald-700 font-medium';
+
+                renderApiResults(lastRawApiItems);
+            } catch (err) {
+                lastRawApiItems = [];
+                statusBox.textContent = `조회 중 문제가 발생했습니다: ${err.message}`;
+                statusBox.className = 'mt-2.5 text-xs text-rose-600 font-medium';
+            } finally {
+                searchBtn.disabled = false;
+                searchBtn.textContent = '검색';
+            }
+        }
+
+        function renderApiResults(items) {
+            const resultsList = document.getElementById('apiResultsList');
+
+            resultsList.innerHTML = items.map((item, idx) => {
+                const name = item.FOOD_NM_KR || '이름 미상 식품';
+                const servingSize = item.SERVING_SIZE ? String(item.SERVING_SIZE).trim() : '기준량 미표기';
+                const kcal = parseNumericField(item.AMT_NUM1);
+                const pro = parseNumericField(item.AMT_NUM3);
+                const fat = parseNumericField(item.AMT_NUM4);
+                const carb = parseNumericField(item.AMT_NUM6);
+                const sodium = parseNumericField(item.AMT_NUM13);
+
+                return `
+                    <div class="p-2.5 rounded-xl bg-white border border-slate-200 flex items-center justify-between gap-2">
+                        <div class="min-w-0">
+                            <div class="text-xs font-bold text-slate-900 truncate">${name}</div>
+                            <div class="text-[11px] text-slate-500 mt-0.5">
+                                기준량: <span class="font-bold text-slate-700">${servingSize}</span> · 열량: <span class="font-bold text-slate-800">${formatFieldDisplay(kcal, 'kcal')}</span>
+                            </div>
+                            <div class="text-[11px] text-slate-400 mt-0.5">
+                                탄 ${formatFieldDisplay(carb, 'g')} · 단 ${formatFieldDisplay(pro, 'g')} · 지 ${formatFieldDisplay(fat, 'g')} · 나트륨 ${formatFieldDisplay(sodium, 'mg')}
+                            </div>
+                        </div>
+                        <button type="button" data-api-idx="${idx}" class="api-add-btn shrink-0 px-2.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-bold transition cursor-pointer">
+                            + 담기
+                        </button>
+                    </div>
+                `;
+            }).join('');
+
+            resultsList.querySelectorAll('.api-add-btn').forEach((btn) => {
+                btn.addEventListener('click', () => {
+                    const idx = Number(btn.dataset.apiIdx);
+                    const raw = lastRawApiItems[idx];
+                    if (!raw) return;
+
+                    const name = raw.FOOD_NM_KR || '검색 식품';
+                    const servingSize = raw.SERVING_SIZE ? String(raw.SERVING_SIZE).trim() : '';
+                    const kcalParsed = parseNumericField(raw.AMT_NUM1);
+                    const proParsed = parseNumericField(raw.AMT_NUM3);
+                    const fatParsed = parseNumericField(raw.AMT_NUM4);
+                    const carbParsed = parseNumericField(raw.AMT_NUM6);
+                    const sodiumParsed = parseNumericField(raw.AMT_NUM13);
+
+                    state.selectedMeals.push({
+                        id: 'api_food',
+                        uid: state.nextUid++,
+                        name,
+                        servingSize,
+                        kcalOverride: kcalParsed,
+                        carb: carbParsed ?? 0,
+                        pro: proParsed ?? 0,
+                        fat: fatParsed ?? 0,
+                        sodium: sodiumParsed ?? 0,
+                        calc: 0,
+                        iron: 0
+                    });
+                    updateUI();
+                });
+            });
+        }
+
+        // ==========================================
+        // 2. 기본 음식 데이터 및 앱 상태
+        // ==========================================
+        const DEFAULT_FOODS = [
+            { id: 'rice_bowl', name: '잡곡밥 한 공기', servingSize: '210g (1공기)', carb: 68, pro: 6, fat: 1.5, sodium: 10, calc: 15, iron: 1.2 },
+            { id: 'school_lunch', name: '학교 급식 표준 한 끼', servingSize: '1식 기준', carb: 88, pro: 28, fat: 18, sodium: 780, calc: 240, iron: 4.2 },
+            { id: 'chicken_salad', name: '닭가슴살 채소 샐러드', servingSize: '250g (1팩)', carb: 14, pro: 28, fat: 6, sodium: 340, calc: 60, iron: 1.8 },
+            { id: 'milk_egg', name: '흰우유 1팩 + 삶은 계란 2개', servingSize: '300g', carb: 11, pro: 19, fat: 16, sodium: 230, calc: 260, iron: 2.1 },
+            { id: 'ramen', name: '컵라면 + 삼각김밥', servingSize: '215g (1세트)', carb: 112, pro: 14, fat: 22, sodium: 1680, calc: 45, iron: 1.5 },
+            { id: 'tteokbokki', name: '떡볶이 + 튀김 세트', servingSize: '350g (1인분)', carb: 125, pro: 12, fat: 26, sodium: 1420, calc: 50, iron: 1.3 },
+            { id: 'beef_stew', name: '소고기 미역국 + 두부조림', servingSize: '320g', carb: 18, pro: 26, fat: 14, sodium: 690, calc: 290, iron: 4.5 },
+            { id: 'fruit_yogurt', name: '그릭요거트 + 바나나·견과', servingSize: '220g', carb: 32, pro: 13, fat: 9, sodium: 75, calc: 210, iron: 1.1 }
+        ];
+
+        const state = {
+            age: 15,
+            gender: 'male',
+            height: 170,
+            weight: 60,
+            activityLevel: 'moderate',
+            exerciseMinutes: 40,
+            selectedMeals: [
+                { ...DEFAULT_FOODS[1], uid: 1 },
+                { ...DEFAULT_FOODS[3], uid: 2 }
+            ],
+            nextUid: 3
+        };
+
+        // ==========================================
+        // 4. 섭취 영양소 합산 및 한쪽 영양소 편중 진단
+        // ==========================================
+        function getMealKcal(m) {
+            if (m.kcalOverride !== undefined && m.kcalOverride !== null) {
+                return Math.round(m.kcalOverride);
+            }
+            return Math.round(m.carb * 4 + m.pro * 4 + m.fat * 9);
+        }
+
+        function evaluateDiet(targets) {
+            let totalKcalSum = 0;
+            let totalCarb = 0;
+            let totalPro = 0;
+            let totalFat = 0;
+            let totalSodium = 0;
+            let totalCalc = 0;
+            let totalIron = 0;
+
+            state.selectedMeals.forEach((m) => {
+                totalKcalSum += getMealKcal(m);
+                totalCarb += m.carb;
+                totalPro += m.pro;
+                totalFat += m.fat;
+                totalSodium += m.sodium || 0;
+                totalCalc += m.calc || 0;
+                totalIron += m.iron || 0;
+            });
+
+            const totalKcal = Math.round(totalKcalSum);
+            const macroKcal = Math.max(1, totalCarb * 4 + totalPro * 4 + totalFat * 9);
+            const hasMacros = (totalCarb + totalPro + totalFat) > 0;
+
+            const carbPct = hasMacros ? Math.round(((totalCarb * 4) / macroKcal) * 100) : 0;
+            const proPct = hasMacros ? Math.round(((totalPro * 4) / macroKcal) * 100) : 0;
+            const fatPct = hasMacros ? Math.max(0, 100 - carbPct - proPct) : 0;
+
+            // 지나치게 한쪽 영양소에 치우쳤는지 판정
+            let isSkewed = false;
+            let reason = '';
+            let tip = '';
+
+            if (state.selectedMeals.length > 0 && totalKcal >= 250 && hasMacros) {
+                if (carbPct >= 70) {
+                    isSkewed = true;
+                    reason = `탄수화물 비율이 ${carbPct}%로 지나치게 높습니다. 밥·면·빵·분식 위주의 식단은 혈당을 급격히 올리고 성장기 단백질·칼슘 부족을 부를 수 있어요.`;
+                    tip = '추천 보완: 달걀, 두부, 우유, 닭가슴살 등 단백질을 추가해 보세요.';
+                } else if (proPct >= 42) {
+                    isSkewed = true;
+                    reason = `단백질 비율이 ${proPct}%로 한쪽에 과도하게 치우쳐 있습니다. 에너지원인 탄수화물이 너무 적으면 학습 집중력과 운동 지구력이 떨어질 수 있어요.`;
+                    tip = '추천 보완: 잡곡밥, 과일, 통곡물 등 건강한 탄수화물을 곁들여 보세요.';
+                } else if (fatPct >= 42) {
+                    isSkewed = true;
+                    reason = `지방 비율이 ${fatPct}%로 지나치게 높습니다. 튀김·가공식품 위주의 식단은 소화 부담과 영양 불균형을 유발할 수 있어요.`;
+                    tip = '추천 보완: 기름진 메뉴를 줄이고 채소·살코기·밥 중심으로 바꿔보세요.';
+                } else if (carbPct <= 35 && state.selectedMeals.length >= 2) {
+                    isSkewed = true;
+                    reason = `탄수화물 비율이 ${carbPct}%로 너무 낮아 뇌와 근육에 필요한 기초 에너지가 부족할 수 있습니다.`;
+                    tip = '추천 보완: 밥 한 공기나 바나나·고구마 등을 추가해 보세요.';
+                }
+            }
+
+            return {
+                totalKcal,
+                totalCarb: Math.round(totalCarb),
+                totalPro: Math.round(totalPro),
+                totalFat: Math.round(totalFat),
+                totalSodium: Math.round(totalSodium),
+                totalCalc: Math.round(totalCalc),
+                totalIron: Number(totalIron.toFixed(1)),
+                carbPct,
+                proPct,
+                fatPct,
+                isSkewed,
+                reason,
+                tip
+            };
+        }
+
+        // ==========================================
+        // 5. 화면 렌더링
+        // ==========================================
+        function renderCatalog() {
+            const container = document.getElementById('foodCatalog');
+            container.innerHTML = DEFAULT_FOODS.map((food) => {
+                const kcal = getMealKcal(food);
+                return `
+                    <button type="button" data-food-id="${food.id}" class="food-add-btn text-left p-3 rounded-xl border border-slate-200 hover:border-slate-900 hover:bg-slate-50 transition flex items-center justify-between gap-2 cursor-pointer">
+                        <div>
+                            <div class="text-xs font-bold text-slate-900">${food.name}</div>
+                            <div class="text-[11px] text-slate-400 mt-0.5">${food.servingSize} · 탄${food.carb}/단${food.pro}/지${food.fat}</div>
+                        </div>
+                        <span class="text-xs font-black text-slate-700 shrink-0">+ ${kcal}kcal</span>
+                    </button>
+                `;
+            }).join('');
+
+            container.querySelectorAll('.food-add-btn').forEach((btn) => {
+                btn.addEventListener('click', () => {
+                    const food = DEFAULT_FOODS.find((f) => f.id === btn.dataset.foodId);
+                    if (food) {
+                        state.selectedMeals.push({ ...food, uid: state.nextUid++ });
+                        updateUI();
+                    }
+                });
+            });
+        }
+
+        function updateUI() {
+            const targets = calculateTargets();
+            const result = evaluateDiet(targets);
+
+            // 운동량 텍스트 업데이트
+            document.getElementById('exerciseMinLabel').textContent = `${state.exerciseMinutes}분`;
+            document.getElementById('exerciseBurnText').textContent = `+${targets.exerciseKcal} kcal 활동 반영`;
+
+            // 목표 칼로리 및 섭취 영양소 업데이트
+            document.getElementById('totalKcalDisplay').textContent = result.totalKcal.toLocaleString();
+            document.getElementById('targetKcalDisplay').textContent = ` / ${targets.targetKcal.toLocaleString()} kcal`;
+
+            document.getElementById('carbRatioText').textContent = `${result.carbPct}%`;
+            document.getElementById('proRatioText').textContent = `${result.proPct}%`;
+            document.getElementById('fatRatioText').textContent = `${result.fatPct}%`;
+
+            document.getElementById('carbBar').style.width = `${result.carbPct}%`;
+            document.getElementById('proBar').style.width = `${result.proPct}%`;
+            document.getElementById('fatBar').style.width = `${result.fatPct}%`;
+
+            document.getElementById('carbVal').textContent = result.totalCarb;
+            document.getElementById('carbTarget').textContent = targets.targetCarb;
+            document.getElementById('proVal').textContent = result.totalPro;
+            document.getElementById('proTarget').textContent = targets.targetPro;
+            document.getElementById('fatVal').textContent = result.totalFat;
+            document.getElementById('fatTarget').textContent = targets.targetFat;
+            document.getElementById('sodiumVal').textContent = result.totalSodium.toLocaleString();
+            document.getElementById('calcVal').textContent = result.totalCalc;
+            document.getElementById('calcTarget').textContent = targets.targetCalc;
+            document.getElementById('ironVal').textContent = result.totalIron;
+            document.getElementById('ironTarget').textContent = targets.targetIron;
+
+            // 편중 감지 배너 ("다시 확인하기") 전환
+            const imbalanceAlert = document.getElementById('imbalanceAlert');
+            const balancedAlert = document.getElementById('balancedAlert');
+
+            if (result.isSkewed) {
+                imbalanceAlert.classList.remove('hidden');
+                balancedAlert.classList.add('hidden');
+                document.getElementById('imbalanceReason').textContent = result.reason;
+                document.getElementById('imbalanceTip').textContent = result.tip;
+            } else {
+                imbalanceAlert.classList.add('hidden');
+                balancedAlert.classList.remove('hidden');
+                document.getElementById('balancedSummary').textContent = state.selectedMeals.length === 0
+                    ? '좌측 식단관리에서 식품을 검색하거나 메뉴를 선택해 영양소를 계산해 보세요.'
+                    : `탄수화물 ${result.carbPct}% · 단백질 ${result.proPct}% · 지방 ${result.fatPct}%로 균형이 잘 잡혀 있습니다.`;
+            }
+
+            // 선택한 식단 목록 렌더링
+            document.getElementById('selectedMealCount').textContent = `${state.selectedMeals.length}개 선택됨`;
+            const mealListEl = document.getElementById('selectedMealList');
+            if (state.selectedMeals.length === 0) {
+                mealListEl.innerHTML = `<li class="text-slate-400 py-3 text-center bg-slate-50 rounded-xl">아직 선택된 식단이 없습니다.</li>`;
+            } else {
+                mealListEl.innerHTML = state.selectedMeals.map((m) => {
+                    const kcal = getMealKcal(m);
+                    const servingTag = m.servingSize ? ` [${m.servingSize}]` : '';
+                    return `
+                        <li class="flex items-center justify-between px-3 py-2 rounded-xl bg-slate-50 border border-slate-100 gap-2">
+                            <div class="min-w-0">
+                                <span class="font-bold text-slate-800">${m.name}</span><span class="text-[11px] text-slate-500">${servingTag}</span>
+                                <div class="text-[11px] text-slate-400 mt-0.5">${kcal}kcal · 탄${m.carb}g / 단${m.pro}g / 지${m.fat}g / 나트륨${m.sodium || 0}mg</div>
+                            </div>
+                            <button type="button" data-uid="${m.uid}" class="remove-meal-btn text-slate-400 hover:text-rose-600 font-bold px-1.5 cursor-pointer shrink-0" title="삭제">
+                                ✕
+                            </button>
+                        </li>
+                    `;
+                }).join('');
+
+                mealListEl.querySelectorAll('.remove-meal-btn').forEach((btn) => {
+                    btn.addEventListener('click', () => {
+                        const uid = Number(btn.dataset.uid);
+                        state.selectedMeals = state.selectedMeals.filter((item) => item.uid !== uid);
+                        updateUI();
+                    });
+                });
+            }
+        }
+
+        // ==========================================
+        // 6. 이벤트 리스너 연결
+        // ==========================================
+        document.getElementById('foodSearchForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const keyword = document.getElementById('foodSearchInput').value;
+            const makerNm = document.getElementById('makerFilterInput').value;
+            const catNm = document.getElementById('catFilterInput').value;
+            searchFoodFromApi(keyword, makerNm, catNm);
+        });
+
+        document.getElementById('ageInput').addEventListener('input', (e) => {
+            state.age = e.target.value;
+            updateUI();
+        });
+        document.getElementById('genderSelect').addEventListener('change', (e) => {
+            state.gender = e.target.value;
+            updateUI();
+        });
+        document.getElementById('heightInput').addEventListener('input', (e) => {
+            state.height = e.target.value;
+            updateUI();
+        });
+        document.getElementById('weightInput').addEventListener('input', (e) => {
+            state.weight = e.target.value;
+            updateUI();
+        });
+
+        document.querySelectorAll('.act-btn').forEach((btn) => {
+            btn.addEventListener('click', () => {
+                state.activityLevel = btn.dataset.level;
+                document.querySelectorAll('.act-btn').forEach((b) => {
+                    const active = b.dataset.level === state.activityLevel;
+                    b.className = active
+                        ? 'act-btn py-2.5 px-2 rounded-xl border border-slate-900 bg-slate-900 text-xs font-bold text-white transition cursor-pointer'
+                        : 'act-btn py-2.5 px-2 rounded-xl border border-slate-200 text-xs font-bold text-slate-600 hover:border-slate-400 transition cursor-pointer';
+                });
+                updateUI();
+            });
+        });
+
+        document.getElementById('exerciseMinRange').addEventListener('input', (e) => {
+            state.exerciseMinutes = Number(e.target.value);
+            updateUI();
+        });
+
+        // 직접 음식 추가
+        document.getElementById('addCustomFoodBtn').addEventListener('click', () => {
+            const nameInput = document.getElementById('customName');
+            const carbInput = document.getElementById('customCarb');
+            const proInput = document.getElementById('customPro');
+            const fatInput = document.getElementById('customFat');
+            const sodiumInput = document.getElementById('customSodium');
+
+            const name = nameInput.value.trim() || '직접 입력 식단';
+            const carb = Math.max(0, Number(carbInput.value) || 0);
+            const pro = Math.max(0, Number(proInput.value) || 0);
+            const fat = Math.max(0, Number(fatInput.value) || 0);
+            const sodium = Math.max(0, Number(sodiumInput.value) || 0);
+
+            if (carb === 0 && pro === 0 && fat === 0) return;
+
+            state.selectedMeals.push({
+                id: 'custom',
+                uid: state.nextUid++,
+                name,
+                servingSize: '직접 입력',
+                carb,
+                pro,
+                fat,
+                sodium,
+                calc: 0,
+                iron: 0
+            });
+
+            nameInput.value = '';
+            carbInput.value = '';
+            proInput.value = '';
+            fatInput.value = '';
+            sodiumInput.value = '';
+            updateUI();
+        });
+
+        // "다시 확인하기" 버튼 클릭 시 식단관리 섹션으로 부드럽게 포커스 이동
+        document.getElementById('recheckDietBtn').addEventListener('click', () => {
+            const dietSection = document.getElementById('sectionDiet');
+            dietSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            dietSection.classList.add('ring-2', 'ring-rose-500');
+            setTimeout(() => {
+                dietSection.classList.remove('ring-2', 'ring-rose-500');
+            }, 1400);
+        });
+
+        document.getElementById('clearMealsBtn').addEventListener('click', () => {
+            state.selectedMeals = [];
+            updateUI();
+        });
+
+        document.getElementById('resetBtn').addEventListener('click', () => {
+            state.age = 15;
+            state.gender = 'male';
+            state.height = 170;
+            state.weight = 60;
+            state.activityLevel = 'moderate';
+            state.exerciseMinutes = 40;
+            state.selectedMeals = [
+                { ...DEFAULT_FOODS[1], uid: state.nextUid++ },
+                { ...DEFAULT_FOODS[3], uid: state.nextUid++ }
+            ];
+
+            document.getElementById('ageInput').value = 15;
+            document.getElementById('genderSelect').value = 'male';
+            document.getElementById('heightInput').value = 170;
+            document.getElementById('weightInput').value = 60;
+            document.getElementById('exerciseMinRange').value = 40;
+
+            document.querySelectorAll('.act-btn').forEach((b) => {
+                const active = b.dataset.level === 'moderate';
+                b.className = active
+                    ? 'act-btn py-2.5 px-2 rounded-xl border border-slate-900 bg-slate-900 text-xs font-bold text-white transition cursor-pointer'
+                    : 'act-btn py-2.5 px-2 rounded-xl border border-slate-200 text-xs font-bold text-slate-600 hover:border-slate-400 transition cursor-pointer';
+            });
+
+            updateUI();
+        });
+
+        // 초기 실행
+        renderCatalog();
+        updateUI();
+    </script>
+</body>
+</html>

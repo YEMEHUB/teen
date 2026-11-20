@@ -1,1317 +1,2097 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>K-POP 초성 아이돌 그룹 퀴즈</title>
-    <!-- Tailwind CSS 로드 -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Tone.js 로드 (예능 효과음용) -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
-    <!-- Google Fonts: Inter & Noto Sans KR -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Noto Sans KR', 'Inter', sans-serif;
-            background: radial-gradient(circle at top left, #2e1065, #0f172a 60%, #090d16 100%);
-            color: #f8fafc;
-            min-height: 100vh;
-            overflow-x: hidden;
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>아침을 부탁해! ☀️ 청소년 맞춤 아침 식단 플래너</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Jua & Noto Sans KR -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            title: ['"Jua"', 'sans-serif'],
+            sans: ['"Noto Sans KR"', 'sans-serif'],
+          },
+          colors: {
+            cream: '#FFFDF5',
+            butter: '#FFF3B0',
+            sunshine: '#FFD166',
+            tangerine: '#FF9F1C',
+            peach: '#FFBF69',
+            mint: '#CBF3F0',
+            tealSoft: '#2EC4B6',
+            berry: '#FF6B6B',
+            cocoa: '#4A3B32',
+            skySoft: '#E0F2FE',
+            lavender: '#F3E8FF',
+            lavenderDeep: '#9333EA',
+          },
+          animation: {
+            'float': 'float 3s ease-in-out infinite',
+            'fade-in-up': 'fadeInUp 0.5s ease-out forwards',
+          },
+          keyframes: {
+            float: {
+              '0%, 100%': { transform: 'translateY(0)' },
+              '50%': { transform: 'translateY(-6px)' },
+            },
+            fadeInUp: {
+              '0%': { opacity: '0', transform: 'translateY(16px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            }
+          }
         }
-
-        /* 네온 유리 질감 카드 */
-        .neon-card {
-            background: rgba(30, 41, 59, 0.72);
-            backdrop-filter: blur(18px);
-            -webkit-backdrop-filter: blur(18px);
-            border: 1px solid rgba(192, 132, 252, 0.25);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7), 0 0 30px rgba(168, 85, 247, 0.15);
-        }
-
-        /* 초성 글자 타일 스타일 */
-        .chosung-tile {
-            background: linear-gradient(145deg, #1e1b4b, #311042);
-            border: 2px solid #a855f7;
-            box-shadow: 0 8px 20px rgba(168, 85, 247, 0.35), inset 0 2px 4px rgba(255, 255, 255, 0.2);
-            text-shadow: 0 0 15px rgba(232, 121, 249, 0.8);
-        }
-
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            20%, 60% { transform: translateX(-8px); }
-            40%, 80% { transform: translateX(8px); }
-        }
-        .animate-shake {
-            animation: shake 0.4s ease-in-out;
-        }
-
-        @keyframes pop {
-            0% { transform: scale(0.92); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-        .animate-pop {
-            animation: pop 0.28s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-    </style>
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #FFFDF5;
+      background-image: radial-gradient(#FFE599 1.5px, transparent 1.5px), radial-gradient(#CBF3F0 1.5px, #FFFDF5 1.5px);
+      background-size: 36px 36px;
+      background-position: 0 0, 18px 18px;
+      color: #4A3B32;
+    }
+    .cute-card {
+      background: rgba(255, 255, 255, 0.96);
+      border: 3px solid #FFE082;
+      box-shadow: 0 10px 25px -5px rgba(255, 179, 0, 0.15), 0 4px 10px -2px rgba(0, 0, 0, 0.04);
+      border-radius: 1.75rem;
+    }
+    .cute-btn {
+      transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .cute-btn:hover {
+      transform: translateY(-2px) scale(1.02);
+    }
+    .cute-btn:active {
+      transform: translateY(1px) scale(0.98);
+    }
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+  </style>
 </head>
-<body class="flex flex-col items-center justify-center p-4 sm:p-6">
+<body class="min-h-screen font-sans antialiased selection:bg-sunshine selection:text-cocoa pb-12">
 
-    <!-- 메인 컨테이너 -->
-    <div class="w-full max-w-md mx-auto">
-
-        <!-- 1. 시작 화면 (Start Screen) -->
-        <div id="start-screen" class="neon-card rounded-3xl p-6 sm:p-8 text-center animate-pop">
-            <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-tr from-fuchsia-500 to-indigo-600 text-3xl shadow-lg shadow-fuchsia-500/30 mb-4">
-                🎤
-            </div>
-            <h1 class="text-2xl sm:text-3xl font-black tracking-tight text-white mb-2">
-                K-POP 아이돌 그룹<br><span class="text-transparent bg-clip-text bg-gradient-to-r from-fuchsia-400 to-cyan-300">초성 퀴즈</span>
-            </h1>
-            <p class="text-sm text-slate-300 mb-6 leading-relaxed">
-                제시되는 초성을 보고 대한민국 대표 아이돌 그룹의 이름을 맞혀보세요! (영어 그룹명도 정답 인정)
-            </p>
-
-            <!-- 카테고리 필터 선택 -->
-            <div class="bg-slate-900/60 rounded-2xl p-4 mb-4 text-left border border-slate-700/60">
-                <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">
-                    출제 범위 선택
-                </label>
-                <div class="grid grid-cols-3 gap-2">
-                    <button type="button" data-filter="ALL" class="filter-option py-2 px-2 rounded-xl text-xs font-bold bg-fuchsia-600 text-white border border-fuchsia-400 shadow-md transition">
-                        🌟 전체 그룹
-                    </button>
-                    <button type="button" data-filter="BOY" class="filter-option py-2 px-2 rounded-xl text-xs font-bold bg-slate-800 text-slate-300 border border-slate-700 hover:border-fuchsia-500 transition">
-                        🕺 보이그룹
-                    </button>
-                    <button type="button" data-filter="GIRL" class="filter-option py-2 px-2 rounded-xl text-xs font-bold bg-slate-800 text-slate-300 border border-slate-700 hover:border-fuchsia-500 transition">
-                        💃 걸그룹
-                    </button>
-                </div>
-            </div>
-
-            <!-- 제한 시간 설정 -->
-            <div class="bg-slate-900/60 rounded-2xl p-4 mb-6 text-left border border-slate-700/60">
-                <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">
-                    제한 시간 설정
-                </label>
-                <div class="grid grid-cols-3 gap-2">
-                    <button type="button" data-time="7" class="time-option py-2 px-2 rounded-xl text-xs font-bold bg-slate-800 text-slate-300 border border-slate-700 hover:border-cyan-400 transition">
-                        ⚡ 스피드 (7초)
-                    </button>
-                    <button type="button" data-time="12" class="time-option py-2 px-2 rounded-xl text-xs font-bold bg-cyan-600 text-white border border-cyan-400 shadow-md transition">
-                        🔥 기본 (12초)
-                    </button>
-                    <button type="button" data-time="0" class="time-option py-2 px-2 rounded-xl text-xs font-bold bg-slate-800 text-slate-300 border border-slate-700 hover:border-cyan-400 transition">
-                        ☕ 무제한
-                    </button>
-                </div>
-            </div>
-
-            <button id="start-btn" class="w-full py-4 rounded-2xl bg-gradient-to-r from-fuchsia-500 via-purple-600 to-indigo-600 hover:from-fuchsia-600 hover:to-indigo-700 text-white font-extrabold text-lg shadow-lg shadow-fuchsia-500/30 transition transform active:scale-95">
-                게임 시작하기 (목숨 3개)
-            </button>
-        </div>
-
-        <!-- 2. 퀴즈 진행 화면 (Quiz Screen) -->
-        <div id="quiz-screen" class="hidden neon-card rounded-3xl p-5 sm:p-6">
-            <!-- 상단 상태 바 -->
-            <div class="flex items-center justify-between mb-3">
-                <div class="flex items-center gap-2">
-                    <span id="question-counter" class="px-3 py-1 rounded-full bg-slate-800 text-xs font-bold text-fuchsia-400 border border-slate-700">
-                        1번째 문제
-                    </span>
-                    <span id="group-badge" class="px-2.5 py-1 rounded-full bg-indigo-950/90 text-xs font-semibold text-cyan-300 border border-indigo-700/60">
-                        걸그룹 · 4세대
-                    </span>
-                </div>
-                <div class="flex items-center gap-3">
-                    <div id="lives-display" class="text-sm font-black tracking-tight" title="남은 기회">
-                        ❤️❤️❤️
-                    </div>
-                    <div class="text-sm font-bold text-slate-200">
-                        <span id="score-display" class="text-emerald-400 font-black">0</span>점
-                    </div>
-                </div>
-            </div>
-
-            <!-- 제한 시간 프로그레스 바 -->
-            <div id="timer-container" class="w-full h-2.5 bg-slate-800 rounded-full overflow-hidden mb-5 border border-slate-700/50">
-                <div id="timer-bar" class="h-full bg-gradient-to-r from-cyan-400 via-fuchsia-400 to-rose-500 transition-all duration-100 ease-linear" style="width: 100%;"></div>
-            </div>
-
-            <!-- 초성 표시 메인 영역 -->
-            <div class="relative w-full py-8 px-4 mb-4 rounded-2xl bg-slate-950/70 border border-slate-800 flex flex-col items-center justify-center min-h-[200px]">
-                <span class="text-xs font-bold text-slate-400 tracking-widest uppercase mb-4">
-                    제시된 초성
-                </span>
-
-                <!-- 초성 타일 컨테이너 -->
-                <div id="chosung-container" class="flex flex-wrap items-center justify-center gap-2 sm:gap-2.5 mb-3">
-                    <!-- JS로 동적 생성 -->
-                </div>
-
-                <span id="letter-count-info" class="text-xs text-fuchsia-300/80 font-semibold mt-1">
-                    총 4글자
-                </span>
-
-                <!-- 정답/오답 피드백 오버레이 -->
-                <div id="feedback-overlay" class="hidden absolute inset-0 rounded-2xl bg-slate-950/92 backdrop-blur-md flex flex-col items-center justify-center p-4 text-center z-20">
-                    <div id="feedback-icon" class="text-4xl mb-1.5">⭕</div>
-                    <div id="feedback-title" class="text-xl font-black text-emerald-400 mb-1">정답입니다!</div>
-                    <div id="feedback-answer" class="text-2xl font-black text-white mb-2">방탄소년단 (BTS)</div>
-                    <p id="feedback-desc" class="text-xs text-slate-300 max-w-xs leading-relaxed"></p>
-                </div>
-            </div>
-
-            <!-- 힌트 표시 박스 -->
-            <div id="hint-box" class="hidden mb-3 py-2.5 px-3 rounded-xl bg-amber-500/15 border border-amber-500/40 text-center">
-                <span class="text-xs font-bold text-amber-300 leading-relaxed" id="hint-text">🎵 힌트: Dynamite, 봄날</span>
-            </div>
-
-            <!-- 정답 입력 폼 -->
-            <form id="answer-form" class="flex flex-col gap-2.5" autocomplete="off">
-                <input 
-                    type="text" 
-                    id="answer-input" 
-                    placeholder="아이돌 그룹 이름을 입력하세요" 
-                    class="w-full px-4 py-3.5 rounded-2xl bg-slate-900/95 border-2 border-slate-600 focus:border-fuchsia-500 focus:outline-none text-white font-bold text-center text-base sm:text-lg placeholder:text-slate-500 placeholder:font-normal transition"
-                    required
-                />
-
-                <div class="grid grid-cols-3 gap-2">
-                    <button type="button" id="hint-btn" class="col-span-1 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-300 font-bold text-xs sm:text-sm border border-slate-600 transition">
-                        💡 힌트 보기
-                    </button>
-                    <button type="submit" id="submit-btn" class="col-span-2 py-3 rounded-xl bg-gradient-to-r from-fuchsia-500 to-indigo-600 hover:from-fuchsia-600 hover:to-indigo-700 text-white font-extrabold text-sm sm:text-base shadow-md transition active:scale-95">
-                        정답 제출 (Enter)
-                    </button>
-                </div>
-            </form>
-
-            <!-- 다음 문제 버튼 -->
-            <button id="next-btn" class="hidden w-full py-3.5 rounded-2xl bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black text-base shadow-lg transition transform active:scale-95">
-                다음 문제로 ➔
-            </button>
-        </div>
-
-        <!-- 3. 최종 결과 화면 (Result Screen) -->
-        <div id="result-screen" class="hidden neon-card rounded-3xl p-6 sm:p-8 text-center">
-            <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-tr from-fuchsia-500 to-cyan-400 text-4xl shadow-xl mb-4">
-                👑
-            </div>
-            <h2 class="text-2xl font-black text-white mb-1">퀴즈 완료!</h2>
-            <p id="result-comment" class="text-sm text-fuchsia-300 font-semibold mb-6">당신은 진정한 K-POP 고인물!</p>
-
-            <!-- 성적 요약 박스 -->
-            <div class="bg-slate-900/75 rounded-2xl p-5 mb-6 border border-slate-700/70">
-                <div class="text-xs text-slate-400 mb-1">최종 정답 수</div>
-                <div class="text-4xl font-black text-white mb-2">
-                    <span id="final-correct" class="text-emerald-400">0</span> <span class="text-xl text-slate-400">문제 클리어</span>
-                </div>
-                <div class="text-xs font-bold text-amber-400">
-                    최종 획득 점수: <span id="final-score">0</span>점
-                </div>
-            </div>
-
-            <!-- 문제별 정오표 리스트 -->
-            <div class="text-left mb-6">
-                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">문제별 정오표</h3>
-                <div id="review-list" class="max-h-52 overflow-y-auto space-y-2 pr-1">
-                    <!-- JS로 동적 생성 -->
-                </div>
-            </div>
-
-            <button id="restart-btn" class="w-full py-4 rounded-2xl bg-gradient-to-r from-fuchsia-500 via-purple-600 to-indigo-600 hover:from-fuchsia-600 hover:to-indigo-700 text-white font-extrabold text-base shadow-lg transition transform active:scale-95">
-                ↻ 새로운 문제로 다시 도전하기
-            </button>
-        </div>
-
+  <!-- 알림 메시지 토스트 (alert 대체용) -->
+  <div id="toast-box" class="fixed top-5 left-1/2 -translate-x-1/2 z-50 hidden transition-all duration-300">
+    <div class="bg-berry text-white font-bold px-6 py-3 rounded-full shadow-lg flex items-center gap-2 border-2 border-white">
+      <span>⚠️</span>
+      <span id="toast-message">입력값을 확인해주세요!</span>
     </div>
+  </div>
 
-    <script>
-        /**
-         * K-POP 아이돌 그룹 초성 퀴즈 데이터베이스
-         * 대중적인 톱티어 그룹부터 숨은 명곡 보유 그룹·중소돌·신인 그룹까지 고루 포함
-         */
-        const IDOL_GROUPS = [
-            {
-                name: "방탄소년단",
-                aliases: ["BTS", "방탄"],
-                chosung: ["ㅂ", "ㅌ", "ㅅ", "ㄴ", "ㄷ"],
-                type: "BOY",
-                label: "보이그룹 · 3세대",
-                songs: "Dynamite, 봄날, DNA (빅히트)",
-                desc: "빌보드 핫 100 1위를 다수 석권하며 전 세계에 K-POP 열풍을 일으킨 7인조 보이그룹입니다."
-            },
-            {
-                name: "블랙핑크",
-                aliases: ["BLACKPINK", "블핑"],
-                chosung: ["ㅂ", "ㄹ", "ㅍ", "ㅋ"],
-                type: "GIRL",
-                label: "걸그룹 · 3세대",
-                songs: "뚜두뚜두, Kill This Love (YG)",
-                desc: "코첼라 헤드라이너로 활약하며 글로벌 신드롬을 일으킨 4인조 걸그룹입니다."
-            },
-            {
-                name: "세븐틴",
-                aliases: ["SEVENTEEN", "SVT", "셉틴"],
-                chosung: ["ㅅ", "ㅂ", "ㅌ"],
-                type: "BOY",
-                label: "보이그룹 · 3세대",
-                songs: "손오공, 아주 NICE, 음악의 신 (플레디스)",
-                desc: "자체 제작 아이돌의 대표주자로 칼군무와 유쾌한 에너지가 돋보이는 13인조 보이그룹입니다."
-            },
-            {
-                name: "뉴진스",
-                aliases: ["NewJeans", "뉴진"],
-                chosung: ["ㄴ", "ㅈ", "ㅅ"],
-                type: "GIRL",
-                label: "걸그룹 · 4세대",
-                songs: "Hype Boy, Ditto, Super Shy (어도어)",
-                desc: "이지리스닝 팝 사운드와 Y2K 감성으로 신드롬을 일으킨 5인조 걸그룹입니다."
-            },
-            {
-                name: "아이브",
-                aliases: ["IVE"],
-                chosung: ["ㅇ", "ㅇ", "ㅂ"],
-                type: "GIRL",
-                label: "걸그룹 · 4세대",
-                songs: "LOVE DIVE, After LIKE, I AM (스타쉽)",
-                desc: "당당한 자기애 콘셉트로 음원 차트를 올킬하며 큰 사랑을 받는 6인조 걸그룹입니다."
-            },
-            {
-                name: "에스파",
-                aliases: ["aespa"],
-                chosung: ["ㅇ", "ㅅ", "ㅍ"],
-                type: "GIRL",
-                label: "걸그룹 · 4세대",
-                songs: "Next Level, Supernova, Spicy (SM)",
-                desc: "독보적인 쇠맛 사운드와 메타버스 세계관으로 4세대를 대표하는 4인조 걸그룹입니다."
-            },
-            {
-                name: "스트레이키즈",
-                aliases: ["Stray Kids", "스키즈", "SKZ"],
-                chosung: ["ㅅ", "ㅌ", "ㄹ", "ㅇ", "ㅋ", "ㅈ"],
-                type: "BOY",
-                label: "보이그룹 · 4세대",
-                songs: "神메뉴, 특(S-Class), 락(樂) (JYP)",
-                desc: "강렬한 마라맛 퍼포먼스와 자체 프로듀싱으로 빌보드 200 연속 1위를 기록한 8인조 보이그룹입니다."
-            },
-            {
-                name: "트와이스",
-                aliases: ["TWICE", "트둥이"],
-                chosung: ["ㅌ", "ㅇ", "ㅇ", "ㅅ"],
-                type: "GIRL",
-                label: "걸그룹 · 3세대",
-                songs: "CHEER UP, TT, Fancy (JYP)",
-                desc: "수많은 국민 히트곡과 전 세계 스타디움 투어를 매진시킨 9인조 걸그룹입니다."
-            },
-            {
-                name: "소녀시대",
-                aliases: ["SNSD", "Girls' Generation", "소시"],
-                chosung: ["ㅅ", "ㄴ", "ㅅ", "ㄷ"],
-                type: "GIRL",
-                label: "걸그룹 · 2세대",
-                songs: "Gee, 다시 만난 세계, 소원을 말해봐 (SM)",
-                desc: "K-POP 걸그룹의 교과서이자 레전드로 불리는 국민 걸그룹입니다."
-            },
-            {
-                name: "르세라핌",
-                aliases: ["LE SSERAFIM", "LESSERAFIM", "핌둥이"],
-                chosung: ["ㄹ", "ㅅ", "ㄹ", "ㅍ"],
-                type: "GIRL",
-                label: "걸그룹 · 4세대",
-                songs: "ANTIFRAGILE, UNFORGIVEN, EASY (쏘스뮤직)",
-                desc: "두려움 없이 앞으로 나아간다는 당당한 메시지와 파워풀한 퍼포먼스가 강점인 5인조 걸그룹입니다."
-            },
-            {
-                name: "드림캐쳐",
-                aliases: ["Dreamcatcher", "드캐"],
-                chosung: ["ㄷ", "ㄹ", "ㅋ", "ㅊ"],
-                type: "GIRL",
-                label: "걸그룹 · 3세대 (매니아 강자)",
-                songs: "BOCA, Scream, Chase Me (메탈·록 사운드)",
-                desc: "K-POP에서 드문 강렬한 록/메탈 장르와 악몽 세계관으로 해외 투어에서 엄청난 팬덤을 보유한 7인조 걸그룹입니다."
-            },
-            {
-                name: "온앤오프",
-                aliases: ["ONF", "온옾"],
-                chosung: ["ㅇ", "ㅇ", "ㅇ", "ㅍ"],
-                type: "BOY",
-                label: "보이그룹 · 3세대 (명곡 맛집)",
-                songs: "사랑하게 될 거야, Beautiful Beautiful, 모스코 모스코",
-                desc: "황현 프로듀서와의 찰떡 호흡으로 '숨은 명곡 맛집'이라 불리며 내국인 전원 동반 입대로도 화제가 된 보이그룹입니다."
-            },
-            {
-                name: "위클리",
-                aliases: ["Weeekly"],
-                chosung: ["ㅇ", "ㅋ", "ㄹ"],
-                type: "GIRL",
-                label: "걸그룹 · 4세대",
-                songs: "After School, Tag Me (@Me), Ven para",
-                desc: "책상 퍼포먼스를 선보인 'After School'이 스포티파이 1억 스트리밍을 돌파하며 글로벌 역주행을 기록한 걸그룹입니다."
-            },
-            {
-                name: "베리베리",
-                aliases: ["VERIVERY", "베베"],
-                chosung: ["ㅂ", "ㄹ", "ㅂ", "ㄹ"],
-                type: "BOY",
-                label: "보이그룹 · 4세대",
-                songs: "Lay Back, Thunder, Tap Tap (젤리피쉬)",
-                desc: "빅스의 후배 그룹으로 멤버들이 직접 뮤직비디오까지 편집하는 '크리에이티브돌'로 알려진 보이그룹입니다."
-            },
-            {
-                name: "체리블렛",
-                aliases: ["Cherry Bullet", "체블"],
-                chosung: ["ㅊ", "ㄹ", "ㅂ", "ㄹ"],
-                type: "GIRL",
-                label: "걸그룹 · 4세대",
-                songs: "Q&A, Love So Sweet, 알oha Oe (FNC)",
-                desc: "사랑스러운 비주얼과 비디오 게임 콘셉트, 그리고 시티팝 명곡 'Love So Sweet'으로 사랑받은 걸그룹입니다."
-            },
-            {
-                name: "원어스",
-                aliases: ["ONEUS"],
-                chosung: ["ㅇ", "ㅇ", "ㅅ"],
-                type: "BOY",
-                label: "보이그룹 · 4세대",
-                songs: "가자(LIT), 월하미인(LUNA), 반박불가 (RBW)",
-                desc: "한국적인 부채춤 퍼포먼스와 동양풍 콘셉트 무대로 '무대 천재'라는 수식어를 얻은 보이그룹입니다."
-            },
-            {
-                name: "퍼플키스",
-                aliases: ["PURPLE KISS", "퍼키"],
-                chosung: ["ㅍ", "ㅍ", "ㅋ", "ㅅ"],
-                type: "GIRL",
-                label: "걸그룹 · 4세대",
-                songs: "Zombie, Ponzona, Sweet Juice (RBW)",
-                desc: "마마무의 여동생 그룹으로 멤버 전원이 뛰어난 보컬과 작사·작곡 실력을 갖춘 실력파 걸그룹입니다."
-            },
-            {
-                name: "크래비티",
-                aliases: ["CRAVITY", "크비"],
-                chosung: ["ㅋ", "ㄹ", "ㅂ", "ㅌ"],
-                type: "BOY",
-                label: "보이그룹 · 4세대",
-                songs: "Groovy, Party Rock, My Turn (스타쉽)",
-                desc: "청량한 하이틴 에너지와 에너제틱한 칼군무를 겸비한 9인조 보이그룹입니다."
-            },
-            {
-                name: "빌리",
-                aliases: ["Billlie"],
-                chosung: ["ㅂ", "ㄹ"],
-                type: "GIRL",
-                label: "걸그룹 · 4세대",
-                songs: "긴가민가요, RING X RING (미스틱스토리)",
-                desc: "멤버 츠키의 다채로운 표정 연기 직캠('긴가민가요')으로 대중에 강렬한 눈도장을 찍은 걸그룹입니다."
-            },
-            {
-                name: "우아",
-                aliases: ["woo!ah!", "WOOAH"],
-                chosung: ["ㅇ", "ㅇ"],
-                type: "GIRL",
-                label: "걸그룹 · 4세대",
-                songs: "Bad Girl, 단거(Danger), BLUSH",
-                desc: "통통 튀는 Z세대 하이틴 감성과 중독성 있는 댄스곡으로 매니아층을 모은 5인조 걸그룹입니다."
-            },
-            {
-                name: "펜타곤",
-                aliases: ["PENTAGON"],
-                chosung: ["ㅍ", "ㅌ", "ㄱ"],
-                type: "BOY",
-                label: "보이그룹 · 3세대",
-                songs: "빛나리, 데이지, 청개구리 (큐브)",
-                desc: "역주행 메가 히트곡 '빛나리'와 서정적인 록 발라드 '데이지'를 직접 만든 자체 프로듀싱 보이그룹입니다."
-            },
-            {
-                name: "이달의소녀",
-                aliases: ["LOONA", "이달소"],
-                chosung: ["ㅇ", "ㄷ", "ㅇ", "ㅅ", "ㄴ"],
-                type: "GIRL",
-                label: "걸그룹 · 4세대",
-                songs: "Butterfly, Hi High, PTT",
-                desc: "방대한 세계관과 예술적인 군무로 국내외 K-POP 평론가들과 글로벌 팬들에게 극찬받은 걸그룹입니다."
-            },
-            {
-                name: "골든차일드",
-                aliases: ["Golden Child", "골차"],
-                chosung: ["ㄱ", "ㄷ", "ㅊ", "ㅇ", "ㄷ"],
-                type: "BOY",
-                label: "보이그룹 · 3세대",
-                songs: "담다디, Wannabe, Burn It (울림)",
-                desc: "청량돌에서 치명적인 섹시 콘셉트까지 폭넓은 스펙트럼과 라이브 실력을 보여준 보이그룹입니다."
-            },
-            {
-                name: "프로미스나인",
-                aliases: ["fromis_9", "프나"],
-                chosung: ["ㅍ", "ㄹ", "ㅁ", "ㅅ", "ㄴ", "ㅇ"],
-                type: "GIRL",
-                label: "걸그룹 · 4세대",
-                songs: "DM, WE GO, Stay This Way, Supersonic",
-                desc: "청량한 서머송과 비주얼 합으로 군부대와 페스티벌 섭외 1순위로 꼽히는 걸그룹입니다."
-            },
-            {
-                name: "다크비",
-                aliases: ["DKB"],
-                chosung: ["ㄷ", "ㅋ", "ㅂ"],
-                type: "BOY",
-                label: "보이그룹 · 4세대 (숨은 실력파)",
-                songs: "미안해 엄마, 줄꺼야, Flirting X (브레이브)",
-                desc: "용감한형제가 제작한 그룹으로, <피크타임>에서 압도적인 아크로바틱과 퍼포먼스 실력을 입증한 보이그룹입니다."
-            },
-            {
-                name: "하이키",
-                aliases: ["H1-KEY"],
-                chosung: ["ㅎ", "ㅇ", "ㅋ"],
-                type: "GIRL",
-                label: "걸그룹 · 4세대",
-                songs: "건물 사이에 피어난 장미, SEOUL",
-                desc: "중소기획사의 기적으로 불리며 '건물 사이에 피어난 장미' 역주행으로 음원 차트를 강타한 4인조 걸그룹입니다."
-            },
-            {
-                name: "하츠투하츠",
-                aliases: ["Hearts2Hearts", "H2H", "하투하"],
-                chosung: ["ㅎ", "ㅊ", "ㅌ", "ㅎ", "ㅊ"],
-                type: "GIRL",
-                label: "걸그룹 · 최신 신인",
-                songs: "The Chase, RUDE!, Lemon Tang (SM)",
-                desc: "SM엔터테인먼트가 선보인 8인조 다국적 걸그룹으로, 진심이 담긴 음악으로 팬들과 마음을 잇는다는 의미를 담고 있습니다."
-            },
-            {
-                name: "알파드라이브원",
-                aliases: ["ALPHA DRIVE ONE", "ALD1"],
-                chosung: ["ㅇ", "ㅍ", "ㄷ", "ㄹ", "ㅇ", "ㅂ", "ㅇ"],
-                type: "BOY",
-                label: "보이그룹 · 최신 신인",
-                songs: "FREAK ALARM (EUPHORIA)",
-                desc: "서바이벌 프로젝트를 통해 결성된 8인조 보이그룹으로, 강렬한 퍼포먼스와 에너지로 주목받는 신예입니다."
-            },
-            {
-                name: "튜이드",
-                aliases: ["TUIDE", "Tune the Tide"],
-                chosung: ["ㅌ", "ㅇ", "ㄷ"],
-                type: "GIRL",
-                label: "걸그룹 · 최신 신인",
-                songs: "Tune the Tide 데뷔 앨범",
-                desc: "새로운 흐름을 만들겠다는 뜻을 담은 다국적 10대 걸그룹으로, 개성 넘치는 비주얼과 사운드를 선보입니다."
-            },
-            {
-                name: "아워벌스데이",
-                aliases: ["OURBIRTHDAY"],
-                chosung: ["ㅇ", "ㅇ", "ㅂ", "ㅅ", "ㄷ"],
-                type: "GIRL",
-                label: "걸그룹 · 최신 신인",
-                songs: "OURBIRTHDAY 데뷔 싱글",
-                desc: "통통 튀는 매력과 신선한 콘셉트로 새롭게 등장한 7인조 신인 걸그룹입니다."
-            },
-            {
-                name: "롱샷",
-                aliases: ["LNGSHOT"],
-                chosung: ["ㄹ", "ㅅ"],
-                type: "BOY",
-                label: "보이그룹 · 최신 신인",
-                songs: "Moonwalkin' (SHOT CALLERS)",
-                desc: "모어비전에서 선보인 4인조 보이그룹으로, 세련된 힙합·R&B 감성과 무대 장악력을 갖춘 신예입니다."
-            },
-            {
-                name: "튠넥스",
-                aliases: ["TUNEXX"],
-                chosung: ["ㅌ", "ㄴ", "ㅅ"],
-                type: "BOY",
-                label: "보이그룹 · 최신 신인",
-                songs: "TUNEXX 미니 1집",
-                desc: "IST엔터테인먼트에서 선보인 신인 보이그룹으로, 탄탄한 퍼포먼스와 트렌디한 음악 색깔을 보여줍니다."
-            },
-            {
-                name: "우주소녀",
-                aliases: ["WJSN", "Cosmic Girls", "우소"],
-                chosung: ["ㅇ", "ㅈ", "ㅅ", "ㄴ"],
-                type: "GIRL",
-                label: "걸그룹 · 3세대",
-                songs: "이루리, 비밀이야, SAVE ME SAVE YOU (스타쉽)",
-                desc: "몽환적인 판타지 콘셉트와 매년 새해 첫날 차트를 역주행하는 '이루리'로 사랑받는 걸그룹입니다."
-            },
-            {
-                name: "레드벨벳",
-                aliases: ["Red Velvet", "레벨"],
-                chosung: ["ㄹ", "ㄷ", "ㅂ", "ㅂ"],
-                type: "GIRL",
-                label: "걸그룹 · 3세대",
-                songs: "빨간 맛, Psycho, Bad Boy (SM)",
-                desc: "상큼 발랄한 '레드'와 세련되고 몽환적인 '벨벳' 두 가지 콘셉트를 완벽하게 소화하는 걸그룹입니다."
-            },
-            {
-                name: "샤이니",
-                aliases: ["SHINee"],
-                chosung: ["ㅅ", "ㅇ", "ㄴ"],
-                type: "BOY",
-                label: "보이그룹 · 2세대",
-                songs: "누난 너무 예뻐, Lucifer, View (SM)",
-                desc: "컨템퍼러리 밴드 콘셉트와 압도적인 라이브·퍼포먼스 실력으로 K-POP의 기준을 세운 보이그룹입니다."
-            },
-            {
-                name: "엑소",
-                aliases: ["EXO"],
-                chosung: ["ㅇ", "ㅅ"],
-                type: "BOY",
-                label: "보이그룹 · 3세대",
-                songs: "으르렁, Growl, Love Shot (SM)",
-                desc: "초능력 세계관과 밀리언셀러 기록으로 3세대 보이그룹 전성기를 연 대표 그룹입니다."
-            },
-            {
-                name: "투모로우바이투게더",
-                aliases: ["TXT", "투바투"],
-                chosung: ["ㅌ", "ㅁ", "ㄹ", "ㅇ", "ㅂ", "ㅇ", "ㅌ", "ㄱ", "ㄷ"],
-                type: "BOY",
-                label: "보이그룹 · 4세대",
-                songs: "0X1=LOVESONG, Sugar Rush Ride, Deja Vu (빅히트)",
-                desc: "성장 서사와 세련된 팝 사운드, 스토리텔링 퍼포먼스로 글로벌 인기를 얻은 5인조 보이그룹입니다."
-            },
-            {
-                name: "엔하이픈",
-                aliases: ["ENHYPEN", "엔딥"],
-                chosung: ["ㅇ", "ㅎ", "ㅇ", "ㅍ"],
-                type: "BOY",
-                label: "보이그룹 · 4세대",
-                songs: "Given-Taken, Drunk-Dazed, Bite Me (빌리프랩)",
-                desc: "다크 판타지·뱀파이어 콘셉트와 칼군무로 데뷔 초부터 월드 투어급 인기를 모은 보이그룹입니다."
-            },
-            {
-                name: "제로베이스원",
-                aliases: ["ZEROBASEONE", "ZB1", "제베원"],
-                chosung: ["ㅈ", "ㄹ", "ㅂ", "ㅇ", "ㅅ", "ㅇ"],
-                type: "BOY",
-                label: "보이그룹 · 5세대",
-                songs: "In Bloom, Crush, FEEL THE POP (웨이크원)",
-                desc: "청량하고 빛나는 청춘 에너지로 5세대 보이그룹의 포문을 연 9인조 그룹입니다."
-            },
-            {
-                name: "라이즈",
-                aliases: ["RIIZE"],
-                chosung: ["ㄹ", "ㅇ", "ㅈ"],
-                type: "BOY",
-                label: "보이그룹 · 5세대",
-                songs: "Get A Guitar, Love 119, Boom Boom Bass (SM)",
-                desc: "이모셔널 팝 장르와 감각적인 비주얼, 중독성 있는 멜로디로 큰 사랑을 받는 보이그룹입니다."
-            },
-            {
-                name: "보이넥스트도어",
-                aliases: ["BOYNEXTDOOR", "보넥도"],
-                chosung: ["ㅂ", "ㅇ", "ㄴ", "ㅅ", "ㅌ", "ㄷ", "ㅇ"],
-                type: "BOY",
-                label: "보이그룹 · 5세대",
-                songs: "One and Only, 뭣 같아, Earth, Wind & Fire (KOZ)",
-                desc: "옆집 소년들처럼 친근하고 솔직한 일상 이야기와 자유분방한 무대 매력이 돋보이는 6인조 보이그룹입니다."
-            },
-            {
-                name: "투어스",
-                aliases: ["TWS"],
-                chosung: ["ㅌ", "ㅇ", "ㅅ"],
-                type: "BOY",
-                label: "보이그룹 · 5세대",
-                songs: "첫 만남은 계획대로 되지 않아, 내가 S면 넌 나의 N이 되어줘 (플레디스)",
-                desc: "맑고 청량한 '보이후드 팝' 장르와 섬세한 군무로 큰 사랑을 받은 6인조 보이그룹입니다."
-            },
-            {
-                name: "키스오브라이프",
-                aliases: ["KISS OF LIFE", "키오라", "KIOF"],
-                chosung: ["ㅋ", "ㅅ", "ㅇ", "ㅂ", "ㄹ", "ㅇ", "ㅍ"],
-                type: "GIRL",
-                label: "걸그룹 · 5세대",
-                songs: "Shhh, Midas Touch, Sticky (S2)",
-                desc: "탄탄한 라이브 보컬과 힙한 R&B·팝 사운드로 '괴물 신인'이라 불리며 역주행과 정주행을 동시에 이룬 걸그룹입니다."
-            },
-            {
-                name: "트리플에스",
-                aliases: ["tripleS", "트스"],
-                chosung: ["ㅌ", "ㄹ", "ㅍ", "ㅇ", "ㅅ"],
-                type: "GIRL",
-                label: "걸그룹 · 5세대",
-                songs: "Generation, Rising, Girls Never Die (모드하우스)",
-                desc: "팬 참여형 시스템과 다채로운 디멘션(유닛) 조합, 완성도 높은 퍼포먼스로 주목받는 대형 걸그룹입니다."
-            },
-            {
-                name: "엔믹스",
-                aliases: ["NMIXX"],
-                chosung: ["ㅇ", "ㅁ", "ㅅ"],
-                type: "GIRL",
-                label: "걸그룹 · 4세대",
-                songs: "O.O, Love Me Like This, DASH, 별별별 (JYP)",
-                desc: "한 곡 안에 여러 장르를 녹여낸 '믹스팝'과 멤버 전원의 폭발적인 가창력·안무 실력이 특징인 걸그룹입니다."
-            },
-            {
-                name: "스테이씨",
-                aliases: ["STAYC"],
-                chosung: ["ㅅ", "ㅌ", "ㅇ", "ㅆ"],
-                type: "GIRL",
-                label: "걸그룹 · 4세대",
-                songs: "SO BAD, ASAP, Teddy Bear, Bubble (하이업)",
-                desc: "전원 센터급 비주얼과 '틴프레시' 콘셉트, 중독성 있는 훅으로 사랑받는 6인조 걸그룹입니다."
-            },
-            {
-                name: "오마이걸",
-                aliases: ["OH MY GIRL", "오마걸"],
-                chosung: ["ㅇ", "ㅁ", "ㅇ", "ㄱ"],
-                type: "GIRL",
-                label: "걸그룹 · 3세대",
-                songs: "비밀정원, 살짝 설렜어(Nonstop), Dolphin (WM)",
-                desc: "동화 같은 감성과 탄탄한 보컬, '살짝 설렜어'·'Dolphin' 연속 히트로 큰 사랑을 받은 걸그룹입니다."
-            },
-            {
-                name: "러블리즈",
-                aliases: ["Lovelyz"],
-                chosung: ["ㄹ", "ㅂ", "ㄹ", "ㅈ"],
-                type: "GIRL",
-                label: "걸그룹 · 3세대",
-                songs: "아츄(Ah-Choo), Destiny, 지금, 우리 (울림)",
-                desc: "서정적인 멜로디와 청순·아련한 콘셉트, '아츄'로 대표되는 명곡들을 남긴 8인조 걸그룹입니다."
-            },
-            {
-                name: "여자친구",
-                aliases: ["GFRIEND", "여친"],
-                chosung: ["ㅇ", "ㅈ", "ㅊ", "ㄱ"],
-                type: "GIRL",
-                label: "걸그룹 · 3세대",
-                songs: "오늘부터 우리는, 시간을 달려서, MAGO (쏘스뮤직)",
-                desc: "격렬한 칼군무와 청순한 이미지의 '파워 청순'을 개척하며 수많은 명곡을 남긴 걸그룹입니다."
-            },
-            {
-                name: "마마무",
-                aliases: ["MAMAMOO", "마부"],
-                chosung: ["ㅁ", "ㅁ", "ㅁ"],
-                type: "GIRL",
-                label: "걸그룹 · 3세대",
-                songs: "음오아예, 넌 is 뭔들, 별이 빛나는 밤, HIP (RBW)",
-                desc: "믿고 듣는 보컬과 자유분방한 무대 매너, 개성 넘치는 음악 색깔로 사랑받은 4인조 걸그룹입니다."
-            },
-            {
-                name: "에이핑크",
-                aliases: ["Apink", "에핑"],
-                chosung: ["ㅇ", "ㅇ", "ㅍ", "ㅋ"],
-                type: "GIRL",
-                label: "걸그룹 · 2세대",
-                songs: "NoNoNo, Mr. Chu, 1도 없어, Dumhdurum",
-                desc: "청순 콘셉트에서 성숙한 '청순 카리스마'로의 변신까지 성공하며 오랜 기간 사랑받은 장수 걸그룹입니다."
-            },
-            {
-                name: "씨스타",
-                aliases: ["SISTAR"],
-                chosung: ["ㅆ", "ㅅ", "ㅌ"],
-                type: "GIRL",
-                label: "걸그룹 · 2세대",
-                songs: "Touch My Body, Loving U, Alone, I Swear (스타쉽)",
-                desc: "건강미와 시원한 가창력으로 '여름 하면 씨스타'라는 공식을 만든 서머 퀸 걸그룹입니다."
-            },
-            {
-                name: "투애니원",
-                aliases: ["2NE1", "투에니원"],
-                chosung: ["ㅌ", "ㅇ", "ㄴ", "ㅇ", "ㅇ"],
-                type: "GIRL",
-                label: "걸그룹 · 2세대",
-                songs: "내가 제일 잘 나가, Fire, I Don't Care, Lonely (YG)",
-                desc: "독보적인 카리스마와 개성, 힙합·레게·일렉트로닉을 넘나드는 음악으로 2세대 걸그룹 판도를 바꾼 그룹입니다."
-            },
-            {
-                name: "카라",
-                aliases: ["KARA"],
-                chosung: ["ㅋ", "ㄹ"],
-                type: "GIRL",
-                label: "걸그룹 · 2세대",
-                songs: "미스터, STEP, 루팡, WHEN I MOVE (DSP)",
-                desc: "엉덩이 춤과 'STEP' 등으로 한국과 일본 양국에서 큰 인기를 누린 대표 2세대 걸그룹입니다."
-            },
-            {
-                name: "티아라",
-                aliases: ["T-ara"],
-                chosung: ["ㅌ", "ㅇ", "ㄹ"],
-                type: "GIRL",
-                label: "걸그룹 · 2세대",
-                songs: "Roly-Poly, Lovey-Dovey, 보핍보핍",
-                desc: "복고 디스코 'Roly-Poly'와 클럽 댄스 'Lovey-Dovey' 등 중독성 강한 히트곡을 남긴 걸그룹입니다."
-            },
-            {
-                name: "포미닛",
-                aliases: ["4MINUTE"],
-                chosung: ["ㅍ", "ㅁ", "ㄴ"],
-                type: "GIRL",
-                label: "걸그룹 · 2세대",
-                songs: "Hot Issue, 이름이 뭐예요?, 미쳐 (큐브)",
-                desc: "강렬한 걸크러시와 에너제틱한 퍼포먼스로 독자적인 색깔을 보여준 5인조 걸그룹입니다."
-            },
-            {
-                name: "빅뱅",
-                aliases: ["BIGBANG"],
-                chosung: ["ㅂ", "ㅂ"],
-                type: "BOY",
-                label: "보이그룹 · 2세대",
-                songs: "거짓말, 마지막 인사, 하루하루, 봄여름가을겨울 (YG)",
-                desc: "자작곡과 트렌디한 스타일, 수많은 메가 히트곡으로 K-POP의 지평을 넓힌 레전드 보이그룹입니다."
-            },
-            {
-                name: "동방신기",
-                aliases: ["TVXQ", "동방"],
-                chosung: ["ㄷ", "ㅂ", "ㅅ", "ㄱ"],
-                type: "BOY",
-                label: "보이그룹 · 2세대",
-                songs: "Rising Sun, 주문-MIROTIC, 왜",
-                desc: "완벽한 라이브와 하모니, 강렬한 퍼포먼스로 한일 양국에서 큰 족적을 남긴 보이그룹입니다."
-            },
-            {
-                name: "인피니트",
-                aliases: ["INFINITE"],
-                chosung: ["ㅇ", "ㅍ", "ㄴㅌ"],
-                type: "BOY",
-                label: "보이그룹 · 2세대",
-                songs: "내꺼하자, 추격자, Man In Love (울림)",
-                desc: "칼군무의 대명사로 불리며 '추격자' 등 완성도 높은 댄스곡들로 사랑받은 보이그룹입니다."
-            },
-            {
-                name: "비투비",
-                aliases: ["BTOB"],
-                chosung: ["ㅂ", "ㅌ", "ㅂ"],
-                type: "BOY",
-                label: "보이그룹 · 3세대",
-                songs: "그리워하다, 너 없인 안 된다, 아름답고도 아프구나 (큐브)",
-                desc: "뛰어난 가창력과 감성 발라드, 그리고 유쾌한 예능감까지 겸비한 실력파 보이그룹입니다."
-            },
-            {
-                name: "갓세븐",
-                aliases: ["GOT7", "갓칠"],
-                chosung: ["ㄱ", "ㅅ", "ㅂ"],
-                type: "BOY",
-                label: "보이그룹 · 3세대",
-                songs: "딱 좋아(Just right), Hard Carry, Lullaby, NANANA",
-                desc: "마샬아츠 트릭킹 퍼포먼스와 자유분방한 팀 케미로 국내외에서 폭넓은 팬덤을 보유한 보이그룹입니다."
-            },
-            {
-                name: "몬스타엑스",
-                aliases: ["MONSTA X", "몬엑"],
-                chosung: ["ㅁ", "ㅅ", "ㅌ", "ㅇ", "ㅅ"],
-                type: "BOY",
-                label: "보이그룹 · 3세대",
-                songs: "DRAMARAMA, Shoot Out, LOVE KILLA (스타쉽)",
-                desc: "파워풀한 카리스마와 묵직한 사운드, 강렬한 무대 장악력으로 사랑받는 보이그룹입니다."
-            },
-            {
-                name: "하이라이트",
-                aliases: ["Highlight", "비스트", "BEAST"],
-                chosung: ["ㅎ", "ㅇ", "ㄹㅇㅌ"],
-                type: "BOY",
-                label: "보이그룹 · 2세대",
-                songs: "Fiction, 비가 오는 날엔, 얼굴 찌푸리지 말아요",
-                desc: "서정적인 발라드부터 세련된 댄스곡까지 폭넓은 히트곡을 보유한 장수 보이그룹입니다."
-            },
-            {
-                name: "아일릿",
-                aliases: ["ILLIT"],
-                chosung: ["ㅇ", "ㅇ", "ㄹ"],
-                type: "GIRL",
-                label: "걸그룹 · 5세대",
-                songs: "Magnetic, Lucky Girl Syndrome, Cherish (빌리프랩)",
-                desc: "데뷔곡 'Magnetic'으로 빌보드 핫 100에 진입하며 5세대 대표 신드롬을 일으킨 5인조 걸그룹입니다."
-            },
-            {
-                name: "리센느",
-                aliases: ["RESCENE"],
-                chosung: ["ㄹ", "ㅅ", "ㄴ"],
-                type: "GIRL",
-                label: "걸그룹 · 5세대",
-                songs: "LOVE ATTACK, UhUh, YoYo, Glow Up",
-                desc: "향기를 테마로 한 몽환적이고 세련된 멜로디와 'LOVE ATTACK' 역주행으로 명곡 맛집이라 불리는 5인조 걸그룹입니다."
-            },
-            {
-                name: "이즈나",
-                aliases: ["izna"],
-                chosung: ["ㅇ", "ㅈ", "ㄴ"],
-                type: "GIRL",
-                label: "걸그룹 · 5세대",
-                songs: "IZNA, TIMEBOMB, SIGN (웨이크원)",
-                desc: "<아이랜드2>를 통해 결성되고 테디가 프로듀싱에 참여한 7인조 걸그룹으로, 세련된 퍼포먼스와 비주얼을 자랑합니다."
-            },
-            {
-                name: "베이비몬스터",
-                aliases: ["BABYMONSTER", "베몬"],
-                chosung: ["ㅂ", "ㅇ", "ㅂ", "ㅁ", "ㅅ", "ㅌ"],
-                type: "GIRL",
-                label: "걸그룹 · 5세대",
-                songs: "SHEESH, DRIP, BATTER UP, FOREVER (YG)",
-                desc: "압도적인 라이브 실력과 힙합 카리스마로 '괴물 신인'의 면모를 보여주는 YG의 7인조 걸그룹입니다."
-            },
-            {
-                name: "미야오",
-                aliases: ["MEOVV"],
-                chosung: ["ㅁ", "ㅇ", "ㅇ"],
-                type: "GIRL",
-                label: "걸그룹 · 5세대",
-                songs: "MEOW, TOXIC, BODY (더블랙레이블)",
-                desc: "테디가 이끄는 더블랙레이블의 첫 걸그룹으로, 시크한 고양이 콘셉트와 트렌디한 사운드로 주목받는 5인조 그룹입니다."
-            },
-            {
-                name: "세이마이네임",
-                aliases: ["SAY MY NAME", "세마넴"],
-                chosung: ["ㅅ", "ㅇ", "ㅁ", "ㅇ", "ㄴ", "ㅇ"],
-                type: "GIRL",
-                label: "걸그룹 · 5세대",
-                songs: "WaveWay, ShaLala (인코드)",
-                desc: "김재중이 제작하고 혼다 히토미가 합류해 화제를 모은 7인조 걸그룹으로, 맑고 청량한 감성을 선보입니다."
-            },
-            {
-                name: "유니스",
-                aliases: ["UNIS"],
-                chosung: ["ㅇ", "ㄴ", "ㅅ"],
-                type: "GIRL",
-                label: "걸그룹 · 5세대",
-                songs: "SUPERWOMAN, 너만 몰라 (F&F)",
-                desc: "<유니버스 티켓>을 통해 탄생한 8인조 다국적 걸그룹으로, 당차고 에너제틱한 무대 매너가 돋보입니다."
-            },
-            {
-                name: "영파씨",
-                aliases: ["YOUNG POSSE", "영파"],
-                chosung: ["ㅇ", "ㅍ", "ㅆ"],
-                type: "GIRL",
-                label: "걸그룹 · 5세대",
-                songs: "MACARONI CHEESE, XXL, ATE THAT (DSP)",
-                desc: "정통 힙합 사운드와 유쾌한 B급 감성, 탄탄한 랩 실력으로 독보적인 길을 걷고 있는 5인조 걸그룹입니다."
-            },
-            {
-                name: "배드빌런",
-                aliases: ["BADVILLAIN", "배빌"],
-                chosung: ["ㅂ", "ㄷ", "ㅂ", "ㄹ"],
-                type: "GIRL",
-                label: "걸그룹 · 5세대",
-                songs: "BADVILLAIN, +82, 숨(ZOOM) (빅플래닛메이드)",
-                desc: "파워풀한 댄스 퍼포먼스와 강렬한 걸크러시 콘셉트로 무대를 압도하는 7인조 걸그룹입니다."
-            },
-            {
-                name: "캔디샵",
-                aliases: ["Candy Shop"],
-                chosung: ["ㅋ", "ㄷ", "ㅅ"],
-                type: "GIRL",
-                label: "걸그룹 · 5세대",
-                songs: "Good Girl, Don't Cry (브레이브)",
-                desc: "용감한형제가 13년 만에 선보인 걸그룹으로, 통통 튀는 Z세대 감성과 중독성 있는 멜로디를 들려줍니다."
-            },
-            {
-                name: "피프티피프티",
-                aliases: ["FIFTY FIFTY", "핍티"],
-                chosung: ["ㅍ", "ㅍ", "ㅌ", "ㅍ", "ㅍ", "ㅌ"],
-                type: "GIRL",
-                label: "걸그룹 · 5세대",
-                songs: "Cupid, SOS, Gravity (어트랙트)",
-                desc: "빌보드 신드롬을 일으킨 'Cupid'와 5인조 재편 후 발표한 'SOS', 'Gravity'로 감미로운 보컬을 들려주는 걸그룹입니다."
-            },
-            {
-                name: "키키",
-                aliases: ["KiiiKiii"],
-                chosung: ["ㅋ", "ㅋ"],
-                type: "GIRL",
-                label: "걸그룹 · 5세대",
-                songs: "I DO ME, BTG (스타쉽)",
-                desc: "아이브의 여동생 그룹으로 데뷔한 스타쉽의 5인조 걸그룹으로, 자유분방하고 신선한 감성으로 큰 화제를 모았습니다."
-            },
-            {
-                name: "메이딘",
-                aliases: ["MADEIN"],
-                chosung: ["ㅁ", "ㅇ", "ㄷ"],
-                type: "GIRL",
-                label: "걸그룹 · 5세대",
-                songs: "UNO, 사랑, 두려움 (143엔터)",
-                desc: "케플러 출신 마시로·예서와 라임라잇 멤버들이 뭉쳐 새롭게 데뷔한 한일 다국적 걸그룹입니다."
-            },
-            {
-                name: "지니어스",
-                aliases: ["Geenius"],
-                chosung: ["ㅈ", "ㄴ", "ㅇ", "ㅅ"],
-                type: "GIRL",
-                label: "걸그룹 · 5세대",
-                songs: "Voyage",
-                desc: "오랜 연습생 기간을 거쳐 탄탄한 팀워크와 세련된 신스팝 사운드로 데뷔한 5인조 걸그룹입니다."
-            },
-            {
-                name: "케플러",
-                aliases: ["Kep1er"],
-                chosung: ["ㅋ", "ㅍ", "ㄹ"],
-                type: "GIRL",
-                label: "걸그룹 · 4.5세대",
-                songs: "WA DA DA, Shooting Star, TIPI-TAP (웨이크원)",
-                desc: "<걸스플래닛999>를 통해 결성되어 에너제틱한 퍼포먼스와 몽환적인 멜로디로 국내외 팬들의 사랑을 받는 걸그룹입니다."
-            },
-            {
-                name: "라잇썸",
-                aliases: ["LIGHTSUM"],
-                chosung: ["ㄹ", "ㅇ", "ㅆ"],
-                type: "GIRL",
-                label: "걸그룹 · 4세대",
-                songs: "Vanilla, VIVACE, Honey or Spice (큐브)",
-                desc: "긍정적인 에너지와 상큼 발랄함, 성숙한 퍼포먼스까지 고루 소화하는 큐브엔터테인먼트의 걸그룹입니다."
-            },
-            {
-                name: "클라씨",
-                aliases: ["CLASS:y"],
-                chosung: ["ㅋ", "ㄹ", "ㅆ"],
-                type: "GIRL",
-                label: "걸그룹 · 4세대",
-                songs: "SHUT DOWN, CLASSY, Psycho and Beautiful",
-                desc: "<방과후 설렘>을 통해 탄생해 어린 나이에도 흔들림 없는 라이브와 강렬한 퍼포먼스를 보여주는 7인조 걸그룹입니다."
-            },
-            {
-                name: "첫사랑",
-                aliases: ["CSR"],
-                chosung: ["ㅊ", "ㅅ", "ㄹ"],
-                type: "GIRL",
-                label: "걸그룹 · 4세대",
-                songs: "첫사랑(Pop? Pop!), 러브티콘 (♡TiCON)",
-                desc: "멤버 전원이 2005년생 동갑내기로 구성되어 청순하고 풋풋한 K-POP 정통 소녀 감성을 이어가는 걸그룹입니다."
-            }
-        ];
+  <!-- 상단 헤더 -->
+  <header class="pt-6 pb-4 px-4 text-center">
+    <div class="inline-flex items-center gap-2 bg-butter/90 border-2 border-sunshine px-4 py-1.5 rounded-full text-sm font-bold text-cocoa mb-2 shadow-sm">
+      <span class="animate-spin" style="animation-duration: 8s;">☀️</span>
+      <span>등교 전 5~8분, 뇌를 깨우는 에너지 충전소!</span>
+    </div>
+    <h1 class="font-title text-3xl sm:text-4xl md:text-5xl text-cocoa tracking-wide drop-shadow-sm">
+      아침을 부탁해! <span class="inline-block animate-float">🍳</span>
+    </h1>
+    <p class="text-sm sm:text-base text-cocoa/80 mt-1.5 font-medium">
+      내 나이·성별·신체 정보에 딱 맞는 청소년 맞춤 아침 식단 & 초간단 레시피
+    </p>
+  </header>
 
-        // --- DOM 요소 참조 ---
-        const startScreen = document.getElementById('start-screen');
-        const quizScreen = document.getElementById('quiz-screen');
-        const resultScreen = document.getElementById('result-screen');
+  <main class="max-w-4xl mx-auto px-4 mt-2">
+    
+    <!-- ==================== 1. 사용자 정보 입력 화면 ==================== -->
+    <section id="input-section" class="cute-card p-6 sm:p-8 max-w-xl mx-auto animate-fade-in-up">
+      <div class="flex items-center justify-between border-b-2 border-dashed border-amber-200 pb-4 mb-6">
+        <div>
+          <h2 class="font-title text-2xl text-cocoa flex items-center gap-2">
+            <span>🎒</span> 나의 신체 프로필 입력
+          </h2>
+          <p class="text-xs sm:text-sm text-gray-500 mt-0.5">성장기 청소년 영양 기준에 맞춰 정확히 계산해 드려요!</p>
+        </div>
+        <div class="text-3xl bg-mint/70 w-12 h-12 rounded-2xl flex items-center justify-center border-2 border-tealSoft/30">
+          📏
+        </div>
+      </div>
 
-        const filterOptionBtns = document.querySelectorAll('.filter-option');
-        const timeOptionBtns = document.querySelectorAll('.time-option');
-        const startBtn = document.getElementById('start-btn');
-        const restartBtn = document.getElementById('restart-btn');
+      <form id="profile-form" class="space-y-5">
+        <!-- 1. 성별 선택 -->
+        <div>
+          <label class="block text-sm font-bold text-cocoa mb-2">1. 성별을 선택해주세요</label>
+          <div class="grid grid-cols-2 gap-3">
+            <button type="button" id="btn-male" onclick="selectGender('male')"
+              class="gender-btn cute-btn py-3.5 px-4 rounded-2xl border-2 border-amber-200 bg-amber-50/50 font-bold text-cocoa flex items-center justify-center gap-2.5 text-base sm:text-lg">
+              <span class="text-2xl">👦</span> 남학생
+            </button>
+            <button type="button" id="btn-female" onclick="selectGender('female')"
+              class="gender-btn cute-btn py-3.5 px-4 rounded-2xl border-2 border-amber-200 bg-amber-50/50 font-bold text-cocoa flex items-center justify-center gap-2.5 text-base sm:text-lg">
+              <span class="text-2xl">👧</span> 여학생
+            </button>
+          </div>
+        </div>
 
-        const questionCounter = document.getElementById('question-counter');
-        const groupBadge = document.getElementById('group-badge');
-        const livesDisplay = document.getElementById('lives-display');
-        const scoreDisplay = document.getElementById('score-display');
-        const timerContainer = document.getElementById('timer-container');
-        const timerBar = document.getElementById('timer-bar');
+        <!-- 2. 나이 입력 (빠른 학년 선택 버튼 포함) -->
+        <div>
+          <div class="flex justify-between items-center mb-1.5">
+            <label for="age" class="text-sm font-bold text-cocoa">2. 나이 (세)</label>
+            <span id="school-badge" class="text-xs font-bold bg-mint text-teal-900 px-2.5 py-0.5 rounded-full">중3 (16세)</span>
+          </div>
+          <div class="relative flex items-center">
+            <span class="absolute left-4 text-xl">🎂</span>
+            <input type="number" id="age" value="16" min="8" max="25" required
+              class="w-full pl-12 pr-14 py-3.5 rounded-2xl border-2 border-amber-200 focus:border-tangerine focus:outline-none bg-cream font-bold text-lg text-cocoa transition-colors"
+              placeholder="예: 16" />
+            <span class="absolute right-4 font-bold text-gray-500">세</span>
+          </div>
+          <!-- 빠른 학년 선택 버튼: 중1 14세, 중3 16세, 고1 17세, 고3 19세 -->
+          <div class="flex flex-wrap gap-2 mt-2.5">
+            <button type="button" onclick="setQuickAge(14)" class="cute-btn text-xs bg-skySoft hover:bg-sky-200 text-sky-900 font-bold px-3 py-1.5 rounded-full border border-sky-200">중1 (14세)</button>
+            <button type="button" onclick="setQuickAge(16)" class="cute-btn text-xs bg-amber-100 hover:bg-sunshine text-cocoa font-bold px-3 py-1.5 rounded-full border border-amber-200">중3 (16세)</button>
+            <button type="button" onclick="setQuickAge(17)" class="cute-btn text-xs bg-mint/80 hover:bg-teal-200 text-teal-950 font-bold px-3 py-1.5 rounded-full border border-teal-200">고1 (17세)</button>
+            <button type="button" onclick="setQuickAge(19)" class="cute-btn text-xs bg-rose-100 hover:bg-rose-200 text-rose-900 font-bold px-3 py-1.5 rounded-full border border-rose-200">고3 (19세)</button>
+          </div>
+        </div>
 
-        const chosungContainer = document.getElementById('chosung-container');
-        const letterCountInfo = document.getElementById('letter-count-info');
-        const feedbackOverlay = document.getElementById('feedback-overlay');
-        const feedbackIcon = document.getElementById('feedback-icon');
-        const feedbackTitle = document.getElementById('feedback-title');
-        const feedbackAnswer = document.getElementById('feedback-answer');
-        const feedbackDesc = document.getElementById('feedback-desc');
+        <!-- 3 & 4. 키 & 몸무게 입력 -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label for="height" class="block text-sm font-bold text-cocoa mb-1.5">3. 키 (cm)</label>
+            <div class="relative flex items-center">
+              <span class="absolute left-4 text-xl">🦒</span>
+              <input type="number" id="height" step="0.1" min="100" max="220" required
+                class="w-full pl-12 pr-12 py-3.5 rounded-2xl border-2 border-amber-200 focus:border-tangerine focus:outline-none bg-cream font-bold text-lg text-cocoa transition-colors"
+                placeholder="예: 168" />
+              <span class="absolute right-4 font-bold text-gray-500">cm</span>
+            </div>
+          </div>
 
-        const hintBox = document.getElementById('hint-box');
-        const hintText = document.getElementById('hint-text');
-        const answerForm = document.getElementById('answer-form');
-        const answerInput = document.getElementById('answer-input');
-        const hintBtn = document.getElementById('hint-btn');
-        const nextBtn = document.getElementById('next-btn');
+          <div>
+            <label for="weight" class="block text-sm font-bold text-cocoa mb-1.5">4. 몸무게 (kg)</label>
+            <div class="relative flex items-center">
+              <span class="absolute left-4 text-xl">⚖️</span>
+              <input type="number" id="weight" step="0.1" min="20" max="180" required
+                class="w-full pl-12 pr-12 py-3.5 rounded-2xl border-2 border-amber-200 focus:border-tangerine focus:outline-none bg-cream font-bold text-lg text-cocoa transition-colors"
+                placeholder="예: 58" />
+              <span class="absolute right-4 font-bold text-gray-500">kg</span>
+            </div>
+          </div>
+        </div>
 
-        const finalCorrect = document.getElementById('final-correct');
-        const finalScore = document.getElementById('final-score');
-        const resultComment = document.getElementById('result-comment');
-        const reviewList = document.getElementById('review-list');
+        <!-- 5. 오늘의 아침 컨디션 -->
+        <div>
+          <label class="block text-sm font-bold text-cocoa mb-2">5. 오늘의 아침 컨디션은 어때요?</label>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+            <button type="button" id="cond-rush" onclick="selectCondition('rush')"
+              class="cond-btn cute-btn p-3 rounded-2xl border-2 border-amber-200 bg-amber-50/50 text-center flex flex-col items-center justify-center gap-1">
+              <span class="text-2xl">⏰</span>
+              <span class="text-xs sm:text-sm font-extrabold text-cocoa">시간이 없어요</span>
+              <span class="text-[11px] text-gray-500">5분 초스피드</span>
+            </button>
+            <button type="button" id="cond-hearty" onclick="selectCondition('hearty')"
+              class="cond-btn cute-btn p-3 rounded-2xl border-2 border-amber-200 bg-amber-50/50 text-center flex flex-col items-center justify-center gap-1">
+              <span class="text-2xl">🔥</span>
+              <span class="text-xs sm:text-sm font-extrabold text-cocoa">든든하게 먹고 싶어요</span>
+              <span class="text-[11px] text-gray-500">활력·고단백 충전</span>
+            </button>
+            <button type="button" id="cond-light" onclick="selectCondition('light')"
+              class="cond-btn cute-btn p-3 rounded-2xl border-2 border-amber-200 bg-amber-50/50 text-center flex flex-col items-center justify-center gap-1">
+              <span class="text-2xl">🌿</span>
+              <span class="text-xs sm:text-sm font-extrabold text-cocoa">가볍게 먹고 싶어요</span>
+              <span class="text-[11px] text-gray-500">속 편하고 산뜻하게</span>
+            </button>
+          </div>
+        </div>
 
-        // --- 게임 상태 변수 ---
-        const MAX_LIVES = 3;
-        let selectedFilter = 'ALL'; // 'ALL', 'BOY', 'GIRL'
-        let timeLimit = 12; // 기본 12초
-        let quizList = [];
-        let currentIndex = 0;
-        let score = 0;
-        let correctCount = 0;
-        let wrongCount = 0;
-        let isAnswered = false;
-        let hintUsed = false;
-        let timerInterval = null;
-        let timeLeft = 0;
-        let userHistory = [];
+        <!-- 제출 버튼 -->
+        <button type="submit"
+          class="w-full cute-btn mt-4 bg-gradient-to-r from-sunshine via-peach to-tangerine text-cocoa font-title text-xl sm:text-2xl py-4 px-6 rounded-2xl shadow-md border-2 border-amber-400 flex items-center justify-center gap-2">
+          <span>나만의 맞춤 아침 식단 추천받기!</span>
+          <span class="text-2xl">🍽️</span>
+        </button>
+      </form>
+    </section>
 
-        // --- 효과음 설정 (Tone.js) ---
-        let synth = null;
-        function playTone(type) {
-            try {
-                if (!synth && typeof Tone !== 'undefined') {
-                    synth = new Tone.PolySynth(Tone.Synth).toDestination();
-                    synth.volume.value = -8;
-                }
-                if (!synth) return;
-                if (Tone.context.state !== 'running') Tone.start();
 
-                const now = Tone.now();
-                if (type === 'correct') {
-                    synth.triggerAttackRelease("C5", "16n", now);
-                    synth.triggerAttackRelease("E5", "16n", now + 0.09);
-                    synth.triggerAttackRelease("G5", "16n", now + 0.18);
-                    synth.triggerAttackRelease("C6", "8n", now + 0.27);
-                } else if (type === 'wrong') {
-                    synth.triggerAttackRelease("C3", "8n", now);
-                    synth.triggerAttackRelease("B2", "4n", now + 0.12);
-                } else if (type === 'hint') {
-                    synth.triggerAttackRelease("G5", "32n", now);
-                }
-            } catch (e) {
-                // 오디오 차단 환경 무시
-            }
-        }
+    <!-- ==================== 2. 결과 화면 ==================== -->
+    <section id="result-section" class="hidden space-y-6 animate-fade-in-up">
+      
+      <!-- 상단 액션 바 -->
+      <div class="flex flex-wrap items-center justify-between gap-3 bg-white/90 px-5 py-3 rounded-2xl border-2 border-amber-200 shadow-sm">
+        <button onclick="resetToInput()" class="cute-btn inline-flex items-center gap-1.5 text-sm font-bold text-cocoa bg-amber-100 hover:bg-amber-200 px-4 py-2 rounded-xl">
+          <span>⬅️</span> 정보 다시 입력하기
+        </button>
+        <div class="text-xs sm:text-sm font-bold text-teal-800 bg-mint/80 px-3 py-1.5 rounded-full">
+          💡 권장 아침 목표: 하루 에너지의 약 25%!
+        </div>
+        <button onclick="recommendAnotherMeal()" class="cute-btn inline-flex items-center gap-1.5 text-sm font-bold text-white bg-tealSoft hover:bg-teal-500 px-4 py-2 rounded-xl shadow-sm">
+          <span>🔄</span> 다른 메뉴 추천받기
+        </button>
+      </div>
 
-        // --- 필터 & 제한시간 옵션 선택 ---
-        filterOptionBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                filterOptionBtns.forEach(b => {
-                    b.className = 'filter-option py-2 px-2 rounded-xl text-xs font-bold bg-slate-800 text-slate-300 border border-slate-700 hover:border-fuchsia-500 transition';
-                });
-                btn.className = 'filter-option py-2 px-2 rounded-xl text-xs font-bold bg-fuchsia-600 text-white border border-fuchsia-400 shadow-md transition';
-                selectedFilter = btn.dataset.filter;
-            });
-        });
+      <!-- 카드 1: 사용자 맞춤 영양 리포트 -->
+      <div class="cute-card p-6 sm:p-7">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b-2 border-dashed border-amber-200 pb-4 mb-5">
+          <div>
+            <span class="inline-block text-xs font-extrabold bg-butter text-amber-900 px-3 py-1 rounded-full mb-1">REPORT 01</span>
+            <h2 class="font-title text-2xl text-cocoa flex items-center gap-2">
+              <span>📊</span> <span id="user-summary-title">16세 남학생</span> 맞춤 영양 리포트
+            </h2>
+          </div>
+          <div id="bmi-badge" class="inline-flex items-center gap-2 bg-mint/60 border border-tealSoft/40 px-4 py-2 rounded-2xl text-sm font-bold text-cocoa">
+            <!-- JS 동적 삽입 -->
+          </div>
+        </div>
 
-        timeOptionBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                timeOptionBtns.forEach(b => {
-                    b.className = 'time-option py-2 px-2 rounded-xl text-xs font-bold bg-slate-800 text-slate-300 border border-slate-700 hover:border-cyan-400 transition';
-                });
-                btn.className = 'time-option py-2 px-2 rounded-xl text-xs font-bold bg-cyan-600 text-white border border-cyan-400 shadow-md transition';
-                timeLimit = parseInt(btn.dataset.time, 10);
-            });
-        });
+        <!-- 신체 분석 코멘트 박스 -->
+        <div class="bg-amber-50/90 border-2 border-amber-200/80 rounded-2xl p-4 mb-5 flex items-start gap-3">
+          <div class="text-2xl sm:text-3xl mt-0.5">🐣</div>
+          <div>
+            <p id="analysis-comment" class="text-sm sm:text-base font-medium text-cocoa leading-relaxed">
+              <!-- JS 동적 삽입 -->
+            </p>
+          </div>
+        </div>
 
-        // --- 배열 셔플 ---
-        function shuffleArray(arr) {
-            const copy = [...arr];
-            for (let i = copy.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [copy[i], copy[j]] = [copy[j], copy[i]];
-            }
-            return copy;
-        }
+        <!-- 한국인 영양소 섭취기준(KDRIs) 하루 권장량 & 아침 목표 칼로리 -->
+        <h3 class="text-sm font-extrabold text-gray-600 mb-3 flex items-center gap-1.5">
+          <span>📌</span> 성별·연령별 하루 권장 섭취량 (KDRIs 기준) 및 아침 목표 칼로리
+        </h3>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <!-- 하루 권장 칼로리 & 아침 목표(25%) -->
+          <div class="bg-gradient-to-b from-yellow-50 to-amber-100/70 border-2 border-amber-200 rounded-2xl p-3.5 text-center">
+            <div class="text-xs font-bold text-amber-800 mb-1">🔥 하루 권장 에너지</div>
+            <div id="daily-kcal" class="font-title text-2xl text-cocoa">2,700 kcal</div>
+            <div class="mt-1.5 pt-1.5 border-t border-amber-200/80 text-xs font-extrabold text-tangerine">
+              아침 목표(25%): <span id="target-breakfast-kcal">675 kcal</span>
+            </div>
+          </div>
+          <!-- 탄수화물 -->
+          <div class="bg-gradient-to-b from-orange-50 to-orange-100/70 border-2 border-orange-200 rounded-2xl p-3.5 text-center">
+            <div class="text-xs font-bold text-orange-800 mb-1">🍚 하루 탄수화물</div>
+            <div id="daily-carb" class="font-title text-2xl text-cocoa">385 g</div>
+            <div class="mt-1.5 pt-1.5 border-t border-orange-200/80 text-xs font-bold text-orange-600">
+              뇌 활동 필수 에너지!
+            </div>
+          </div>
+          <!-- 단백질 -->
+          <div class="bg-gradient-to-b from-teal-50 to-mint/70 border-2 border-teal-200 rounded-2xl p-3.5 text-center">
+            <div class="text-xs font-bold text-teal-800 mb-1">🍗 하루 단백질</div>
+            <div id="daily-protein" class="font-title text-2xl text-cocoa">65 g</div>
+            <div class="mt-1.5 pt-1.5 border-t border-teal-200/80 text-xs font-bold text-teal-600">
+              키 성장 & 근육 형성!
+            </div>
+          </div>
+          <!-- 지방 -->
+          <div class="bg-gradient-to-b from-rose-50 to-rose-100/70 border-2 border-rose-200 rounded-2xl p-3.5 text-center">
+            <div class="text-xs font-bold text-rose-800 mb-1">🥑 하루 지방</div>
+            <div id="daily-fat" class="font-title text-2xl text-cocoa">75 g</div>
+            <div class="mt-1.5 pt-1.5 border-t border-rose-200/80 text-xs font-bold text-rose-600">
+              호르몬 & 비타민 흡수!
+            </div>
+          </div>
+        </div>
+      </div>
 
-        // --- 게임 시작 ---
-        startBtn.addEventListener('click', startQuiz);
-        restartBtn.addEventListener('click', startQuiz);
+      <!-- 카드 2: 오늘의 추천 아침 식단 & 영양소 상세 계산 -->
+      <div class="cute-card p-6 sm:p-7 border-tealSoft/60">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+          <div class="flex items-center gap-2">
+            <span class="inline-block text-xs font-extrabold bg-mint text-teal-950 px-3 py-1 rounded-full">TODAY'S MENU ✨</span>
+            <span id="meal-condition-badge" class="inline-block text-xs font-extrabold bg-skySoft text-sky-900 px-3 py-1 rounded-full">⏰ 초스피드 추천</span>
+          </div>
+          <span id="meal-category-tag" class="text-xs font-bold bg-amber-100 text-amber-900 px-3 py-1 rounded-full">
+            #성장기영양균형 #든든한한끼
+          </span>
+        </div>
 
-        function updateLivesUI() {
-            const remaining = Math.max(0, MAX_LIVES - wrongCount);
-            livesDisplay.textContent = '❤️'.repeat(remaining) + '🖤'.repeat(wrongCount);
-        }
+        <!-- 최근 추천 히스토리 & 중복 방지 안내 바 -->
+        <div class="mb-4 bg-purple-50/75 border border-purple-200/80 rounded-2xl px-3.5 py-2.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
+          <div class="flex flex-wrap items-center gap-1.5 min-w-0">
+            <span class="font-extrabold text-purple-900 shrink-0">🕒 최근 추천 이력:</span>
+            <span id="recent-history-text" class="text-cocoa/85 font-medium truncate">아직 추천 기록이 없어요</span>
+          </div>
+          <div class="flex items-center gap-2 shrink-0">
+            <span id="pool-progress-badge" class="font-extrabold text-purple-800 bg-white px-2.5 py-0.5 rounded-full border border-purple-200">
+              전체 22종 중 1종 확인
+            </span>
+            <button type="button" onclick="resetRecommendationHistory()"
+              class="text-[11px] font-bold text-purple-900 underline hover:text-purple-700 py-0.5 px-1">
+              이력 초기화
+            </button>
+          </div>
+        </div>
 
-        function startQuiz() {
-            let filtered = IDOL_GROUPS;
-            if (selectedFilter !== 'ALL') {
-                filtered = IDOL_GROUPS.filter(g => g.type === selectedFilter);
-            }
+        <!-- 메뉴 헤더 카드 -->
+        <div class="bg-gradient-to-r from-butter/70 via-amber-50 to-mint/50 border-2 border-sunshine rounded-3xl p-5 sm:p-6 flex flex-col sm:flex-row items-center gap-5 mb-6">
+          <div id="meal-emoji" class="w-24 h-24 sm:w-28 sm:h-28 bg-white rounded-3xl shadow-md border-2 border-amber-200 flex items-center justify-center text-5xl sm:text-6xl shrink-0 animate-float">
+            🥞
+          </div>
+          <div class="text-center sm:text-left flex-1">
+            <div class="inline-flex items-center gap-1.5 bg-white/95 px-3 py-1 rounded-full text-xs font-extrabold text-tangerine border border-amber-200 mb-2 shadow-xs">
+              <span>⏱️ 조리 시간:</span>
+              <span id="meal-time">8분 완성!</span>
+            </div>
+            <h2 id="meal-name" class="font-title text-2xl sm:text-3xl text-cocoa mb-2">
+              바나나 오트밀 팬케이크와 따뜻한 우유
+            </h2>
+            <p id="meal-desc" class="text-sm sm:text-base text-cocoa/85 font-medium leading-relaxed">
+              밀가루 대신 오트밀과 바나나를 사용해 속이 편안하고, 포만감이 오래가는 달콤 고소한 성장기 맞춤 아침 식단이에요!
+            </p>
+          </div>
+        </div>
 
-            // 문제 제한 없이 출제 풀을 랜덤 셔플(소진 시 다시 섞어서 무한 제공)
-            quizList = shuffleArray(filtered);
-            currentIndex = 0;
-            score = 0;
-            correctCount = 0;
-            wrongCount = 0;
-            userHistory = [];
+        <!-- 추천 음식 영양소 상세 계산 결과 -->
+        <div>
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+            <h3 class="font-title text-xl text-cocoa flex items-center gap-2">
+              <span>🧮</span> 추천 식단 영양소 상세 계산 (1인분 기준)
+            </h3>
+            <span class="text-xs font-bold text-gray-500">*성별·연령별 하루 권장 섭취량 대비 충족률(%)</span>
+          </div>
 
-            scoreDisplay.textContent = '0';
-            updateLivesUI();
-            startScreen.classList.add('hidden');
-            resultScreen.classList.add('hidden');
-            quizScreen.classList.remove('hidden');
-
-            loadQuestion();
-        }
-
-        // --- 문제 로드 ---
-        function loadQuestion() {
-            clearInterval(timerInterval);
-            isAnswered = false;
-            hintUsed = false;
-
-            // 준비된 출제 풀을 모두 풀었을 경우 다시 셔플하여 이어서 출제
-            if (currentIndex >= quizList.length) {
-                let filtered = IDOL_GROUPS;
-                if (selectedFilter !== 'ALL') {
-                    filtered = IDOL_GROUPS.filter(g => g.type === selectedFilter);
-                }
-                quizList = shuffleArray(filtered);
-                currentIndex = 0;
-            }
-
-            const current = quizList[currentIndex];
-            const questionNumber = userHistory.length + 1;
-
-            // UI 초기화
-            questionCounter.textContent = `${questionNumber}번째 문제`;
-            groupBadge.textContent = current.label;
-            feedbackOverlay.classList.add('hidden');
-            hintBox.classList.add('hidden');
-            answerForm.classList.remove('hidden');
-            nextBtn.classList.add('hidden');
-            answerInput.value = '';
-            answerInput.disabled = false;
-
-            // 글자 수에 따라 초성 타일 크기 동적 조절
-            const len = current.chosung.length;
-            const tileSizeClass = len >= 7
-                ? 'w-9 h-11 text-xl sm:w-10 sm:h-12 sm:text-2xl'
-                : 'w-12 h-14 text-2xl sm:w-14 sm:h-16 sm:text-3xl';
-
-            chosungContainer.innerHTML = current.chosung.map((char, idx) => `
-                <div class="chosung-tile ${tileSizeClass} rounded-xl flex items-center justify-center font-black text-white animate-pop" style="animation-delay: ${idx * 40}ms">
-                    ${char}
+          <!-- 영양소 4종 프로그레스 카드 -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <!-- 총 칼로리 -->
+            <div class="bg-cream border-2 border-amber-200 rounded-2xl p-4">
+              <div class="flex justify-between items-end mb-1.5">
+                <span class="font-bold text-sm text-cocoa">🔥 총 열량 (칼로리)</span>
+                <div class="text-right">
+                  <span id="meal-kcal" class="font-title text-xl text-tangerine">510 kcal</span>
+                  <span id="meal-kcal-pct" class="text-xs font-bold text-gray-500 ml-1">(19%)</span>
                 </div>
-            `).join('');
+              </div>
+              <div class="w-full bg-amber-100 rounded-full h-3 overflow-hidden">
+                <div id="bar-kcal" class="bg-gradient-to-r from-sunshine to-tangerine h-3 rounded-full transition-all duration-700" style="width: 19%"></div>
+              </div>
+            </div>
 
-            letterCountInfo.textContent = `총 ${len}글자`;
-
-            startQuestionTimer();
-            setTimeout(() => answerInput.focus(), 50);
-        }
-
-        // --- 타이머 작동 ---
-        function startQuestionTimer() {
-            clearInterval(timerInterval);
-            if (timeLimit === 0) {
-                timerContainer.classList.add('hidden');
-                return;
-            }
-
-            timerContainer.classList.remove('hidden');
-            timeLeft = timeLimit * 10;
-            const totalTicks = timeLeft;
-            timerBar.style.width = '100%';
-
-            timerInterval = setInterval(() => {
-                if (isAnswered) {
-                    clearInterval(timerInterval);
-                    return;
-                }
-
-                timeLeft -= 1;
-                const pct = Math.max(0, (timeLeft / totalTicks) * 100);
-                timerBar.style.width = `${pct}%`;
-
-                if (timeLeft <= 0) {
-                    clearInterval(timerInterval);
-                    evaluateAnswer('', true);
-                }
-            }, 100);
-        }
-
-        // --- 대표곡 힌트 보기 ---
-        hintBtn.addEventListener('click', () => {
-            if (isAnswered || hintUsed) return;
-            hintUsed = true;
-            playTone('hint');
-            const current = quizList[currentIndex];
-            hintText.textContent = `💡 힌트: ${current.songs}`;
-            hintBox.classList.remove('hidden');
-            answerInput.focus();
-        });
-
-        // --- 정답 제출 ---
-        answerForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            if (isAnswered) return;
-            const userVal = answerInput.value.trim();
-            if (!userVal) {
-                answerInput.classList.add('animate-shake');
-                setTimeout(() => answerInput.classList.remove('animate-shake'), 400);
-                return;
-            }
-            evaluateAnswer(userVal, false);
-        });
-
-        // --- 정답 판정 로직 (공백/특수문자 제거 후 비교) ---
-        function normalizeText(str) {
-            return str.replace(/[\s\-\(\)·]/g, '').toLowerCase();
-        }
-
-        function evaluateAnswer(userInput, isTimeout) {
-            isAnswered = true;
-            clearInterval(timerInterval);
-            answerInput.disabled = true;
-
-            const current = quizList[currentIndex];
-            const cleanInput = normalizeText(userInput);
-            const validAnswers = [current.name, ...(current.aliases || [])].map(normalizeText);
-
-            const isCorrect = !isTimeout && validAnswers.includes(cleanInput);
-
-            if (isCorrect) {
-                playTone('correct');
-                correctCount++;
-                const earned = hintUsed ? 50 : 100;
-                score += earned;
-                scoreDisplay.textContent = score;
-
-                feedbackIcon.textContent = '⭕';
-                feedbackTitle.textContent = `정답입니다! (+${earned}점)`;
-                feedbackTitle.className = 'text-xl font-black text-emerald-400 mb-1';
-            } else {
-                playTone('wrong');
-                wrongCount++;
-                updateLivesUI();
-                feedbackIcon.textContent = isTimeout ? '⏰' : '❌';
-                feedbackTitle.textContent = isTimeout
-                    ? `시간 초과! 땡! (${wrongCount}/${MAX_LIVES} 오답)`
-                    : `아쉽습니다! 땡! (${wrongCount}/${MAX_LIVES} 오답)`;
-                feedbackTitle.className = 'text-xl font-black text-rose-400 mb-1';
-                quizScreen.classList.add('animate-shake');
-                setTimeout(() => quizScreen.classList.remove('animate-shake'), 400);
-            }
-
-            const engAlias = current.aliases && current.aliases[0] ? ` (${current.aliases[0]})` : '';
-            feedbackAnswer.textContent = `${current.name}${engAlias}`;
-            feedbackDesc.textContent = current.desc;
-
-            userHistory.push({
-                name: current.name,
-                chosung: current.chosung.join(''),
-                userAnswer: isTimeout ? '시간 초과' : userInput,
-                isCorrect
-            });
-
-            const isGameOver = wrongCount >= MAX_LIVES;
-            feedbackOverlay.classList.remove('hidden');
-            answerForm.classList.add('hidden');
-            nextBtn.classList.remove('hidden');
-            nextBtn.textContent = isGameOver ? '3번 틀렸어요! 결과 보기 💀' : '다음 문제로 ➔';
-            nextBtn.focus();
-        }
-
-        // --- 다음 문제 이동 ---
-        nextBtn.addEventListener('click', () => {
-            if (wrongCount >= MAX_LIVES) {
-                showFinalResults();
-                return;
-            }
-            currentIndex++;
-            loadQuestion();
-        });
-
-        // --- 최종 결과 화면 출력 ---
-        function showFinalResults() {
-            quizScreen.classList.add('hidden');
-            resultScreen.classList.remove('hidden');
-            resultScreen.classList.add('animate-pop');
-
-            finalCorrect.textContent = correctCount;
-            finalScore.textContent = score;
-
-            if (correctCount >= 20) {
-                resultComment.textContent = "미쳤습니다! 오답 3번을 버텨낸 진짜 K-POP 레전드! 👑";
-            } else if (correctCount >= 10) {
-                resultComment.textContent = "멋져요! 두 자릿수 연속 정답을 달성하셨네요! 🔥";
-            } else if (correctCount >= 5) {
-                resultComment.textContent = "꽤 선전하셨어요! 다음엔 더 오래 살아남아 봅시다! 👏";
-            } else {
-                resultComment.textContent = "아쉽지만 3번의 기회가 모두 소진됐어요! 다시 도전해 보세요! 💪";
-            }
-
-            reviewList.innerHTML = userHistory.map((item, idx) => `
-                <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-800/80 border border-slate-700/60 text-xs">
-                    <div class="flex items-center gap-2">
-                        <span class="font-bold text-slate-400">${idx + 1}.</span>
-                        <span class="px-1.5 py-0.5 rounded bg-indigo-950 text-fuchsia-300 font-bold text-[11px]">${item.chosung}</span>
-                        <span class="font-extrabold text-white">${item.name}</span>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        ${item.isCorrect
-                            ? '<span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold">정답</span>'
-                            : `<span class="text-slate-400 line-through">${item.userAnswer}</span> <span class="px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 font-bold">오답</span>`
-                        }
-                    </div>
+            <!-- 탄수화물 -->
+            <div class="bg-cream border-2 border-orange-200 rounded-2xl p-4">
+              <div class="flex justify-between items-end mb-1.5">
+                <span class="font-bold text-sm text-cocoa">🍚 탄수화물</span>
+                <div class="text-right">
+                  <span id="meal-carb" class="font-title text-xl text-orange-600">68 g</span>
+                  <span id="meal-carb-pct" class="text-xs font-bold text-gray-500 ml-1">(18%)</span>
                 </div>
-            `).join('');
+              </div>
+              <div class="w-full bg-orange-100 rounded-full h-3 overflow-hidden">
+                <div id="bar-carb" class="bg-orange-400 h-3 rounded-full transition-all duration-700" style="width: 18%"></div>
+              </div>
+            </div>
+
+            <!-- 단백질 -->
+            <div class="bg-cream border-2 border-teal-200 rounded-2xl p-4">
+              <div class="flex justify-between items-end mb-1.5">
+                <span class="font-bold text-sm text-cocoa">🍗 단백질</span>
+                <div class="text-right">
+                  <span id="meal-protein" class="font-title text-xl text-teal-600">21 g</span>
+                  <span id="meal-protein-pct" class="text-xs font-bold text-gray-500 ml-1">(32%)</span>
+                </div>
+              </div>
+              <div class="w-full bg-teal-100 rounded-full h-3 overflow-hidden">
+                <div id="bar-protein" class="bg-tealSoft h-3 rounded-full transition-all duration-700" style="width: 32%"></div>
+              </div>
+            </div>
+
+            <!-- 지방 -->
+            <div class="bg-cream border-2 border-rose-200 rounded-2xl p-4">
+              <div class="flex justify-between items-end mb-1.5">
+                <span class="font-bold text-sm text-cocoa">🥑 지방</span>
+                <div class="text-right">
+                  <span id="meal-fat" class="font-title text-xl text-rose-500">16 g</span>
+                  <span id="meal-fat-pct" class="text-xs font-bold text-gray-500 ml-1">(21%)</span>
+                </div>
+              </div>
+              <div class="w-full bg-rose-100 rounded-full h-3 overflow-hidden">
+                <div id="bar-fat" class="bg-berry h-3 rounded-full transition-all duration-700" style="width: 21%"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 성장기 핵심 영양소 설명 -->
+          <div class="mt-4 bg-mint/45 border-2 border-tealSoft/40 rounded-2xl p-4">
+            <h4 class="font-bold text-sm text-teal-950 mb-1.5 flex items-center gap-1.5">
+              <span>🌟</span> 추천 음식의 핵심 영양소 설명
+            </h4>
+            <p id="meal-nutrition-note" class="text-sm text-cocoa leading-relaxed">
+              <!-- JS 동적 삽입 -->
+            </p>
+          </div>
+
+          <!-- ==================== 신규: 식약처 식품영양성분DB 실시간 조회 & 계산 패널 ==================== -->
+          <div class="mt-6 pt-5 border-t-2 border-dashed border-amber-200">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                <span class="inline-block text-[11px] font-extrabold bg-lavender text-purple-900 px-2.5 py-0.5 rounded-full mb-1">
+                  MFDS OPEN API 연동 🔬
+                </span>
+                <h4 class="font-title text-lg sm:text-xl text-cocoa flex items-center gap-1.5">
+                  <span>🔍</span> 식약처 DB에서 실제 식품 영양성분 조회하기
+                </h4>
+              </div>
+              <button type="button" id="toggle-api-btn" onclick="toggleApiSearchPanel()"
+                class="cute-btn bg-gradient-to-r from-purple-100 to-indigo-100 hover:from-purple-200 hover:to-indigo-200 text-purple-950 border-2 border-purple-300 font-bold text-xs sm:text-sm px-4 py-2.5 rounded-2xl shadow-xs flex items-center justify-center gap-1.5">
+                <span>🧪</span>
+                <span id="toggle-api-btn-text">실제 식품 검색창 열기</span>
+              </button>
+            </div>
+
+            <!-- API 검색 및 상세 계산기 컨테이너 -->
+            <div id="api-search-panel" class="hidden mt-4 bg-gradient-to-b from-purple-50/75 to-white border-2 border-purple-200 rounded-3xl p-4 sm:p-5 space-y-4">
+              <p class="text-xs sm:text-sm text-cocoa/85 font-medium leading-relaxed">
+                추천 메뉴의 재료나 궁금한 아침 음식을 검색해 보세요! <strong>식품의약품안전처 공식 DB</strong>의 표시 기준량별 실제 영양성분을 조회하고, 내가 먹는 양에 맞춰 영양소를 계산할 수 있어요.
+              </p>
+
+              <!-- 검색 폼 -->
+              <div class="grid grid-cols-1 sm:grid-cols-12 gap-2.5">
+                <div class="sm:col-span-6">
+                  <label for="api-food-name" class="block text-[11px] font-extrabold text-purple-900 mb-1">식품명 검색 (FOOD_NM_KR)</label>
+                  <input type="text" id="api-food-name" placeholder="예: 그릭요거트, 고구마, 바나나, 김밥"
+                    onkeydown="if(event.key==='Enter'){ event.preventDefault(); searchFoodFromApi(); }"
+                    class="w-full px-3.5 py-2.5 rounded-xl border-2 border-purple-200 focus:border-purple-400 focus:outline-none bg-white text-sm font-bold text-cocoa" />
+                </div>
+                <div class="sm:col-span-4">
+                  <label for="api-food-cat" class="block text-[11px] font-extrabold text-purple-900 mb-1">식품대분류 (선택)</label>
+                  <select id="api-food-cat"
+                    class="w-full px-3 py-2.5 rounded-xl border-2 border-purple-200 focus:border-purple-400 focus:outline-none bg-white text-sm font-bold text-cocoa">
+                    <option value="">전체 분류 (생략)</option>
+                    <option value="곡류, 서류 제품">곡류, 서류 제품</option>
+                    <option value="빵 및 과자류">빵 및 과자류</option>
+                    <option value="유제품류 및 빙과류">유제품류 및 빙과류</option>
+                    <option value="알류">알류 (달걀 등)</option>
+                    <option value="육류">육류</option>
+                    <option value="과일류">과일류</option>
+                    <option value="음료 및 차류">음료 및 차류</option>
+                    <option value="밥류">밥류</option>
+                  </select>
+                </div>
+                <div class="sm:col-span-2 flex items-end">
+                  <button type="button" onclick="searchFoodFromApi()"
+                    class="w-full cute-btn bg-purple-600 hover:bg-purple-700 text-white font-bold text-sm py-2.5 px-4 rounded-xl shadow-xs">
+                    검색 🔍
+                  </button>
+                </div>
+              </div>
+
+              <!-- 빠른 키워드 칩 -->
+              <div id="api-quick-chips" class="flex flex-wrap items-center gap-1.5 text-xs">
+                <span class="font-bold text-purple-800 mr-1">추천 키워드:</span>
+                <!-- JS 동적 생성 -->
+              </div>
+
+              <!-- API 상태/로딩/오류 안내 영역 -->
+              <div id="api-status-box" class="hidden rounded-2xl p-3.5 text-xs sm:text-sm font-bold"></div>
+
+              <!-- 검색 결과 리스트 (data.body.items) -->
+              <div id="api-results-wrapper" class="hidden space-y-2">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-extrabold text-purple-950">📋 조회 결과 (항목을 클릭하면 영양소를 계산해 드려요!)</span>
+                  <span id="api-result-count" class="text-[11px] font-bold text-purple-700 bg-purple-100 px-2.5 py-0.5 rounded-full">0건</span>
+                </div>
+                <div id="api-results-list" class="max-h-60 overflow-y-auto space-y-2 pr-1">
+                  <!-- JS 동적 생성 -->
+                </div>
+              </div>
+
+              <!-- 선택된 식품 상세 영양소 & 섭취량 계산기 -->
+              <div id="api-selected-calc" class="hidden bg-white border-2 border-purple-300 rounded-2xl p-4 sm:p-5 shadow-xs space-y-4">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-purple-100 pb-3">
+                  <div>
+                    <div class="flex flex-wrap items-center gap-1.5 mb-1">
+                      <span class="text-[11px] font-extrabold bg-purple-100 text-purple-900 px-2.5 py-0.5 rounded-full">선택된 식약처 DB 식품</span>
+                      <span id="calc-serving-badge" class="text-[11px] font-extrabold bg-amber-100 text-amber-900 px-2.5 py-0.5 rounded-full border border-amber-300">
+                        표시 기준량: 100g
+                      </span>
+                    </div>
+                    <h5 id="calc-food-title" class="font-title text-lg sm:text-xl text-cocoa">식품명</h5>
+                    <p id="calc-food-meta" class="text-xs text-gray-500 mt-0.5">제조사/분류 정보</p>
+                  </div>
+                  <div class="bg-amber-50 border border-amber-200 rounded-xl px-3 py-2 text-[11px] text-amber-900 font-bold">
+                    ⚠️ 영양값은 표시된 <strong>기준량(<span id="calc-base-unit-text">100g</span>)</strong> 기준이며,<br class="hidden sm:inline"> 한 끼 전체가 아닐 수 있으니 아래에서 섭취량을 조절하세요!
+                  </div>
+                </div>
+
+                <!-- 섭취량 조절 컨트롤 (배수 버튼 또는 그램 직접 입력) -->
+                <div class="bg-purple-50/70 rounded-2xl p-3.5 space-y-2.5">
+                  <div class="flex flex-wrap items-center justify-between gap-2">
+                    <span class="text-xs font-extrabold text-purple-950">⚖️ 실제 섭취량 조절하기</span>
+                    <div class="flex flex-wrap gap-1.5">
+                      <button type="button" onclick="setIntakeMultiplier(0.5)" class="mult-btn text-xs font-bold px-2.5 py-1 rounded-lg bg-white border border-purple-200 hover:bg-purple-100 text-purple-900">0.5배</button>
+                      <button type="button" onclick="setIntakeMultiplier(1)" class="mult-btn text-xs font-bold px-2.5 py-1 rounded-lg bg-purple-600 text-white border border-purple-600">1배 (기준량)</button>
+                      <button type="button" onclick="setIntakeMultiplier(1.5)" class="mult-btn text-xs font-bold px-2.5 py-1 rounded-lg bg-white border border-purple-200 hover:bg-purple-100 text-purple-900">1.5배</button>
+                      <button type="button" onclick="setIntakeMultiplier(2)" class="mult-btn text-xs font-bold px-2.5 py-1 rounded-lg bg-white border border-purple-200 hover:bg-purple-100 text-purple-900">2배</button>
+                    </div>
+                  </div>
+
+                  <div id="gram-input-row" class="flex flex-wrap items-center gap-2 pt-1">
+                    <label for="calc-custom-grams" class="text-xs font-bold text-cocoa">직접 그램(g) 입력:</label>
+                    <div class="relative flex items-center w-32">
+                      <input type="number" id="calc-custom-grams" min="1" max="2000" step="1"
+                        oninput="onCustomGramChange(this.value)"
+                        class="w-full pl-3 pr-8 py-1.5 rounded-xl border-2 border-purple-200 focus:border-purple-500 focus:outline-none bg-white text-sm font-extrabold text-cocoa" />
+                      <span class="absolute right-2.5 text-xs font-bold text-gray-500">g</span>
+                    </div>
+                    <span id="calc-ratio-label" class="text-xs font-bold text-purple-800">(기준량의 1.00배 적용 중)</span>
+                  </div>
+                </div>
+
+                <!-- 계산된 영양성분 5종 (열량, 탄수화물, 단백질, 지방, 나트륨) -->
+                <div class="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
+                  <div class="bg-amber-50 border border-amber-200 rounded-xl p-3 text-center">
+                    <div class="text-[11px] font-bold text-amber-900">🔥 열량</div>
+                    <div id="calc-val-kcal" class="font-title text-lg text-tangerine mt-0.5">-</div>
+                    <div id="calc-pct-kcal" class="text-[10px] font-bold text-gray-500 mt-0.5">-</div>
+                  </div>
+                  <div class="bg-orange-50 border border-orange-200 rounded-xl p-3 text-center">
+                    <div class="text-[11px] font-bold text-orange-900">🍚 탄수화물</div>
+                    <div id="calc-val-carb" class="font-title text-lg text-orange-600 mt-0.5">-</div>
+                    <div id="calc-pct-carb" class="text-[10px] font-bold text-gray-500 mt-0.5">-</div>
+                  </div>
+                  <div class="bg-teal-50 border border-teal-200 rounded-xl p-3 text-center">
+                    <div class="text-[11px] font-bold text-teal-900">🍗 단백질</div>
+                    <div id="calc-val-protein" class="font-title text-lg text-teal-600 mt-0.5">-</div>
+                    <div id="calc-pct-protein" class="text-[10px] font-bold text-gray-500 mt-0.5">-</div>
+                  </div>
+                  <div class="bg-rose-50 border border-rose-200 rounded-xl p-3 text-center">
+                    <div class="text-[11px] font-bold text-rose-900">🥑 지방</div>
+                    <div id="calc-val-fat" class="font-title text-lg text-rose-500 mt-0.5">-</div>
+                    <div id="calc-pct-fat" class="text-[10px] font-bold text-gray-500 mt-0.5">-</div>
+                  </div>
+                  <div class="col-span-2 sm:col-span-1 bg-sky-50 border border-sky-200 rounded-xl p-3 text-center">
+                    <div class="text-[11px] font-bold text-sky-900">🧂 나트륨</div>
+                    <div id="calc-val-sodium" class="font-title text-lg text-sky-600 mt-0.5">-</div>
+                    <div id="calc-pct-sodium" class="text-[10px] font-bold text-gray-500 mt-0.5">일일 상한 2,000mg</div>
+                  </div>
+                </div>
+
+                <div class="text-[11px] text-gray-500 flex flex-wrap items-center justify-between gap-1 pt-1">
+                  <span>* 결측치(빈 값/null)는 임의로 0 처리하지 않고 <strong>정보 없음(-)</strong>으로 표기합니다.</span>
+                  <span class="font-bold text-purple-800">출처: 식품의약품안전처 식품영양성분DB정보</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- ==================== 신규 API 영역 끝 ==================== -->
+        </div>
+      </div>
+
+      <!-- 카드 3: 초간단 아침 레시피 설명 -->
+      <div class="cute-card p-6 sm:p-7">
+        <div class="flex items-center justify-between border-b-2 border-dashed border-amber-200 pb-4 mb-5">
+          <div>
+            <span class="inline-block text-xs font-extrabold bg-peach/45 text-amber-950 px-3 py-1 rounded-full mb-1">EASY RECIPE 👩‍🍳</span>
+            <h2 class="font-title text-2xl text-cocoa flex items-center gap-2">
+              <span>🥄</span> 등교 전 뚝딱! 초간단 아침 레시피
+            </h2>
+          </div>
+          <span class="text-3xl">⏰</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <!-- 준비 재료 (1인분) -->
+          <div class="md:col-span-1 bg-butter/45 border-2 border-sunshine/70 rounded-2xl p-4">
+            <h3 class="font-title text-lg text-cocoa mb-3 flex items-center gap-1.5">
+              <span>🛒</span> 준비 재료 (1인분)
+            </h3>
+            <ul id="recipe-ingredients" class="space-y-2 text-sm font-medium text-cocoa">
+              <!-- JS 동적 생성 -->
+            </ul>
+          </div>
+
+          <!-- 단계별 조리법 -->
+          <div class="md:col-span-2 space-y-3">
+            <h3 class="font-title text-lg text-cocoa mb-2 flex items-center gap-1.5">
+              <span>🍳</span> 따라 하기 쉬운 초간단 조리법
+            </h3>
+            <div id="recipe-steps" class="space-y-3">
+              <!-- JS 동적 생성 -->
+            </div>
+          </div>
+        </div>
+
+        <!-- 하단 다시 추천받기 버튼 -->
+        <div class="mt-7 pt-5 border-t-2 border-dashed border-amber-200 flex flex-col sm:flex-row items-center justify-center gap-3">
+          <button type="button" onclick="recommendAnotherMeal()"
+            class="w-full sm:w-auto cute-btn bg-gradient-to-r from-tealSoft to-emerald-400 text-white font-title text-lg py-3.5 px-8 rounded-2xl shadow-md flex items-center justify-center gap-2">
+            <span>🎲</span> 다른 메뉴 다시 추천받기!
+          </button>
+          <button type="button" onclick="resetToInput()"
+            class="w-full sm:w-auto cute-btn bg-amber-100 hover:bg-amber-200 text-cocoa font-bold text-base py-3.5 px-6 rounded-2xl flex items-center justify-center gap-2">
+            <span>✏️</span> 신체 정보 수정하기
+          </button>
+        </div>
+      </div>
+
+      <!-- 카드 4: '참고용' 정보 안내 (면책 조항 배너) -->
+      <div class="bg-gradient-to-r from-amber-50 via-orange-50/90 to-rose-50/75 border-2 border-peach/80 rounded-3xl p-5 sm:p-6 shadow-sm">
+        <div class="flex items-start gap-3.5 sm:gap-4">
+          <div class="w-11 h-11 sm:w-12 sm:h-12 bg-white rounded-2xl border-2 border-peach/60 flex items-center justify-center text-2xl shrink-0 shadow-xs">
+            📢
+          </div>
+          <div class="flex-1">
+            <div class="flex flex-wrap items-center gap-2 mb-2">
+              <span class="inline-block text-xs font-extrabold bg-peach/45 text-amber-950 px-2.5 py-0.5 rounded-full">
+                꼭 확인해주세요!
+              </span>
+              <h3 class="font-title text-lg sm:text-xl text-cocoa">
+                식단 추천 및 영양소 계산 결과 이용 안내 (참고용)
+              </h3>
+            </div>
+            <ul class="space-y-1.5 text-xs sm:text-sm text-cocoa/90 leading-relaxed font-medium">
+              <li class="flex items-start gap-2">
+                <span class="text-tangerine font-bold mt-0.5">•</span>
+                <span>
+                  본 추천 식단 및 영양소 계산 결과는 한국인 영양소 섭취기준(KDRIs)과 입력하신 신체 정보를 바탕으로 산출된 <strong class="font-extrabold text-amber-950 bg-sunshine/50 px-1.5 py-0.5 rounded-md">건강 관리 참고용 정보</strong>이며, 의학적 진단이나 전문적인 영양 처방을 대신하지 않습니다.
+                </span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-tangerine font-bold mt-0.5">•</span>
+                <span>
+                  개인의 식품 알레르기 유무, 기저질환, 성장 속도, 일일 활동량 등에 따라 실제 필요한 영양소와 적합한 식단은 달라질 수 있습니다.
+                </span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-tangerine font-bold mt-0.5">•</span>
+                <span>
+                  특정 질환이 있거나 전문적인 식이 조절이 필요한 경우에는 반드시 <strong>의사, 영양사 등 보건·의료 전문가와 상담</strong>하시기 바랍니다.
+                </span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-tangerine font-bold mt-0.5">•</span>
+                <span>
+                  식품 영양성분 검색 데이터 출처: <strong class="text-purple-900">식품의약품안전처 식품영양성분DB정보</strong> (표시 기준량 단위로 제공되며 실제 조리량과 차이가 있을 수 있습니다).
+                </span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+  <footer class="text-center text-xs text-cocoa/65 mt-10 px-4 space-y-1">
+    <p>☀️ 청소년 아침 결식 예방을 위해 한국인 영양소 섭취기준(KDRIs)을 참고하여 제작된 교육·건강관리용 웹앱입니다.</p>
+    <p class="font-bold text-cocoa/75">데이터 출처: 식품의약품안전처 식품영양성분DB정보</p>
+  </footer>
+
+  <script>
+    // ==========================================
+    // 1. 상태 변수 및 청소년 아침 식단 데이터베이스 (22종 확장)
+    // ==========================================
+    const FOOD_API_ENDPOINT = 'https://glittery-dasik-3cb269.netlify.app/api/food';
+    const RECENT_HISTORY_LIMIT = 8; // 최근 추천 메뉴 제외 윈도우 크기
+
+    let selectedGender = 'male';       // 'male' | 'female'
+    let selectedCondition = 'rush';    // 'rush' | 'hearty' | 'light'
+    let currentUserData = null;
+    let currentMeal = null;
+    let shuffledMealDeck = [];         // 조건/목표칼로리 기반 셔플 덱
+    let recentMealIds = [];            // 최근 추천된 식단 ID 히스토리 (중복 방지용)
+    let seenMealIds = [];              // 현재 사이클에서 확인한 식단 ID 목록
+
+    // API 조회 및 선택 상태
+    let apiItemsCache = [];            // data.body.items 원본 배열 유지
+    let selectedApiItem = null;        // 현재 선택된 원본 item 객체
+    let selectedBaseGrams = null;      // 기준량에서 추출한 숫자(g) (없으면 null)
+    let currentMultiplier = 1;         // 현재 적용 배수
+
+    const CONDITION_LABELS = {
+      rush: '⏰ 시간이 없어요 (초스피드)',
+      hearty: '🔥 든든하게 먹고 싶어요',
+      light: '🌿 가볍게 먹고 싶어요'
+    };
+
+    // 등교 전 5~8분 내 조리 가능한 청소년 맞춤 아침 식단 22종 (한식·분식·양식·아시안·디저트/음료형)
+    const BREAKFAST_DB = [
+      {
+        id: 'greek-yogurt-bowl',
+        name: '그릭요거트 베리 그래놀라 볼 & 구운 달걀',
+        emoji: '🥣',
+        time: '5분 완성!',
+        searchKeywords: ['그릭요거트', '그래놀라', '구운달걀', '블루베리'],
+        tags: ['#디저트형', '#5분초스피드', '#유산균칼슘'],
+        conditionFit: ['rush', 'light'],
+        desc: '불을 쓰지 않고 5분 만에 완성! 상큼한 그릭요거트와 바삭한 통곡물 그래놀라, 구운 달걀로 바쁜 아침에도 가볍고 알차게 영양을 채워요.',
+        nutrition: { kcal: 430, carb: 46, protein: 24, fat: 16 },
+        nutritionNote: '그릭요거트의 풍부한 칼슘과 유산균(프로바이오틱스)이 뼈 성장과 장 건강을 돕고, 구운 달걀 1개가 아침에 부족하기 쉬운 완전 단백질을 채워줍니다.',
+        ingredients: [
+          '무가당 그릭요거트 150g',
+          '통곡물 그래놀라 4큰술 (약 40g)',
+          '블루베리 또는 딸기 한 줌 (50g)',
+          '아몬드 5~6알, 꿀 1작은술',
+          '시판 구운 달걀(또는 삶은 달걀) 1개'
+        ],
+        steps: [
+          { icon: '🥣', text: '오목한 그릇에 꾸덕한 그릭요거트 150g을 담고 위에 바삭한 그래놀라를 골고루 뿌립니다.' },
+          { icon: '🫐', text: '블루베리와 아몬드를 예쁘게 올린 뒤, 달콤한 맛을 위해 꿀 1작은술을 쪼르륵 뿌려줍니다.' },
+          { icon: '🥚', text: '미리 준비된 구운 달걀 1개의 껍질을 까서 함께 먹으면 설거지도 간편한 5분 아침 완성!' }
+        ]
+      },
+      {
+        id: 'sweet-potato-cheese-egg',
+        name: '고구마 치즈 에그 컵 & 100% 사과주스',
+        emoji: '🍠',
+        time: '5분 완성!',
+        searchKeywords: ['고구마', '달걀', '모짜렐라치즈', '사과주스'],
+        tags: ['#디저트형', '#전자레인지5분', '#눈건강비타민'],
+        conditionFit: ['rush', 'light'],
+        desc: '달콤한 고구마 위에 달걀과 모짜렐라 치즈를 얹어 전자레인지에 2분 30초만 돌리면 완성되는 마법 같은 초스피드 영양식이에요!',
+        nutrition: { kcal: 495, carb: 67, protein: 20, fat: 15 },
+        nutritionNote: '고구마의 베타카로틴과 식이섬유는 책과 스마트폰을 많이 보는 청소년의 눈 건강과 변비 예방에 좋으며, 치즈와 달걀이 성장기 단백질을 보충해 줍니다.',
+        ingredients: [
+          '찐 고구마 또는 편의점 군고구마 1개 (150g)',
+          '달걀 1개',
+          '피자용 모짜렐라 치즈 30g',
+          '100% 착즙 사과주스 1팩 (150ml)'
+        ],
+        steps: [
+          { icon: '🍠', text: '전자레인지용 머그컵이나 그릇에 익힌 고구마를 한입 크기로 잘라 바닥에 깝니다.' },
+          { icon: '🥚', text: '고구마 위에 달걀 1개를 깨뜨려 올린 뒤, 노른자가 터지지 않게 포크로 2번 살짝 찔러주세요!' },
+          { icon: '🧀', text: '모짜렐라 치즈를 듬뿍 덮고 랩을 씌워 전자레인지에서 2분 30초 조리한 후 사과주스와 함께 먹습니다.' }
+        ]
+      },
+      {
+        id: 'banana-oat-pancake',
+        name: '바나나 오트밀 팬케이크 & 따뜻한 우유',
+        emoji: '🥞',
+        time: '8분 완성!',
+        searchKeywords: ['바나나', '오트밀', '달걀', '우유'],
+        tags: ['#양식디저트', '#뇌깨우기', '#칼슘충전'],
+        conditionFit: ['light', 'hearty'],
+        desc: '밀가루 대신 식이섬유가 풍부한 오트밀과 달콤한 바나나를 으깨 구운 팬케이크예요. 우유 한 잔을 곁들이면 성장기 칼슘과 단백질까지 완벽해요!',
+        nutrition: { kcal: 510, carb: 68, protein: 21, fat: 16 },
+        nutritionNote: '바나나의 천연 당분과 칼륨이 아침잠에 빠진 뇌에 즉각적인 에너지를 공급하고, 우유와 달걀의 양질의 단백질·칼슘이 키 성장을 도와줍니다.',
+        ingredients: [
+          '잘 익은 바나나 1개 (약 100g)',
+          '오트밀(귀리) 5큰술 (약 45g)',
+          '달걀 1개',
+          '우유 1팩 (200ml)',
+          '식용유 또는 버터 약간'
+        ],
+        steps: [
+          { icon: '🍌', text: '그릇에 바나나 1개를 포크로 부드럽게 으깬 뒤, 달걀 1개와 오트밀 5큰술을 넣고 골고루 섞어 반죽을 만듭니다.' },
+          { icon: '🍳', text: '약불로 달군 프라이팬에 기름을 살짝 두르고 반죽을 동그랗게 올려 앞뒤로 노릇하게 2분씩 굽습니다.' },
+          { icon: '🥛', text: '접시에 팬케이크를 담고 전자레인지에 40초 데운 따뜻한 우유 1잔과 함께 맛있게 먹습니다!' }
+        ]
+      },
+      {
+        id: 'egg-scramble-toast',
+        name: '폭신 에그 스크램블 통밀 토스트 & 방울토마토',
+        emoji: '🥪',
+        time: '7분 완성!',
+        searchKeywords: ['식빵', '달걀', '슬라이스치즈', '방울토마토'],
+        tags: ['#양식', '#초간단7분', '#단백질듬뿍'],
+        conditionFit: ['hearty', 'rush'],
+        desc: '고소한 통밀 식빵 위에 부드러운 스크램블 에그와 슬라이스 치즈를 올린 든든한 브런치 스타일 아침 식사예요.',
+        nutrition: { kcal: 545, carb: 54, protein: 26, fat: 24 },
+        nutritionNote: '달걀 2개와 치즈로 성장기 필수 아미노산이 풍부한 단백질 26g을 채울 수 있어요. 방울토마토의 비타민 C와 라이코펜은 학업 피로 회복에 좋습니다.',
+        ingredients: [
+          '통밀 식빵 2장',
+          '달걀 2개',
+          '슬라이스 체다치즈 1장',
+          '우유 2큰술 (스크램블용)',
+          '방울토마토 6~7알, 버터 1작은술'
+        ],
+        steps: [
+          { icon: '🍞', text: '통밀 식빵 2장은 토스터기나 마른 팬에 노릇하게 굽고, 구워진 빵 한쪽 면에 치즈 1장을 올려 녹입니다.' },
+          { icon: '🥚', text: '달걀 2개에 우유 2큰술, 소금 한 꼬집을 풀어 버터 두른 팬에서 젓가락으로 휘저으며 몽글몽글하게 스크램블을 만듭니다.' },
+          { icon: '🍅', text: '치즈 올린 식빵 위에 에그 스크램블을 듬뿍 얹어 샌드위치로 만들고, 깨끗이 씻은 방울토마토를 곁들입니다.' }
+        ]
+      },
+      {
+        id: 'chicken-tortilla-wrap',
+        name: '닭가슴살 치즈 또띠아 랩 & 검은콩 두유',
+        emoji: '🌯',
+        time: '6분 완성!',
+        searchKeywords: ['닭가슴살', '또띠아', '검은콩두유', '양상추'],
+        tags: ['#양식랩', '#든든한고단백', '#체육수업추천'],
+        conditionFit: ['hearty', 'rush'],
+        desc: '든든하게 먹고 싶은 날 추천! 담백한 닭가슴살과 아삭한 채소를 또띠아에 돌돌 말아 바쁜 아침에도 한 손으로 먹기 편해요.',
+        nutrition: { kcal: 620, carb: 62, protein: 38, fat: 22 },
+        nutritionNote: '닭가슴살과 두유의 동물성·식물성 단백질이 조화를 이루어 38g의 단백질을 섭취할 수 있습니다. 근육 발달과 체력 유지가 필요한 청소년에게 최고예요!',
+        ingredients: [
+          '통밀 또띠아 1장 (8인치)',
+          '시판 훈제/스팀 닭가슴살 1팩 (100g)',
+          '양상추 또는 상추 2~3장',
+          '슬라이스 치즈 1장, 허니머스타드 1큰술',
+          '검은콩 두유 1팩 (190ml)'
+        ],
+        steps: [
+          { icon: '♨️', text: '닭가슴살은 전자레인지에 1분간 데워 결대로 찢고, 또띠아도 전자레인지에 15초간 살짝 데워 부드럽게 만듭니다.' },
+          { icon: '🥬', text: '또띠아 위에 허니머스타드를 얇게 바르고 물기를 뺀 양상추, 슬라이스 치즈, 닭가슴살을 차례로 올립니다.' },
+          { icon: '🌯', text: '양옆을 접어 김밥처럼 돌돌 말아 반으로 자른 뒤, 고소한 검은콩 두유와 함께 든든하게 먹습니다.' }
+        ]
+      },
+      {
+        id: 'tuna-egg-riceball',
+        name: '참치달걀주먹밥 & 3분 컵 계란국',
+        emoji: '🍙',
+        time: '7분 완성!',
+        searchKeywords: ['주먹밥', '참치', '달걀', '계란국'],
+        tags: ['#한식', '#오메가3두뇌', '#든든한한끼'],
+        conditionFit: ['hearty'],
+        desc: '고소한 참치와 부드러운 다진 달걀, 김가루를 뭉쳐 만든 한입 쏙 주먹밥! 따뜻한 계란국을 곁들이면 속까지 든든해져요.',
+        nutrition: { kcal: 615, carb: 78, protein: 28, fat: 20 },
+        nutritionNote: '밥의 복합 탄수화물이 오전 수업 시간 내내 집중력을 유지해주며, 참치의 DHA와 달걀의 콜린이 기억력과 학습 집중력을 돕습니다.',
+        ingredients: [
+          '따뜻한 밥 1공기 (약 210g)',
+          '살코기 참치캔 1/2캔 (50g) + 삶은/스크램블 달걀 1/2개',
+          '마요네즈 1작은술, 간장 1/2작은술',
+          '조미김가루 2큰술, 참기름 1작은술',
+          '즉석 블록 계란국 1개 + 뜨거운 물 180ml'
+        ],
+        steps: [
+          { icon: '🥚', text: '기름을 뺀 참치와 잘게 다진 달걀, 마요네즈 1작은술, 간장 1/2작은술을 섞어 고소한 속재료를 만듭니다.' },
+          { icon: '🍙', text: '따뜻한 밥에 참기름과 김가루를 섞은 뒤, 밥을 펼쳐 속재료를 넣고 동그랗게 주먹밥 2~3개를 빚습니다.' },
+          { icon: '🍲', text: '머그컵에 즉석 계란국 블록과 뜨거운 물을 부어 1분간 저어준 뒤 주먹밥과 함께 맛있게 먹습니다.' }
+        ]
+      },
+      {
+        id: 'cheese-egg-toast',
+        name: '치즈계란토스트 & 바나나 1개',
+        emoji: '🧀',
+        time: '6분 완성!',
+        searchKeywords: ['식빵', '달걀', '체다치즈', '바나나'],
+        tags: ['#분식스타일', '#달콤짭짤', '#에너지부스터'],
+        conditionFit: ['rush', 'hearty'],
+        desc: '길거리 토스트 감성을 살린 치즈계란토스트! 고소한 치즈와 달걀부침, 바나나 1개로 등교 전 빠르게 에너지를 충전해요.',
+        nutrition: { kcal: 540, carb: 64, protein: 22, fat: 21 },
+        nutritionNote: '달걀과 치즈의 단백질·칼슘에 바나나의 칼륨과 비타민 B6가 더해져 아침 피로를 덜어주고 활기찬 등교를 도와줍니다.',
+        ingredients: [
+          '식빵 2장',
+          '달걀 1개',
+          '슬라이스 체다치즈 1장',
+          '버터 1작은술, 설탕 1/2작은술',
+          '바나나 1개 (약 100g)'
+        ],
+        steps: [
+          { icon: '🍳', text: '버터 두른 팬에 풀어둔 달걀을 식빵 크기에 맞춰 네모나게 부치고, 위에 치즈 1장을 올려 살짝 녹입니다.' },
+          { icon: '🍞', text: '식빵 2장은 노릇하게 구운 뒤 설탕을 아주 살짝만 솔솔 뿌려 단짠 균형을 맞춥니다.' },
+          { icon: '🍌', text: '치즈계란부침을 식빵 사이에 끼워 반으로 자르고, 바나나 1개와 함께 6분 만에 완성합니다.' }
+        ]
+      },
+      {
+        id: 'banana-oatmeal-bowl',
+        name: '바나나오트밀볼 & 저지방 우유',
+        emoji: '🍌',
+        time: '5분 완성!',
+        searchKeywords: ['오트밀', '바나나', '우유', '호두'],
+        tags: ['#건강한식', '#포만감지속', '#장건강'],
+        conditionFit: ['light', 'rush'],
+        desc: '전자레인지에 2분만 돌리면 완성되는 따뜻한 바나나오트밀볼! 부드럽고 담백해 아침 입맛이 없을 때도 부담 없이 먹기 좋아요.',
+        nutrition: { kcal: 445, carb: 66, protein: 16, fat: 13 },
+        nutritionNote: '오트밀의 베타글루칸 식이섬유가 혈당을 천천히 올려 오전 내내 졸음을 줄여주고, 바나나와 우유가 편안한 포만감을 줍니다.',
+        ingredients: [
+          '오트밀(귀리) 5큰술 (약 45g)',
+          '저지방 우유 180ml',
+          '바나나 1/2개 (슬라이스)',
+          '호두 2쪽 또는 해바라기씨 1작은술'
+        ],
+        steps: [
+          { icon: '🥣', text: '전자레인지용 그릇에 오트밀 5큰술과 우유 180ml를 넣고 잘 섞어줍니다.' },
+          { icon: '♨️', text: '전자레인지에서 2분간 돌린 뒤 꺼내어 한 번 저어 농도를 맞춥니다.' },
+          { icon: '🍌', text: '슬라이스한 바나나와 호두를 올려 따뜻할 때 바로 떠먹으면 끝!' }
+        ]
+      },
+      {
+        id: 'sweet-potato-cheese-bake',
+        name: '고구마치즈구이 & 삶은 달걀 1개',
+        emoji: '🧀',
+        time: '6분 완성!',
+        searchKeywords: ['고구마', '모짜렐라치즈', '달걀'],
+        tags: ['#분식디저트', '#치즈듬뿍', '#식이섬유'],
+        conditionFit: ['light', 'hearty'],
+        desc: '으깬 고구마에 치즈를 듬뿍 올려 노릇하게 구워낸 고구마치즈구이! 삶은 달걀 1개를 곁들여 균형 잡힌 아침을 만들어 보세요.',
+        nutrition: { kcal: 470, carb: 62, protein: 19, fat: 16 },
+        nutritionNote: '고구마의 식이섬유와 비타민 A, 치즈의 칼슘과 단백질이 어우러져 성장기 청소년에게 꼭 필요한 영양소를 고르게 제공합니다.',
+        ingredients: [
+          '찐 고구마 1개 (140g)',
+          '모짜렐라 치즈 40g',
+          '삶은 달걀 1개',
+          '파슬리 약간'
+        ],
+        steps: [
+          { icon: '🍠', text: '그릇에 익힌 고구마를 담고 포크로 큼직하게 으깬 뒤 오븐용 또는 전자레인지용 접시에 펴 담습니다.' },
+          { icon: '🧀', text: '고구마 위에 모짜렐라 치즈를 골고루 뿌리고 전자레인지(또는 에어프라이어)에서 치즈가 녹을 때까지 2분 30초 굽습니다.' },
+          { icon: '🥚', text: '삶은 달걀 1개를 반으로 잘라 곁들이면 고소하고 든든한 아침 한 끼 완성!' }
+        ]
+      },
+      {
+        id: 'tofu-inari-sushi',
+        name: '두부유부초밥 & 따끈한 미소된장국',
+        emoji: '🍣',
+        time: '8분 완성!',
+        searchKeywords: ['유부초밥', '두부', '된장국'],
+        tags: ['#아시안한식', '#담백깔끔', '#식물성단백질'],
+        conditionFit: ['light', 'hearty'],
+        desc: '밥 양을 살짝 줄이고 으깬 두부를 섞어 만든 담백한 두부유부초밥! 새콤달콤한 유부와 따뜻한 국물이 아침 입맛을 살려줘요.',
+        nutrition: { kcal: 485, carb: 65, protein: 22, fat: 15 },
+        nutritionNote: '두부와 콩 발효식품인 유부·된장국의 식물성 단백질과 이소플라본이 성장기 체력 보충과 속 편한 아침 식사에 도움을 줍니다.',
+        ingredients: [
+          '시판 유부초밥 키트 5~6피',
+          '밥 1/2공기 (약 100g)',
+          '부침두부 1/4모 (약 75g, 물기 제거)',
+          '인스턴트 미소된장국 1컵'
+        ],
+        steps: [
+          { icon: '🧊', text: '물기를 꽉 짠 두부를 잘게 부수어 마른 팬에 2분간 볶은 뒤 따뜻한 밥, 초밥 소스와 함께 섞습니다.' },
+          { icon: '🍣', text: '유부피 물기를 살짝 짜고 두부밥을 쏙쏙 채워 넣어 유부초밥을 완성합니다.' },
+          { icon: '🍵', text: '따뜻한 미소된장국 한 잔을 곁들이면 소화도 잘 되고 깔끔한 아침이 됩니다.' }
+        ]
+      },
+      {
+        id: 'chicken-cracker-sand',
+        name: '닭가슴살크래커샌드 & 바나나우유',
+        emoji: '🍘',
+        time: '5분 완성!',
+        searchKeywords: ['닭가슴살', '크래커', '바나나우유'],
+        tags: ['#간편분식', '#5분컷', '#단백질보충'],
+        conditionFit: ['rush', 'light'],
+        desc: '바삭한 크래커 사이에 고소한 닭가슴살 스프레드를 얹어 먹는 초간단 샌드! 시간이 5분밖에 없을 때 딱 좋은 메뉴예요.',
+        nutrition: { kcal: 455, carb: 52, protein: 27, fat: 15 },
+        nutritionNote: '닭가슴살의 저지방 고단백 영양과 크래커·우유의 에너지가 결합되어 짧은 시간에 알차게 영양을 채울 수 있습니다.',
+        ingredients: [
+          '담백한 크래커 6~7장',
+          '닭가슴살 1팩 (80g, 잘게 다진 것)',
+          '플레인 요거트 또는 마요네즈 1작은술',
+          '바나나우유 1팩 (200ml)'
+        ],
+        steps: [
+          { icon: '🍗', text: '잘게 다진 닭가슴살에 플레인 요거트(또는 마요네즈) 1작은술과 후추 약간을 섞어 스프레드를 만듭니다.' },
+          { icon: '🍘', text: '크래커 위에 닭가슴살 스프레드를 한 스푼씩 올리고 다른 크래커를 덮어 미니 샌드를 만듭니다.' },
+          { icon: '🥛', text: '바나나우유 1팩과 함께 먹으면 바쁜 아침 5분 만에 에너지 충전 완료!' }
+        ]
+      },
+      {
+        id: 'spam-kimchi-friedrice-cup',
+        name: '스팸김치볶음밥컵 & 반숙달걀',
+        emoji: '🍚',
+        time: '8분 완성!',
+        searchKeywords: ['김치볶음밥', '스팸', '달걀'],
+        tags: ['#한식분식', '#입맛살리기', '#든든한한끼'],
+        conditionFit: ['hearty'],
+        desc: '아침에 입맛이 없을 때 톡 쏘는 김치와 고소한 스팸·반숙달걀이 어우러진 볶음밥 컵! 한 그릇으로 든든하게 시작해 보세요.',
+        nutrition: { kcal: 630, carb: 76, protein: 24, fat: 25 },
+        nutritionNote: '발효식품인 김치의 유산균과 밥·달걀의 에너지가 아침 활동량을 채워주며, 나트륨이 높지 않도록 김치는 잘게 썰어 적정량만 사용해 주세요.',
+        ingredients: [
+          '밥 1공기 (약 210g)',
+          '잘게 썬 익은 김치 1/3컵 (약 50g)',
+          '라이트 스팸 또는 햄 30g (작게 깍둑썰기)',
+          '달걀 1개 (반숙 프라이 또는 수란), 참기름 1작은술'
+        ],
+        steps: [
+          { icon: '🍳', text: '팬에 스팸과 김치를 넣고 2분간 볶다가 밥과 참기름을 넣어 고루 볶아 컵이나 그릇에 담습니다.' },
+          { icon: '🥚', text: '같은 팬에 달걀을 반숙으로 부쳐 볶음밥 위에 살짝 올립니다.' },
+          { icon: '🥄', text: '노른자를 톡 터뜨려 볶음밥과 비벼 먹으면 아침 입맛이 확 살아나요!' }
+        ]
+      },
+      {
+        id: 'apple-peanut-cracker',
+        name: '사과땅콩버터크래커 & 스트링치즈',
+        emoji: '🍎',
+        time: '5분 완성!',
+        searchKeywords: ['사과', '땅콩버터', '크래커', '스트링치즈'],
+        tags: ['#디저트간식형', '#상큼고소', '#5분초스피드'],
+        conditionFit: ['light', 'rush'],
+        desc: '아삭한 사과와 고소한 무가당 땅콩버터, 크래커·스트링치즈의 조합! 상큼하고 가벼워서 등교 길에 먹기 좋아요.',
+        nutrition: { kcal: 440, carb: 48, protein: 16, fat: 21 },
+        nutritionNote: '사과의 비타민 C와 식이섬유, 땅콩버터의 불포화지방산과 치즈의 칼슘이 어우러져 산뜻하고 균형 잡힌 아침 에너지를 줍니다.',
+        ingredients: [
+          '사과 1/2개 (약 100g, 한입 크기)',
+          '무가당 땅콩버터 1큰술 (약 15g)',
+          '통밀 크래커 4~5장',
+          '스트링치즈 1개'
+        ],
+        steps: [
+          { icon: '🍎', text: '사과 1/2개를 씻어 씨를 제거하고 먹기 좋은 한입 크기로 썰어 접시에 담습니다.' },
+          { icon: '🥜', text: '크래커에 땅콩버터를 살짝 바르거나 사과 조각을 땅콩버터에 찍어 먹을 수 있도록 준비합니다.' },
+          { icon: '🧀', text: '찢어 먹는 스트링치즈 1개를 곁들이면 5분 만에 산뜻한 아침 완성!' }
+        ]
+      },
+      {
+        id: 'egg-mayo-morning-roll',
+        name: '에그마요모닝롤 & 귤 2개',
+        emoji: '🥖',
+        time: '7분 완성!',
+        searchKeywords: ['모닝빵', '달걀', '마요네즈', '귤'],
+        tags: ['#양식빵', '#부드러운식감', '#비타민C'],
+        conditionFit: ['rush', 'light'],
+        desc: '폭신한 모닝롤 안에 부드러운 에그마요를 듬뿍 채운 샌드위치! 상큼한 귤 2개를 곁들이면 비타민 C까지 챙길 수 있어요.',
+        nutrition: { kcal: 525, carb: 60, protein: 20, fat: 22 },
+        nutritionNote: '달걀의 단백질과 비타민 D, 귤의 비타민 C가 결합해 환절기 면역력과 성장기 영양 균형에 도움을 줍니다.',
+        ingredients: [
+          '모닝롤(모닝빵) 2개',
+          '삶은 달걀 2개',
+          '마요네즈 1.5큰술, 소금·후추 약간',
+          '귤 2개'
+        ],
+        steps: [
+          { icon: '🥚', text: '삶은 달걀 2개를 포크로 곱게 으깬 뒤 마요네즈와 소금·후추 약간을 섞어 에그마요를 만듭니다.' },
+          { icon: '🥖', text: '모닝롤 가운데를 칼로 살짝 갈라 에그마요를 듬뿍 채워 넣습니다.' },
+          { icon: '🍊', text: '껍질을 깐 귤 2개와 함께 먹으면 부드럽고 상큼한 아침 식사가 됩니다.' }
+        ]
+      },
+      {
+        id: 'ham-cheese-croissant',
+        name: '햄치즈크로와상 & 아이스/핫 아메리카노대신 우유',
+        emoji: '🥐',
+        time: '5분 완성!',
+        searchKeywords: ['크로와상', '햄', '치즈', '우유'],
+        tags: ['#양식베이커리', '#바삭고소', '#빠른아침'],
+        conditionFit: ['rush', 'hearty'],
+        desc: '겹겹이 바삭한 크로와상에 햄과 치즈를 더해 카페 브런치처럼 즐기는 아침! 우유 한 잔을 곁들이면 든든해요.',
+        nutrition: { kcal: 550, carb: 53, protein: 21, fat: 28 },
+        nutritionNote: '크로와상의 고소한 에너지와 햄·치즈·우유의 단백질과 칼슘이 아침 공복을 달래줍니다. (지방 함량이 있으므로 하루 저녁은 가볍게 조절해 보세요.)',
+        ingredients: [
+          '크로와상 1~2개 (약 90g)',
+          '슬라이스 햄 1장, 슬라이스 치즈 1장',
+          '우유 1팩 (200ml)'
+        ],
+        steps: [
+          { icon: '🥐', text: '크로와상 반을 갈라 햄과 치즈를 넣고 에어프라이어나 전자레인지에서 30~40초간 살짝 데웁니다.' },
+          { icon: '🧀', text: '치즈가 말랑하게 녹으면 크로와상을 덮어 접시에 담습니다.' },
+          { icon: '🥛', text: '시원하거나 따뜻한 우유 1팩과 함께 간편하게 즐깁니다.' }
+        ]
+      },
+      {
+        id: 'beef-bulgogi-riceball',
+        name: '소불고기주먹밥 & 팽이버섯 계란국',
+        emoji: '🥩',
+        time: '8분 완성!',
+        searchKeywords: ['소불고기', '주먹밥', '달걀', '팽이버섯'],
+        tags: ['#한식', '#철분단백질', '#성장기활력'],
+        conditionFit: ['hearty'],
+        desc: '달콤짭짤한 소불고기를 잘게 다져 넣은 특제 주먹밥! 철분과 단백질이 풍부해 성장기 청소년의 체력 충전에 딱 좋아요.',
+        nutrition: { kcal: 635, carb: 77, protein: 29, fat: 22 },
+        nutritionNote: '소고기에 풍부한 헴철과 양질의 단백질은 산소 운반과 빈혈 예방, 성장기 근육·뼈 건강에 중요한 역할을 합니다.',
+        ingredients: [
+          '따뜻한 밥 1공기 (약 210g)',
+          '익힌 소불고기 70g (잘게 썰기)',
+          '참기름 1작은술, 깨소금 약간',
+          '팽이버섯 한 줌 + 달걀 1개 국물 (약 200ml)'
+        ],
+        steps: [
+          { icon: '🥩', text: '잘게 썬 소불고기를 팬에 1분간 볶아 따뜻하게 준비합니다.' },
+          { icon: '🍙', text: '밥에 참기름과 깨소금을 섞은 뒤 소불고기를 속재료로 넣고 동그랗게 주먹밥을 빚습니다.' },
+          { icon: '🍲', text: '끓는 육수에 팽이버섯과 풀어둔 달걀을 둘러 2분간 끓인 국과 함께 곁들입니다.' }
+        ]
+      },
+      {
+        id: 'pumpkin-soup-toast',
+        name: '단호박스프와식빵 & 삶은 달걀',
+        emoji: '🎃',
+        time: '6분 완성!',
+        searchKeywords: ['단호박스프', '식빵', '달걀'],
+        tags: ['#양식스프', '#속편한아침', '#비타민A'],
+        conditionFit: ['light', 'rush'],
+        desc: '달콤하고 부드러운 단호박스프에 노릇하게 구운 식빵을 찍어 먹는 아침! 속이 따뜻하고 편안하게 깨어납니다.',
+        nutrition: { kcal: 475, carb: 63, protein: 18, fat: 16 },
+        nutritionNote: '단호박의 베타카로틴과 식빵·달걀의 에너지가 조화를 이루어 아침에 부담 없이 소화되고 든든한 포만감을 줍니다.',
+        ingredients: [
+          '시판 단호박스프 1컵 (약 180g)',
+          '식빵 1~2장',
+          '삶은 달걀 1개'
+        ],
+        steps: [
+          { icon: '🎃', text: '컵이나 볼에 단호박스프를 담고 전자레인지에서 1분 30초~2분간 따뜻하게 데웁니다.' },
+          { icon: '🍞', text: '식빵은 먹기 좋은 한입 크기로 잘라 토스터기나 팬에 살짝 구워 스프에 찍어 먹습니다.' },
+          { icon: '🥚', text: '삶은 달걀 1개를 곁들이면 영양 균형이 더욱 좋아집니다.' }
+        ]
+      },
+      {
+        id: 'egg-jangjorim-butter-rice',
+        name: '계란장조림버터밥 & 김구이',
+        emoji: '🧈',
+        time: '6분 완성!',
+        searchKeywords: ['계란장조림', '버터', '밥', '김'],
+        tags: ['#한식', '#고소한풍미', '#간단한끼'],
+        conditionFit: ['hearty', 'rush'],
+        desc: '따뜻한 밥에 버터 한 조각과 계란장조림, 장조림 간장을 살짝 넣어 비벼 먹는 마성의 계란장조림버터밥!',
+        nutrition: { kcal: 590, carb: 76, protein: 23, fat: 21 },
+        nutritionNote: '달걀의 완전 단백질과 밥의 탄수화물이 균형을 이루며, 김구이의 미네랄이 더해져 바쁜 아침에도 맛있게 한 끼를 해결할 수 있어요.',
+        ingredients: [
+          '따뜻한 밥 1공기 (약 210g)',
+          '계란장조림 1~2개 (으깨거나 반으로 자르기)',
+          '무염/가염 버터 1작은술 (약 5g)',
+          '장조림 간장 1작은술, 도시락김 1봉'
+        ],
+        steps: [
+          { icon: '🍚', text: '따뜻한 밥 위에 버터 1작은술을 올려 잔열로 사르르 녹입니다.' },
+          { icon: '🥚', text: '계란장조림과 장조림 간장 1작은술을 넣고 숟가락으로 고루 비벼줍니다.' },
+          { icon: '🌿', text: '바삭한 김에 싸 먹으면 감칠맛과 고소함이 폭발하는 6분 아침 완성!' }
+        ]
+      },
+      {
+        id: 'yogurt-granola-parfait',
+        name: '요거트그래놀라파르페 & 키위',
+        emoji: '🍨',
+        time: '6분 완성!',
+        searchKeywords: ['요거트', '그래놀라', '키위'],
+        tags: ['#디저트형', '#상큼달콤', '#비타민풍부'],
+        conditionFit: ['light'],
+        desc: '유리컵이나 볼에 요거트와 그래놀라, 상큼한 키위를 층층이 쌓아 만든 예쁜 파르페! 기분 전환까지 되는 아침이에요.',
+        nutrition: { kcal: 420, carb: 58, protein: 16, fat: 14 },
+        nutritionNote: '키위의 비타민 C와 식이섬유, 요거트의 유산균이 아침을 상큼하게 열어주며 칼로리가 부담스럽지 않아 가볍게 먹기 좋습니다.',
+        ingredients: [
+          '플레인 또는 그릭요거트 150g',
+          '그래놀라 3~4큰술 (약 35g)',
+          '키위 1개 (슬라이스)',
+          '꿀 또는 메이플시럽 1작은술'
+        ],
+        steps: [
+          { icon: '🥝', text: '키위 껍질을 벗겨 반달 모양으로 얇게 썰어 준비합니다.' },
+          { icon: '🍨', text: '컵이나 그릇에 요거트 반 → 그래놀라 반 → 키위 반 순서로 층을 쌓아 올립니다.' },
+          { icon: '🍯', text: '남은 재료로 한 번 더 층을 쌓고 꿀 1작은술을 뿌려 시원하게 떠먹습니다.' }
+        ]
+      },
+      {
+        id: 'corn-cheese-egg-roll',
+        name: '콘치즈계란말이 & 잡곡밥 반 공기',
+        emoji: '🌽',
+        time: '8분 완성!',
+        searchKeywords: ['달걀', '옥수수콘', '치즈', '잡곡밥'],
+        tags: ['#아시안한식', '#고소달콤', '#성장기영양'],
+        conditionFit: ['hearty', 'light'],
+        desc: '톡톡 터지는 스위트콘과 녹진한 치즈를 넣어 돌돌 만 콘치즈계란말이! 잡곡밥 반 공기와 함께 먹으면 맛과 영양이 가득해요.',
+        nutrition: { kcal: 530, carb: 58, protein: 24, fat: 22 },
+        nutritionNote: '달걀과 치즈의 단백질·칼슘에 옥수수의 식이섬유와 잡곡밥의 비타민 B군이 더해져 성장기 에너지 대사를 돕습니다.',
+        ingredients: [
+          '달걀 3개',
+          '스위트콘 2큰술 (물기 제거)',
+          '모짜렐라 치즈 25g',
+          '잡곡밥 1/2~2/3공기 (약 130g), 식용유 약간'
+        ],
+        steps: [
+          { icon: '🥚', text: '볼에 달걀 3개를 풀고 스위트콘 2큰술과 소금 한 꼬집을 넣어 섞습니다.' },
+          { icon: '🧀', text: '약불 팬에 달걀물을 붓고 가운데 치즈를 올린 뒤, 치즈가 녹으면 돌돌 말아 3분간 익힙니다.' },
+          { icon: '🍚', text: '한입 크기로 썰어 접시에 담고 잡곡밥과 함께 맛있게 먹습니다.' }
+        ]
+      },
+      {
+        id: 'fishcake-riceball',
+        name: '어묵볶음주먹밥 & 멸치육수 국물',
+        emoji: '🍢',
+        time: '7분 완성!',
+        searchKeywords: ['어묵볶음', '주먹밥', '멸치', '밥'],
+        tags: ['#한식분식', '#쫄깃고소', '#든든한아침'],
+        conditionFit: ['hearty', 'rush'],
+        desc: '잘게 다진 어묵볶음과 깨소금을 섞어 빚은 어묵볶음주먹밥! 쫄깃한 식감과 담백한 국물이 어우러져 아침 식사로 제격이에요.',
+        nutrition: { kcal: 575, carb: 80, protein: 22, fat: 18 },
+        nutritionNote: '어묵의 생선 단백질과 밥의 탄수화물이 오전 활동 에너지를 공급해 주며, 멸치 국물에서 칼슘을 보충할 수 있습니다.',
+        ingredients: [
+          '따뜻한 밥 1공기 (약 210g)',
+          '잘게 썬 어묵볶음 50g',
+          '참기름 1작은술, 통깨 약간',
+          '간편 멸치육수 1컵 (약 180ml)'
+        ],
+        steps: [
+          { icon: '🍢', text: '어묵볶음이 크다면 도마에서 잘게 다진 뒤 따뜻한 밥, 참기름, 통깨와 함께 골고루 섞습니다.' },
+          { icon: '🍙', text: '손에 물을 살짝 묻혀 한입에 쏙 들어가는 주먹밥 3개로 빚어냅니다.' },
+          { icon: '🥣', text: '따뜻한 멸치육수를 곁들이면 속이 든든해지는 아침 식사가 완성됩니다.' }
+        ]
+      },
+      {
+        id: 'tteokgalbi-morning-bun',
+        name: '떡갈비모닝빵 & 방울토마토 5알',
+        emoji: '🍔',
+        time: '7분 완성!',
+        searchKeywords: ['떡갈비', '모닝빵', '방울토마토', '양상추'],
+        tags: ['#한식양식퓨전', '#미니버거', '#단백질충전'],
+        conditionFit: ['hearty', 'rush'],
+        desc: '육즙 가득한 미니 떡갈비를 모닝빵 사이에 끼워 만든 수제 미니 버거! 방울토마토를 곁들여 균형을 맞췄어요.',
+        nutrition: { kcal: 585, carb: 64, protein: 25, fat: 24 },
+        nutritionNote: '떡갈비의 육류 단백질·철분과 빵의 탄수화물, 토마토의 비타민이 어우러져 든든한 한 끼 에너지를 제공합니다.',
+        ingredients: [
+          '모닝빵 2개',
+          '미니 떡갈비 또는 함박스테이크 패티 2장 (약 100g)',
+          '양상추 2장, 방울토마토 5알',
+          '머스타드 또는 케첩 약간'
+        ],
+        steps: [
+          { icon: '🥩', text: '떡갈비 패티는 팬이나 전자레인지에서 노릇하고 따뜻하게 익힙니다.' },
+          { icon: '🍔', text: '반으로 가른 모닝빵에 양상추와 따뜻한 떡갈비, 소스를 살짝 발라 미니 버거를 만듭니다.' },
+          { icon: '🍅', text: '방울토마토 5알과 함께 접시에 담아 간편하게 드세요.' }
+        ]
+      },
+      {
+        id: 'blueberry-creamcheese-bagel',
+        name: '블루베리크림치즈베이글 & 두유 1팩',
+        emoji: '🥯',
+        time: '6분 완성!',
+        searchKeywords: ['베이글', '크림치즈', '블루베리', '두유'],
+        tags: ['#양식베이커리', '#쫄깃달콤', '#간편아침'],
+        conditionFit: ['rush', 'light'],
+        desc: '쫄깃하게 구운 베이글에 크림치즈와 블루베리를 곁들인 카페 스타일 아침! 두유 한 팩으로 단백질을 더했어요.',
+        nutrition: { kcal: 520, carb: 67, protein: 18, fat: 19 },
+        nutritionNote: '베이글의 탄수화물과 두유의 식물성 단백질, 블루베리의 항산화 성분이 바쁜 아침에 기분 좋은 에너지를 더해줍니다.',
+        ingredients: [
+          '베이글 1개 (약 90g, 반으로 가르기)',
+          '크림치즈 2큰술 (약 30g)',
+          '블루베리 30g (냉동/생과 모두 가능)',
+          '무가당 또는 달콤한 두유 1팩 (190ml)'
+        ],
+        steps: [
+          { icon: '🥯', text: '반으로 자른 베이글을 토스터기나 팬에서 겉면이 살짝 바삭해질 때까지 굽습니다.' },
+          { icon: '🧀', text: '따뜻한 베이글 단면에 크림치즈를 듬뿍 바르고 블루베리를 올립니다.' },
+          { icon: '🥛', text: '두유 1팩과 함께 먹으면 6분 만에 든든한 카페식 아침 완성!' }
+        ]
+      },
+      {
+        id: 'salmon-avocado-cracker',
+        name: '연어아보카도크래커 & 삶은 달걀 1개',
+        emoji: '🥑',
+        time: '7분 완성!',
+        searchKeywords: ['연어', '아보카도', '크래커', '달걀'],
+        tags: ['#건강양식', '#오메가3풍부', '#두뇌영양'],
+        conditionFit: ['light', 'hearty'],
+        desc: '오메가-3가 풍부한 연어와 크리미한 아보카도를 크래커 위에 올린 핑거푸드 아침! 삶은 달걀 1개로 단백질을 꽉 채워요.',
+        nutrition: { kcal: 515, carb: 42, protein: 25, fat: 27 },
+        nutritionNote: '연어와 아보카도의 불포화지방산·오메가-3는 청소년의 뇌 기능과 집중력 유지에 좋고, 달걀이 성장기 단백질을 보완해 줍니다.',
+        ingredients: [
+          '통밀 크래커 또는 바게트 슬라이스 5~6조각',
+          '훈제연어 또는 연어캔 60g',
+          '아보카도 1/2개 (으깨거나 슬라이스)',
+          '삶은 달걀 1개, 레몬즙 약간'
+        ],
+        steps: [
+          { icon: '🥑', text: '아보카도 1/2개를 포크로 으깨어 레몬즙 몇 방울과 소금 아주 약간을 섞습니다.' },
+          { icon: '🐟', text: '크래커 위에 으깬 아보카도를 바르고 연어를 한 점씩 먹기 좋게 올립니다.' },
+          { icon: '🥚', text: '삶은 달걀 1개를 곁들이면 고소하고 영양 가득한 아침이 됩니다.' }
+        ]
+      },
+      {
+        id: 'redbean-injeolmi-toast',
+        name: '팥인절미토스트 & 따뜻한 우유',
+        emoji: '🍡',
+        time: '6분 완성!',
+        searchKeywords: ['식빵', '단팥', '인절미', '우유'],
+        tags: ['#한식디저트형', '#고소달콤', '#인기만점'],
+        conditionFit: ['light', 'hearty'],
+        desc: '달콤한 단팥과 고소한 콩고물(인절미 가루)이 어우러진 팥인절미토스트! 따뜻한 우유와 함께 먹으면 겨울·환절기 아침에 최고예요.',
+        nutrition: { kcal: 535, carb: 79, protein: 18, fat: 16 },
+        nutritionNote: '팥과 콩고물의 식이섬유·단백질, 식빵의 탄수화물이 아침 에너지를 채워주며 우유가 칼슘을 더해 줍니다.',
+        ingredients: [
+          '식빵 2장',
+          '시판 단팥 2큰술 (약 40g)',
+          '콩고물(인절미 가루) 1.5큰술, 버터 1작은술',
+          '따뜻한 우유 1팩 (200ml)'
+        ],
+        steps: [
+          { icon: '🍞', text: '식빵에 버터를 얇게 바르고 팬이나 토스터기에서 노릇하게 굽습니다.' },
+          { icon: '🫘', text: '구운 식빵 위에 단팥을 펴 바르고 콩고물을 듬뿍 뿌린 뒤 다른 식빵을 덮거나 오픈 토스트로 즐깁니다.' },
+          { icon: '🥛', text: '따뜻한 우유 1잔과 함께 고소하고 달콤하게 아침을 시작해 보세요!' }
+        ]
+      }
+    ];
+
+    // ==========================================
+    // 2. 한국인 영양소 섭취기준 (KDRIs) 청소년 기준 계산 함수
+    // ==========================================
+    function getKDRIs(age, gender) {
+      // 한국인 영양소 섭취기준(보건복지부) 성별·연령별 에너지 필요추정량(EER) 및 다량영양소 적정비율 반영
+      // 탄수화물 약 57% (4kcal/g), 단백질 권장섭취량(g), 지방 약 25% (9kcal/g)
+      let kcal = 2500;
+      let protein = 60;
+
+      if (gender === 'male') {
+        if (age <= 11) { kcal = 1900; protein = 45; }
+        else if (age <= 14) { kcal = 2500; protein = 60; } // 만 12~14세 남학생
+        else if (age <= 18) { kcal = 2700; protein = 65; } // 만 15~18세 남학생
+        else { kcal = 2600; protein = 65; }                // 19세 이상
+      } else {
+        if (age <= 11) { kcal = 1700; protein = 45; }
+        else if (age <= 14) { kcal = 2000; protein = 55; } // 만 12~14세 여학생
+        else if (age <= 18) { kcal = 2000; protein = 55; } // 만 15~18세 여학생
+        else { kcal = 2000; protein = 55; }                // 19세 이상
+      }
+
+      const carb = Math.round((kcal * 0.57) / 4);
+      const fat = Math.round((kcal * 0.25) / 9);
+
+      return { kcal, carb, protein, fat };
+    }
+
+    // ==========================================
+    // 3. UI 인터랙션 & 유틸리티 함수
+    // ==========================================
+    function showToast(msg) {
+      const box = document.getElementById('toast-box');
+      const msgEl = document.getElementById('toast-message');
+      msgEl.textContent = msg;
+      box.classList.remove('hidden');
+      setTimeout(() => {
+        box.classList.add('hidden');
+      }, 3000);
+    }
+
+    function selectGender(gender) {
+      selectedGender = gender;
+      const maleBtn = document.getElementById('btn-male');
+      const femaleBtn = document.getElementById('btn-female');
+
+      [maleBtn, femaleBtn].forEach(btn => {
+        btn.classList.remove('bg-sunshine', 'border-tangerine', 'ring-4', 'ring-amber-200/60', 'scale-[1.02]');
+        btn.classList.add('bg-amber-50/50', 'border-amber-200');
+      });
+
+      const activeBtn = gender === 'male' ? maleBtn : femaleBtn;
+      activeBtn.classList.remove('bg-amber-50/50', 'border-amber-200');
+      activeBtn.classList.add('bg-sunshine', 'border-tangerine', 'ring-4', 'ring-amber-200/60', 'scale-[1.02]');
+    }
+
+    function selectCondition(cond) {
+      selectedCondition = cond;
+      const ids = ['rush', 'hearty', 'light'];
+      ids.forEach(id => {
+        const btn = document.getElementById(`cond-${id}`);
+        btn.classList.remove('bg-mint', 'border-tealSoft', 'ring-4', 'ring-teal-200/60', 'scale-[1.02]');
+        btn.classList.add('bg-amber-50/50', 'border-amber-200');
+      });
+
+      const activeBtn = document.getElementById(`cond-${cond}`);
+      activeBtn.classList.remove('bg-amber-50/50', 'border-amber-200');
+      activeBtn.classList.add('bg-mint', 'border-tealSoft', 'ring-4', 'ring-teal-200/60', 'scale-[1.02]');
+    }
+
+    function updateSchoolBadge(age) {
+      const badge = document.getElementById('school-badge');
+      let label = `${age}세`;
+      if (age <= 13) label = `초등학생 (${age}세)`;
+      else if (age === 14) label = `중1 (${age}세)`;
+      else if (age === 15) label = `중2 (${age}세)`;
+      else if (age === 16) label = `중3 (${age}세)`;
+      else if (age === 17) label = `고1 (${age}세)`;
+      else if (age === 18) label = `고2 (${age}세)`;
+      else if (age === 19) label = `고3 (${age}세)`;
+      else label = `청년/대학생 (${age}세)`;
+      badge.textContent = label;
+    }
+
+    function setQuickAge(age) {
+      const ageInput = document.getElementById('age');
+      ageInput.value = age;
+      updateSchoolBadge(age);
+    }
+
+    document.getElementById('age').addEventListener('input', (e) => {
+      const val = parseInt(e.target.value, 10);
+      if (!isNaN(val) && val > 0) {
+        updateSchoolBadge(val);
+      }
+    });
+
+    // ==========================================
+    // 4. 신체 분석 & 맞춤형 식단 추천 엔진
+    // ==========================================
+    document.getElementById('profile-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const age = parseInt(document.getElementById('age').value, 10);
+      const height = parseFloat(document.getElementById('height').value);
+      const weight = parseFloat(document.getElementById('weight').value);
+
+      if (isNaN(age) || age < 8 || age > 30) {
+        showToast('나이를 8세~30세 사이로 입력해주세요!');
+        return;
+      }
+      if (isNaN(height) || height < 100 || height > 220) {
+        showToast('키(cm)를 정확히 입력해주세요! (예: 168)');
+        return;
+      }
+      if (isNaN(weight) || weight < 20 || weight > 180) {
+        showToast('몸무게(kg)를 정확히 입력해주세요! (예: 58)');
+        return;
+      }
+
+      // 1) KDRIs 하루 권장량 조회 (한국 나이 입력 보정을 위해 만 나이 근사치 적용)
+      const kdriAge = Math.max(8, age - 1);
+      const kdri = getKDRIs(kdriAge, selectedGender);
+
+      // 2) BMI 계산 및 청소년 연령별 상태 판정
+      const heightM = height / 100;
+      const bmi = +(weight / (heightM * heightM)).toFixed(1);
+      
+      // 권장 아침 식사 목표 칼로리 (하루 권장량의 약 25%)
+      const targetBreakfastKcal = Math.round(kdri.kcal * 0.25);
+
+      let bmiStatus = '';
+      let bmiColorClass = '';
+      let commentText = '';
+      const genderText = selectedGender === 'male' ? '남학생' : '여학생';
+
+      // 청소년 성장기 연령에 따른 표준 BMI 중심값 보정
+      const standardBmiCenter = age <= 14 ? 19.8 : (age <= 17 ? 21.2 : 22.0);
+
+      if (bmi < standardBmiCenter - 3.2) {
+        bmiStatus = `저체중 경향 (BMI ${bmi})`;
+        bmiColorClass = 'bg-amber-100 border-amber-300 text-amber-900';
+        commentText = `키 ${height}cm, 몸무게 ${weight}kg인 ${age}세 ${genderText}은 현재 성장 에너지가 더욱 많이 필요한 시기예요! 아침을 거르지 않고 탄수화물과 양질의 단백질을 든든히 챙겨 먹으면 키 성장과 체력 증진에 큰 도움이 됩니다.`;
+      } else if (bmi <= standardBmiCenter + 3.2) {
+        bmiStatus = `정상 체형 (BMI ${bmi})`;
+        bmiColorClass = 'bg-mint/85 border-tealSoft text-teal-950';
+        commentText = `키 ${height}cm, 몸무게 ${weight}kg인 ${age}세 ${genderText}은 아주 건강하고 균형 잡힌 성장 밸런스를 유지하고 있어요! 오전 수업 집중력을 높이기 위해 하루 권장 섭취량의 약 25%인 ${targetBreakfastKcal}kcal 내외의 아침 식사를 추천해요.`;
+      } else {
+        bmiStatus = `과체중·관리 관심 (BMI ${bmi})`;
+        bmiColorClass = 'bg-rose-100 border-rose-300 text-rose-900';
+        commentText = `키 ${height}cm, 몸무게 ${weight}kg인 ${age}세 ${genderText}은 무작정 아침을 굶으면 점심에 폭식하기 쉬워요! 포만감이 높고 단백질·식이섬유가 풍부한 아침 식사(약 ${targetBreakfastKcal}kcal 목표)로 건강한 신진대사를 깨워보세요.`;
+      }
+
+      currentUserData = {
+        age,
+        gender: selectedGender,
+        genderText,
+        height,
+        weight,
+        condition: selectedCondition,
+        kdri,
+        bmi,
+        bmiStatus,
+        bmiColorClass,
+        commentText,
+        targetBreakfastKcal
+      };
+
+      // 3) 조건 및 목표 아침 칼로리를 반영한 셔플 덱 구성 & 최근 히스토리 기반 중복 방지 추천
+      rebuildShuffledMealDeck();
+      const nextMeal = pickNonRepeatingMeal();
+      currentMeal = nextMeal;
+
+      // 4) 결과 화면 렌더링
+      renderReport();
+      renderMeal(currentMeal);
+
+      document.getElementById('input-section').classList.add('hidden');
+      document.getElementById('result-section').classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    /**
+     * 배열을 Fisher-Yates 알고리즘으로 무작위 셔플
+     */
+    function shuffleArray(list) {
+      const arr = [...list];
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    /**
+     * 현재 컨디션 및 아침 목표 칼로리에 맞춰 점수를 매긴 뒤,
+     * 동일 점수대 안에서 무작위 셔플하여 매번 같은 순서가 반복되지 않도록 덱을 생성
+     */
+    function rebuildShuffledMealDeck() {
+      if (!currentUserData) {
+        shuffledMealDeck = shuffleArray(BREAKFAST_DB);
+        return;
+      }
+
+      const { condition, targetBreakfastKcal } = currentUserData;
+      const scored = BREAKFAST_DB.map(meal => {
+        const condBonus = meal.conditionFit.includes(condition) ? 28 : 0;
+        const kcalDiff = Math.abs(meal.nutrition.kcal - targetBreakfastKcal);
+        // 칼로리 차이에 따른 완만한 점수(최대 약 20점 내외) + 무작위 지터(0~18점)로 다양성 확보
+        const fitScore = Math.max(0, 20 - kcalDiff * 0.12);
+        const randomJitter = Math.random() * 18;
+        return {
+          meal,
+          totalScore: condBonus + fitScore + randomJitter
+        };
+      });
+
+      scored.sort((a, b) => b.totalScore - a.totalScore);
+      shuffledMealDeck = scored.map(entry => entry.meal);
+    }
+
+    /**
+     * 최근 추천 히스토리(recentMealIds)와 현재 사이클 이력(seenMealIds)을 고려하여
+     * 직전/최근에 나왔던 메뉴가 반복되지 않도록 다음 식단을 선택
+     */
+    function pickNonRepeatingMeal() {
+      if (!shuffledMealDeck.length) {
+        rebuildShuffledMealDeck();
+      }
+
+      // 1순위: 현재 사이클에서 아직 보지 않았고, 최근 추천 히스토리에도 없는 메뉴
+      let candidates = shuffledMealDeck.filter(
+        m => !seenMealIds.includes(m.id) && !recentMealIds.includes(m.id)
+      );
+
+      // 2순위: 현재 사이클에서 아직 안 나온 메뉴 중 직전 메뉴만 제외한 후보
+      if (candidates.length === 0) {
+        const lastId = recentMealIds[recentMealIds.length - 1];
+        candidates = shuffledMealDeck.filter(
+          m => !seenMealIds.includes(m.id) && m.id !== lastId
+        );
+      }
+
+      // 3순위: 전체 22종을 모두 한 번씩 확인한 경우 -> 사이클 초기화 후 최근 히스토리 제외하고 새 셔플 덱에서 선택
+      if (candidates.length === 0) {
+        seenMealIds = [];
+        rebuildShuffledMealDeck();
+        const protectedIds = recentMealIds.slice(-Math.min(RECENT_HISTORY_LIMIT, BREAKFAST_DB.length - 1));
+        candidates = shuffledMealDeck.filter(m => !protectedIds.includes(m.id));
+        if (candidates.length === 0) {
+          candidates = [...shuffledMealDeck];
         }
-    </script>
+      }
+
+      // 상위 후보군(최대 4개) 중 하나를 무작위로 선택해 예측 불가능성과 다양성을 높임
+      const topSlice = candidates.slice(0, Math.min(4, candidates.length));
+      const chosen = topSlice[Math.floor(Math.random() * topSlice.length)];
+
+      // 히스토리 및 확인 목록 갱신
+      seenMealIds.push(chosen.id);
+      recentMealIds.push(chosen.id);
+      if (recentMealIds.length > RECENT_HISTORY_LIMIT) {
+        recentMealIds.shift();
+      }
+
+      return chosen;
+    }
+
+    /**
+     * 최근 추천 히스토리 & 사이클 이력 배지 업데이트 (textContent로 안전하게 출력)
+     */
+    function updateRecommendationHistoryUI() {
+      const historyEl = document.getElementById('recent-history-text');
+      const progressEl = document.getElementById('pool-progress-badge');
+
+      if (!historyEl || !progressEl) return;
+
+      if (recentMealIds.length === 0) {
+        historyEl.textContent = '아직 추천 기록이 없어요';
+      } else {
+        const recentNames = recentMealIds
+          .slice()
+          .reverse()
+          .slice(0, 4)
+          .map(id => {
+            const found = BREAKFAST_DB.find(m => m.id === id);
+            return found ? `${found.emoji} ${found.name}` : id;
+          });
+        historyEl.textContent = recentNames.join('  →  ');
+      }
+
+      progressEl.textContent = `전체 ${BREAKFAST_DB.length}종 중 ${seenMealIds.length}종 확인`;
+    }
+
+    /**
+     * 추천 히스토리 초기화 버튼 핸들러
+     */
+    function resetRecommendationHistory() {
+      recentMealIds = [];
+      seenMealIds = [];
+      if (currentMeal) {
+        seenMealIds.push(currentMeal.id);
+        recentMealIds.push(currentMeal.id);
+      }
+      rebuildShuffledMealDeck();
+      updateRecommendationHistoryUI();
+      showToast('추천 이력을 초기화했어요! 다양한 메뉴를 다시 골라볼게요.');
+    }
+
+    function renderReport() {
+      const d = currentUserData;
+      document.getElementById('user-summary-title').textContent = `${d.age}세 ${d.genderText} (${d.height}cm / ${d.weight}kg)`;
+      
+      const badge = document.getElementById('bmi-badge');
+      badge.className = `inline-flex items-center gap-2 border px-4 py-2 rounded-2xl text-sm font-bold ${d.bmiColorClass}`;
+      badge.innerHTML = `<span>🩺</span> <span>${d.bmiStatus}</span>`;
+
+      document.getElementById('analysis-comment').textContent = d.commentText;
+
+      // KDRIs 하루 권장량 출력
+      document.getElementById('daily-kcal').textContent = `${d.kdri.kcal.toLocaleString()} kcal`;
+      document.getElementById('target-breakfast-kcal').textContent = `${d.targetBreakfastKcal} kcal`;
+      document.getElementById('daily-carb').textContent = `${d.kdri.carb} g`;
+      document.getElementById('daily-protein').textContent = `${d.kdri.protein} g`;
+      document.getElementById('daily-fat').textContent = `${d.kdri.fat} g`;
+    }
+
+    function renderMeal(meal) {
+      const kdri = currentUserData.kdri;
+
+      // 기본 정보
+      document.getElementById('meal-emoji').textContent = meal.emoji;
+      document.getElementById('meal-time').textContent = meal.time;
+      document.getElementById('meal-name').textContent = meal.name;
+      document.getElementById('meal-desc').textContent = meal.desc;
+      document.getElementById('meal-category-tag').textContent = meal.tags.join(' ');
+      document.getElementById('meal-condition-badge').textContent = CONDITION_LABELS[currentUserData.condition];
+      document.getElementById('meal-nutrition-note').textContent = meal.nutritionNote;
+
+      // 영양소 수치 & 하루 권장량 대비 비율(%) 계산
+      const kcalPct = Math.min(100, Math.round((meal.nutrition.kcal / kdri.kcal) * 100));
+      const carbPct = Math.min(100, Math.round((meal.nutrition.carb / kdri.carb) * 100));
+      const proteinPct = Math.min(100, Math.round((meal.nutrition.protein / kdri.protein) * 100));
+      const fatPct = Math.min(100, Math.round((meal.nutrition.fat / kdri.fat) * 100));
+
+      document.getElementById('meal-kcal').textContent = `${meal.nutrition.kcal} kcal`;
+      document.getElementById('meal-kcal-pct').textContent = `(하루 권장량의 ${kcalPct}%)`;
+      document.getElementById('bar-kcal').style.width = `${kcalPct}%`;
+
+      document.getElementById('meal-carb').textContent = `${meal.nutrition.carb} g`;
+      document.getElementById('meal-carb-pct').textContent = `(하루 권장량의 ${carbPct}%)`;
+      document.getElementById('bar-carb').style.width = `${carbPct}%`;
+
+      document.getElementById('meal-protein').textContent = `${meal.nutrition.protein} g`;
+      document.getElementById('meal-protein-pct').textContent = `(하루 권장량의 ${proteinPct}%)`;
+      document.getElementById('bar-protein').style.width = `${proteinPct}%`;
+
+      document.getElementById('meal-fat').textContent = `${meal.nutrition.fat} g`;
+      document.getElementById('meal-fat-pct').textContent = `(하루 권장량의 ${fatPct}%)`;
+      document.getElementById('bar-fat').style.width = `${fatPct}%`;
+
+      // 재료 리스트 렌더링
+      const ingList = document.getElementById('recipe-ingredients');
+      ingList.innerHTML = meal.ingredients.map(item => `
+        <li class="flex items-start gap-2 bg-white/85 px-3 py-2 rounded-xl border border-amber-200/70">
+          <span class="text-tangerine font-bold">✔</span>
+          <span>${item}</span>
+        </li>
+      `).join('');
+
+      // 단계별 레시피 렌더링
+      const stepsContainer = document.getElementById('recipe-steps');
+      stepsContainer.innerHTML = meal.steps.map((step, idx) => `
+        <div class="flex items-start gap-3.5 bg-cream border-2 border-amber-200/80 rounded-2xl p-4 hover:border-sunshine transition-colors">
+          <div class="w-9 h-9 rounded-full bg-sunshine text-cocoa font-title text-lg flex items-center justify-center shrink-0 shadow-xs border border-amber-400">
+            ${idx + 1}
+          </div>
+          <div class="flex-1">
+            <p class="text-sm sm:text-base font-medium text-cocoa leading-relaxed">
+              <span class="text-lg mr-1">${step.icon}</span> ${step.text}
+            </p>
+          </div>
+        </div>
+      `).join('');
+
+      // API 검색창 키워드 및 추천 칩 동기화
+      syncApiKeywordsForMeal(meal);
+
+      // 최근 추천 히스토리 및 진행률 배지 갱신
+      updateRecommendationHistoryUI();
+    }
+
+    // 다른 메뉴 다시 추천받기 (직전/최근 메뉴 회피 + 즉시 영양소 및 레시피 갱신)
+    function recommendAnotherMeal() {
+      if (!currentUserData) return;
+      const nextMeal = pickNonRepeatingMeal();
+      currentMeal = nextMeal;
+      renderMeal(currentMeal);
+
+      document.getElementById('meal-name').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    // 입력 화면으로 돌아가기
+    function resetToInput() {
+      document.getElementById('result-section').classList.add('hidden');
+      document.getElementById('input-section').classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // ==========================================
+    // 5. 식약처 식품영양성분DB정보 중계 API 연동 및 계산기
+    // ==========================================
+
+    /**
+     * 문자열 숫자 안전 파싱 헬퍼
+     * - null, undefined, 빈 문자열('')은 0으로 변환하지 않고 null 반환
+     * - 쉼표(,) 제거 후 유효한 숫자만 Number 반환
+     */
+    function parseNutrientValue(rawValue) {
+      if (rawValue === null || rawValue === undefined) return null;
+      const str = String(rawValue).trim();
+      if (str === '' || str === '-' || str.toLowerCase() === 'null' || str.toLowerCase() === 'nan') {
+        return null;
+      }
+      const cleaned = str.replace(/,/g, '');
+      const num = Number(cleaned);
+      return Number.isFinite(num) ? num : null;
+    }
+
+    /**
+     * 기준량 문자열(예: "100g", "150ml", "200 g")에서 숫자 추출
+     */
+    function extractGramsFromServing(servingSize) {
+      if (servingSize === null || servingSize === undefined) return null;
+      const str = String(servingSize).trim().replace(/,/g, '');
+      if (!str) return null;
+      const match = str.match(/(\d+(?:\.\d+)?)/);
+      if (!match) return null;
+      const val = Number(match[1]);
+      return Number.isFinite(val) && val > 0 ? val : null;
+    }
+
+    /**
+     * 추천 식단 변경 시 API 검색창의 기본 검색어와 빠른 칩 업데이트
+     */
+    function syncApiKeywordsForMeal(meal) {
+      const keywords = meal.searchKeywords || ['김밥', '우유', '달걀'];
+      const inputEl = document.getElementById('api-food-name');
+      inputEl.value = keywords[0];
+
+      const chipsContainer = document.getElementById('api-quick-chips');
+      chipsContainer.innerHTML = `<span class="font-bold text-purple-800 mr-1">추천 재료 검색:</span>` +
+        keywords.map(kw => `
+          <button type="button" onclick="quickSearchFood('${kw}')"
+            class="cute-btn bg-white hover:bg-purple-100 text-purple-900 border border-purple-200 font-bold px-2.5 py-1 rounded-full">
+            #${kw}
+          </button>
+        `).join('');
+
+      // 이미 검색 패널이 열려 있다면 첫 번째 키워드로 자동 조회 갱신
+      const panel = document.getElementById('api-search-panel');
+      if (!panel.classList.contains('hidden')) {
+        searchFoodFromApi();
+      }
+    }
+
+    function toggleApiSearchPanel() {
+      const panel = document.getElementById('api-search-panel');
+      const btnText = document.getElementById('toggle-api-btn-text');
+      const isHidden = panel.classList.contains('hidden');
+
+      if (isHidden) {
+        panel.classList.remove('hidden');
+        btnText.textContent = '실제 식품 검색창 닫기';
+        // 처음 열 때 입력된 키워드가 있으면 자동 조회 실행
+        const currentKw = document.getElementById('api-food-name').value.trim();
+        if (currentKw && apiItemsCache.length === 0) {
+          searchFoodFromApi();
+        }
+      } else {
+        panel.classList.add('hidden');
+        btnText.textContent = '실제 식품 검색창 열기';
+      }
+    }
+
+    function quickSearchFood(keyword) {
+      document.getElementById('api-food-name').value = keyword;
+      searchFoodFromApi();
+    }
+
+    function setApiStatus(type, message) {
+      const box = document.getElementById('api-status-box');
+      box.classList.remove('hidden', 'bg-purple-100', 'text-purple-900', 'bg-amber-100', 'text-amber-900', 'bg-rose-100', 'text-rose-900');
+
+      if (type === 'loading') {
+        box.classList.add('bg-purple-100', 'text-purple-900');
+        box.innerHTML = `<span class="inline-block animate-spin mr-1.5">⏳</span> ${message}`;
+      } else if (type === 'empty') {
+        box.classList.add('bg-amber-100', 'text-amber-900');
+        box.innerHTML = `<span>🧐</span> ${message}`;
+      } else if (type === 'error') {
+        box.classList.add('bg-rose-100', 'text-rose-900');
+        box.innerHTML = `<span>⚠️</span> ${message}`;
+      } else {
+        box.classList.add('hidden');
+      }
+    }
+
+    /**
+     * 중계 API 호출 함수
+     * - serviceKey 절대 미포함
+     * - URLSearchParams로 pageNo, numOfRows, type=json, FOOD_NM_KR 전달 (빈 선택 조건 생략)
+     * - HTTP 상태 및 header.resultCode('00' 정상, '03' 데이터 없음) 검증
+     */
+    async function searchFoodFromApi() {
+      const foodName = document.getElementById('api-food-name').value.trim();
+      const foodCat = document.getElementById('api-food-cat').value.trim();
+
+      if (!foodName) {
+        showToast('검색할 식품명을 입력해주세요! (예: 바나나, 우유, 김밥)');
+        document.getElementById('api-food-name').focus();
+        return;
+      }
+
+      const resultsWrapper = document.getElementById('api-results-wrapper');
+      const calcBox = document.getElementById('api-selected-calc');
+      resultsWrapper.classList.add('hidden');
+      calcBox.classList.add('hidden');
+      setApiStatus('loading', `'${foodName}'의 식약처 식품영양성분DB 정보를 불러오는 중이에요...`);
+
+      try {
+        const url = new URL(FOOD_API_ENDPOINT);
+        const paramsObj = {
+          pageNo: '1',
+          numOfRows: '15',
+          type: 'json',
+          FOOD_NM_KR: foodName
+        };
+
+        // 빈 선택 조건은 생략
+        if (foodCat) {
+          paramsObj.FOOD_CAT1_NM = foodCat;
+        }
+
+        url.search = new URLSearchParams(paramsObj);
+
+        const response = await fetch(url.toString());
+        if (!response.ok) {
+          throw new Error(`HTTP 오류 (${response.status})`);
+        }
+
+        const data = await response.json();
+        const resultCode = data?.header?.resultCode;
+        const resultMsg = data?.header?.resultMsg || '';
+
+        if (resultCode === '03') {
+          apiItemsCache = [];
+          setApiStatus('empty', `'${foodName}'에 대한 검색 결과가 없습니다 (resultCode: 03). 다른 단어로 검색해보세요!`);
+          return;
+        }
+
+        if (resultCode && resultCode !== '00') {
+          throw new Error(`API 응답 코드 오류 (${resultCode}: ${resultMsg})`);
+        }
+
+        // data.body.items 원본 구조 유지 (배열이 아닌 단일 객체일 경우 대비)
+        const rawItems = data?.body?.items;
+        let items = [];
+        if (Array.isArray(rawItems)) {
+          items = rawItems;
+        } else if (rawItems && typeof rawItems === 'object') {
+          items = Array.isArray(rawItems.item) ? rawItems.item : [rawItems];
+        }
+
+        if (items.length === 0) {
+          apiItemsCache = [];
+          setApiStatus('empty', `'${foodName}'에 해당하는 식품 데이터가 없습니다. 더 짧은 핵심 단어(예: 우유, 달걀, 식빵)로 검색해보세요!`);
+          return;
+        }
+
+        apiItemsCache = items;
+        setApiStatus('none', '');
+        renderApiResultList(items);
+
+        // 첫 번째 결과를 기본 선택하여 바로 계산기 표시
+        selectApiFoodItem(0);
+
+      } catch (err) {
+        console.error('식약처 API 조회 오류:', err);
+        apiItemsCache = [];
+        setApiStatus('error', `식품영양성분DB 조회 중 일시적인 오류가 발생했어요 (${err.message}). 잠시 후 다시 시도해주세요!`);
+      }
+    }
+
+    /**
+     * 조회된 data.body.items 목록 렌더링
+     */
+    function renderApiResultList(items) {
+      const wrapper = document.getElementById('api-results-wrapper');
+      const listEl = document.getElementById('api-results-list');
+      const countEl = document.getElementById('api-result-count');
+
+      countEl.textContent = `총 ${items.length}건 조회됨`;
+
+      listEl.innerHTML = items.map((item, idx) => {
+        const name = item.FOOD_NM_KR || '이름 정보 없음';
+        const serving = item.SERVING_SIZE ? String(item.SERVING_SIZE).trim() : '기준량 미표기';
+        const maker = item.MAKER_NM ? String(item.MAKER_NM).trim() : '';
+        const cat = item.FOOD_CAT1_NM ? String(item.FOOD_CAT1_NM).trim() : '';
+        const kcal = parseNutrientValue(item.AMT_NUM1);
+        const kcalText = kcal !== null ? `${kcal} kcal` : '열량 정보 없음(-)';
+
+        return `
+          <button type="button" onclick="selectApiFoodItem(${idx})" id="api-item-btn-${idx}"
+            class="api-item-btn w-full text-left bg-white hover:bg-purple-50 border-2 border-purple-100 rounded-2xl p-3 transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div>
+              <div class="font-bold text-sm text-cocoa flex flex-wrap items-center gap-1.5">
+                <span>${name}</span>
+                <span class="text-[11px] font-extrabold bg-amber-100 text-amber-900 px-2 py-0.5 rounded-full">기준량: ${serving}</span>
+              </div>
+              <div class="text-[11px] text-gray-500 mt-0.5">
+                ${[cat, maker].filter(Boolean).join(' · ') || '식약처 식품영양성분DB'}
+              </div>
+            </div>
+            <div class="text-xs font-extrabold text-purple-800 bg-purple-50 px-3 py-1 rounded-xl shrink-0 self-start sm:self-center">
+              ${kcalText}
+            </div>
+          </button>
+        `;
+      }).join('');
+
+      wrapper.classList.remove('hidden');
+    }
+
+    /**
+     * 특정 식품 항목 선택 시 상세 계산기 활성화
+     */
+    function selectApiFoodItem(index) {
+      const item = apiItemsCache[index];
+      if (!item) return;
+
+      selectedApiItem = item;
+      currentMultiplier = 1;
+
+      // 리스트 선택 하이라이트
+      document.querySelectorAll('.api-item-btn').forEach((btn, i) => {
+        if (i === index) {
+          btn.classList.remove('border-purple-100', 'bg-white');
+          btn.classList.add('border-purple-500', 'bg-purple-50/90', 'ring-2', 'ring-purple-200');
+        } else {
+          btn.classList.remove('border-purple-500', 'bg-purple-50/90', 'ring-2', 'ring-purple-200');
+          btn.classList.add('border-purple-100', 'bg-white');
+        }
+      });
+
+      const name = item.FOOD_NM_KR || '식품명 정보 없음';
+      const servingText = item.SERVING_SIZE ? String(item.SERVING_SIZE).trim() : '기준량 정보 없음';
+      const maker = item.MAKER_NM ? `제조사/출처: ${item.MAKER_NM}` : '';
+      const cat = item.FOOD_CAT1_NM ? `분류: ${item.FOOD_CAT1_NM}` : '';
+
+      document.getElementById('calc-food-title').textContent = name;
+      document.getElementById('calc-serving-badge').textContent = `표시 기준량: ${servingText}`;
+      document.getElementById('calc-base-unit-text').textContent = servingText;
+      document.getElementById('calc-food-meta').textContent = [cat, maker].filter(Boolean).join(' | ') || '식품의약품안전처 식품영양성분DB정보';
+
+      // 기준량에서 숫자(g) 파싱 가능 여부에 따라 그램 직접 입력창 제어
+      selectedBaseGrams = extractGramsFromServing(item.SERVING_SIZE);
+      const gramInputRow = document.getElementById('gram-input-row');
+      const customGramsInput = document.getElementById('calc-custom-grams');
+
+      if (selectedBaseGrams !== null) {
+        gramInputRow.classList.remove('hidden');
+        customGramsInput.value = selectedBaseGrams;
+      } else {
+        gramInputRow.classList.add('hidden');
+      }
+
+      updateMultiplierButtonsUI(1);
+      recalculateSelectedFoodNutrition();
+
+      const calcBox = document.getElementById('api-selected-calc');
+      calcBox.classList.remove('hidden');
+    }
+
+    function updateMultiplierButtonsUI(activeMult) {
+      document.querySelectorAll('.mult-btn').forEach(btn => {
+        const btnMult = parseFloat(btn.textContent);
+        if (btnMult === activeMult) {
+          btn.classList.remove('bg-white', 'text-purple-900', 'border-purple-200');
+          btn.classList.add('bg-purple-600', 'text-white', 'border-purple-600');
+        } else {
+          btn.classList.remove('bg-purple-600', 'text-white', 'border-purple-600');
+          btn.classList.add('bg-white', 'text-purple-900', 'border-purple-200');
+        }
+      });
+    }
+
+    function setIntakeMultiplier(mult) {
+      currentMultiplier = mult;
+      updateMultiplierButtonsUI(mult);
+
+      if (selectedBaseGrams !== null) {
+        document.getElementById('calc-custom-grams').value = Math.round(selectedBaseGrams * mult);
+      }
+      recalculateSelectedFoodNutrition();
+    }
+
+    function onCustomGramChange(val) {
+      const grams = parseFloat(val);
+      if (!selectedBaseGrams || isNaN(grams) || grams <= 0) return;
+      currentMultiplier = grams / selectedBaseGrams;
+      updateMultiplierButtonsUI(-1); // 배수 버튼 선택 해제
+      recalculateSelectedFoodNutrition();
+    }
+
+    /**
+     * 선택된 식약처 DB 항목의 영양성분을 섭취 배수에 맞춰 계산 & 렌더링
+     * - AMT_NUM1: 열량(kcal)
+     * - AMT_NUM3: 단백질(g)
+     * - AMT_NUM4: 지방(g)
+     * - AMT_NUM6: 탄수화물(g)
+     * - AMT_NUM13: 나트륨(mg)
+     * - null인 필드는 절대 0으로 계산하지 않고 '정보 없음(-)'으로 표시
+     */
+    function recalculateSelectedFoodNutrition() {
+      if (!selectedApiItem || !currentUserData) return;
+
+      const kdri = currentUserData.kdri;
+      const mult = currentMultiplier;
+
+      document.getElementById('calc-ratio-label').textContent = `(표시 기준량의 ${mult.toFixed(2)}배 적용 중)`;
+
+      const rawKcal = parseNutrientValue(selectedApiItem.AMT_NUM1);
+      const rawProtein = parseNutrientValue(selectedApiItem.AMT_NUM3);
+      const rawFat = parseNutrientValue(selectedApiItem.AMT_NUM4);
+      const rawCarb = parseNutrientValue(selectedApiItem.AMT_NUM6);
+      const rawSodium = parseNutrientValue(selectedApiItem.AMT_NUM13);
+
+      // 열량 (kcal)
+      if (rawKcal !== null) {
+        const val = Math.round(rawKcal * mult * 10) / 10;
+        const pct = Math.round((val / kdri.kcal) * 100);
+        const breakfastPct = Math.round((val / currentUserData.targetBreakfastKcal) * 100);
+        document.getElementById('calc-val-kcal').textContent = `${val} kcal`;
+        document.getElementById('calc-pct-kcal').textContent = `하루 ${pct}% · 아침목표 ${breakfastPct}%`;
+      } else {
+        document.getElementById('calc-val-kcal').textContent = '정보 없음(-)';
+        document.getElementById('calc-pct-kcal').textContent = 'DB 미제공 항목';
+      }
+
+      // 탄수화물 (g)
+      if (rawCarb !== null) {
+        const val = Math.round(rawCarb * mult * 10) / 10;
+        const pct = Math.round((val / kdri.carb) * 100);
+        document.getElementById('calc-val-carb').textContent = `${val} g`;
+        document.getElementById('calc-pct-carb').textContent = `하루 권장량의 ${pct}%`;
+      } else {
+        document.getElementById('calc-val-carb').textContent = '정보 없음(-)';
+        document.getElementById('calc-pct-carb').textContent = 'DB 미제공 항목';
+      }
+
+      // 단백질 (g)
+      if (rawProtein !== null) {
+        const val = Math.round(rawProtein * mult * 10) / 10;
+        const pct = Math.round((val / kdri.protein) * 100);
+        document.getElementById('calc-val-protein').textContent = `${val} g`;
+        document.getElementById('calc-pct-protein').textContent = `하루 권장량의 ${pct}%`;
+      } else {
+        document.getElementById('calc-val-protein').textContent = '정보 없음(-)';
+        document.getElementById('calc-pct-protein').textContent = 'DB 미제공 항목';
+      }
+
+      // 지방 (g)
+      if (rawFat !== null) {
+        const val = Math.round(rawFat * mult * 10) / 10;
+        const pct = Math.round((val / kdri.fat) * 100);
+        document.getElementById('calc-val-fat').textContent = `${val} g`;
+        document.getElementById('calc-pct-fat').textContent = `하루 권장량의 ${pct}%`;
+      } else {
+        document.getElementById('calc-val-fat').textContent = '정보 없음(-)';
+        document.getElementById('calc-pct-fat').textContent = 'DB 미제공 항목';
+      }
+
+      // 나트륨 (mg) - WHO/한국인 나트륨 목표섭취량 2,000mg 기준 비교
+      if (rawSodium !== null) {
+        const val = Math.round(rawSodium * mult * 10) / 10;
+        const pct = Math.round((val / 2000) * 100);
+        document.getElementById('calc-val-sodium').textContent = `${val} mg`;
+        document.getElementById('calc-pct-sodium').textContent = `목표상한(2g)의 ${pct}%`;
+      } else {
+        document.getElementById('calc-val-sodium').textContent = '정보 없음(-)';
+        document.getElementById('calc-pct-sodium').textContent = 'DB 미제공 항목';
+      }
+    }
+
+    // 초기 선택 상태 적용
+    window.addEventListener('DOMContentLoaded', () => {
+      selectGender('male');
+      selectCondition('rush');
+      updateSchoolBadge(16);
+    });
+  </script>
 </body>
 </html>
